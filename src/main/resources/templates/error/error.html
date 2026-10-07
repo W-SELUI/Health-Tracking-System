@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${error}">Error</title>
+</head>
+<body>
+
+<h1 th:text="${error}">Error</h1>
+
+<p>
+    Status:
+    <span th:text="${status}">500</span>
+</p>
+
+<p th:text="${message}">
+    An unexpected error occurred.
+</p>
+
+<a th:href="@{/dashboard}">Return to Dashboard</a>
+
+</body>
+</html>
