@@ -2,7 +2,9 @@ package com.group15.health_tracking_system.consent.repository;
 
 import com.group15.health_tracking_system.consent.entity.Consent;
 import com.group15.health_tracking_system.consent.entity.ConsentStatus;
+import java.util.List;
 import java.util.Optional;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConsentRepository extends JpaRepository<Consent, Long> {
@@ -17,4 +19,7 @@ public interface ConsentRepository extends JpaRepository<Consent, Long> {
             Long providerId,
             ConsentStatus status
     );
+
+    @EntityGraph(attributePaths = "provider")
+    List<Consent> findByPatient_Id(Long patientId);
 }

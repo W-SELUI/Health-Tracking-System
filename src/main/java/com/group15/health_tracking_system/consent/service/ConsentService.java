@@ -8,6 +8,7 @@ import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
 import com.group15.health_tracking_system.user.repository.UserRepository;
 import jakarta.transaction.Transactional;
+import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -61,6 +62,19 @@ public class ConsentService {
                         ConsentStatus.ACTIVE
                 )
                 .isPresent();
+    }
+
+    @Transactional
+    public List<User> getAvailableProviders() {
+        return userRepository
+                .findByRoleAndEnabledTrueOrderByFirstNameAscLastNameAsc(
+                        Role.PROVIDER
+                );
+    }
+
+    @Transactional
+    public List<Consent> getPatientConsents(Long patientId) {
+        return consentRepository.findByPatient_Id(patientId);
     }
 
     private User getUser(Long userId) {
