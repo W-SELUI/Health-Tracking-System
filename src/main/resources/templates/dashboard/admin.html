@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
+</head>
+<body>
+
+<h1>Administrator Dashboard</h1>
+
+<p>
+    Welcome,
+    <span th:text="${currentUser.fullName}">Administrator</span>
+</p>
+
+<p>
+    Role:
+    <span th:text="${currentUser.role.displayName}">Administrator</span>
+</p>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

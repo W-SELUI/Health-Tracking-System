@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Provider Dashboard</title>
+</head>
+<body>
+
+<h1>Healthcare Provider Dashboard</h1>
+
+<p>
+    Welcome,
+    <span th:text="${currentUser.fullName}">Provider</span>
+</p>
+
+<p>
+    Role:
+    <span th:text="${currentUser.role.displayName}">Healthcare Provider</span>
+</p>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>
