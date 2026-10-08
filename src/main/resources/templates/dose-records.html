@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Dose Records</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:#eef2f7;
+        }
+
+        .header{
+            background:#dcecf9;
+            padding:50px 80px;
+        }
+
+        .header h1{
+            color:#0d2d52;
+            font-size:56px;
+            margin-bottom:15px;
+        }
+
+        .header p{
+            color:#183b63;
+            font-size:22px;
+        }
+
+        .main-container{
+            width:88%;
+            margin:40px auto;
+            background:white;
+            border-radius:20px;
+            padding:40px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-link{
+            margin-bottom:25px;
+        }
+
+        .dashboard-link a{
+            color:#1565a9;
+            text-decoration:none;
+            font-size:18px;
+        }
+
+        .dashboard-link a:hover{
+            text-decoration:underline;
+        }
+
+        .page-title{
+            display:flex;
+            align-items:center;
+            gap:18px;
+            margin-bottom:30px;
+        }
+
+        .page-title .icon{
+            font-size:34px;
+        }
+
+        .page-title h2{
+            color:#0d2d52;
+            font-size:40px;
+            font-weight:700;
+        }
+
+        .top-section{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:35px;
+        }
+
+        .stats-card{
+            background:#f5f9fd;
+            border-radius:12px;
+            padding:25px;
+            width:250px;
+        }
+
+        .stats-card h3{
+            color:#0d2d52;
+            margin-bottom:10px;
+            font-size:18px;
+        }
+
+        .stats-card .number{
+            color:#1565a9;
+            font-size:42px;
+            font-weight:bold;
+        }
+
+        .add-btn{
+            background:#1565a9;
+            color:white;
+            padding:15px 30px;
+            border-radius:8px;
+            text-decoration:none;
+            font-size:16px;
+            font-weight:600;
+        }
+
+        .add-btn:hover{
+            background:#0f4d84;
+        }
+
+        .table-container{
+            overflow:hidden;
+            border-radius:18px;
+            border:1px solid #d9e3ec;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#dce7f2;
+            color:#0d2d52;
+            padding:18px;
+            text-align:center;
+            font-size:16px;
+        }
+
+        td{
+            padding:18px;
+            text-align:center;
+            border-bottom:1px solid #e1e8f0;
+            font-size:16px;
+        }
+
+        tr:hover{
+            background:#f8fbff;
+        }
+
+        .status-taken{
+            color:#1565a9;
+            font-weight:bold;
+        }
+
+        .status-missed{
+            color:#34495e;
+            font-weight:bold;
+        }
+
+        .status-skipped{
+            color:#5c6f82;
+            font-weight:bold;
+        }
+
+        .edit-btn{
+            background:#1565a9;
+            color:white;
+            padding:10px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .edit-btn:hover{
+            background:#0f4d84;
+        }
+
+        .delete-btn{
+            background:#34495e;
+            color:white;
+            padding:10px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .delete-btn:hover{
+            background:#243443;
+        }
+
+        .empty-row{
+            text-align:center;
+            font-style:italic;
+            color:#7f8c8d;
+            padding:30px;
+        }
+
+        .footer-buttons{
+            margin-top:30px;
+            text-align:center;
+        }
+
+        .back-btn{
+            background:#34495e;
+            color:white;
+            padding:15px 30px;
+            border-radius:8px;
+            text-decoration:none;
+            font-size:16px;
+            font-weight:600;
+            display:inline-block;
+        }
+
+        .back-btn:hover{
+            background:#243443;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Health Tracking System</h1>
+    <p>Dose Records Management</p>
+</div>
+
+<div class="main-container">
+
+    <div class="dashboard-link">
+        <a href="/">← Patient Dashboard</a>
+    </div>
+
+    <div class="page-title">
+        <span class="icon">📝</span>
+        <h2>Dose Records</h2>
+    </div>
+
+    <div class="top-section">
+
+        <div class="stats-card">
+            <h3>Total Dose Records</h3>
+            <div class="number"
+                 th:text="${doseRecords.size()}">0</div>
+        </div>
+
+        <a href="/dose-records/add" class="add-btn">
+            + Add Dose Record
+        </a>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Dose Date</th>
+                <th>Status</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:if="${#lists.isEmpty(doseRecords)}">
+                <td colspan="5" class="empty-row">
+                    No dose records found. Click "Add Dose Record" to create your first dose record.
+                </td>
+            </tr>
+
+            <tr th:each="record : ${doseRecords}">
+
+                <td th:text="${record.id}"></td>
+
+                <td th:text="${record.doseDate}"></td>
+
+                <td>
+
+                    <span th:if="${record.status.name() == 'TAKEN'}"
+                          class="status-taken"
+                          th:text="${record.status}">
+                    </span>
+
+                    <span th:if="${record.status.name() == 'MISSED'}"
+                          class="status-missed"
+                          th:text="${record.status}">
+                    </span>
+
+                    <span th:if="${record.status.name() == 'SKIPPED'}"
+                          class="status-skipped"
+                          th:text="${record.status}">
+                    </span>
+
+                </td>
+
+                <td>
+                    <a class="edit-btn"
+                       th:href="@{/dose-records/edit/{id}(id=${record.id})}">
+                        Edit
+                    </a>
+                </td>
+
+                <td>
+                    <a class="delete-btn"
+                       th:href="@{/dose-records/delete/{id}(id=${record.id})}"
+                       onclick="return confirm('Delete this dose record?');">
+                        Delete
+                    </a>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="footer-buttons">
+        <a href="/" class="back-btn">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
