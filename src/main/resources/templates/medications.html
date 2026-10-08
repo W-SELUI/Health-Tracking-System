@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Medication Management</title>
+
+    <style>
+
+        *{
+            margin:0;
+            padding:0;
+            box-sizing:border-box;
+        }
+
+        body{
+            font-family:'Segoe UI',sans-serif;
+            background:#eef2f7;
+            color:#2c3e50;
+        }
+
+        .header{
+            background:#dcecf9;
+            padding:50px 80px;
+        }
+
+        .header h1{
+            color:#0d2d52;
+            font-size:56px;
+            margin-bottom:15px;
+        }
+
+        .header p{
+            color:#183b63;
+            font-size:22px;
+        }
+
+        .container{
+            width:88%;
+            margin:40px auto;
+            background:white;
+            padding:40px;
+            border-radius:20px;
+            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        .dashboard-link{
+            margin-bottom:25px;
+        }
+
+        .dashboard-link a{
+            color:#1565a9;
+            font-size:18px;
+            text-decoration:none;
+        }
+
+        .dashboard-link a:hover{
+            text-decoration:underline;
+        }
+
+        .page-title{
+            color:#0d2d52;
+            font-size:40px;
+            font-weight:700;
+            margin-bottom:30px;
+        }
+
+        .top-section{
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+            margin-bottom:35px;
+        }
+
+        .stat-card{
+            background:#f5f9fd;
+            border-radius:12px;
+            padding:25px;
+            width:250px;
+        }
+
+        .stat-card h3{
+            color:#0d2d52;
+            margin-bottom:10px;
+            font-size:18px;
+        }
+
+        .stat-card h2{
+            color:#1565a9;
+            font-size:42px;
+            margin:0;
+        }
+
+        .add-btn{
+            background:#1565a9;
+            color:white;
+            padding:15px 30px;
+            text-decoration:none;
+            border-radius:8px;
+            font-size:16px;
+            font-weight:600;
+        }
+
+        .add-btn:hover{
+            background:#0f4d84;
+        }
+
+        .table-container{
+            overflow:hidden;
+            border-radius:18px;
+            border:1px solid #d9e3ec;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th{
+            background:#dce7f2;
+            color:#0d2d52;
+            padding:18px;
+            text-align:center;
+            font-size:16px;
+        }
+
+        td{
+            padding:18px;
+            border-bottom:1px solid #d9e3ec;
+            text-align:center;
+            font-size:16px;
+        }
+
+        tr:hover{
+            background:#f8fbff;
+        }
+
+        .empty-row{
+            padding:30px;
+            color:#7f8c8d;
+            font-style:italic;
+            text-align:center;
+        }
+
+        .edit-btn{
+            background:#1565a9;
+            color:white;
+            padding:10px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .edit-btn:hover{
+            background:#0f4d84;
+        }
+
+        .delete-btn{
+            background:#34495e;
+            color:white;
+            padding:10px 18px;
+            border-radius:6px;
+            text-decoration:none;
+            font-weight:600;
+        }
+
+        .delete-btn:hover{
+            background:#243443;
+        }
+
+        .footer-buttons{
+            margin-top:30px;
+            text-align:center;
+        }
+
+        .back-btn{
+            display:inline-block;
+            background:#34495e;
+            color:white;
+            padding:15px 30px;
+            border-radius:8px;
+            text-decoration:none;
+            font-size:16px;
+            font-weight:600;
+        }
+
+        .back-btn:hover{
+            background:#243443;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Health Tracking System</h1>
+    <p>Medication Management</p>
+</div>
+
+<div class="container">
+
+    <div class="dashboard-link">
+        <a href="/">← Patient Dashboard</a>
+    </div>
+
+    <h2 class="page-title">💊 Medication List</h2>
+
+    <div class="top-section">
+
+        <div class="stat-card">
+            <h3>Total Medications</h3>
+            <h2 th:text="${medications.size()}">0</h2>
+        </div>
+
+        <a href="/medications/add" class="add-btn">
+            + Add Medication
+        </a>
+
+    </div>
+
+    <div class="table-container">
+
+        <table>
+
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Medication Name</th>
+                <th>Dosage</th>
+                <th>Instructions</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:if="${#lists.isEmpty(medications)}">
+                <td colspan="6" class="empty-row">
+                    No medications found. Click "Add Medication" to create your first medication.
+                </td>
+            </tr>
+
+            <tr th:each="medication : ${medications}">
+
+                <td th:text="${medication.id}"></td>
+
+                <td th:text="${medication.medicationName}"></td>
+
+                <td th:text="${medication.dosage}"></td>
+
+                <td th:text="${medication.instructions}"></td>
+
+                <td>
+                    <a th:href="@{/medications/edit/{id}(id=${medication.id})}"
+                       class="edit-btn">
+                        Edit
+                    </a>
+                </td>
+
+                <td>
+                    <a th:href="@{/medications/delete/{id}(id=${medication.id})}"
+                       class="delete-btn"
+                       onclick="return confirm('Delete this medication?');">
+                        Delete
+                    </a>
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <div class="footer-buttons">
+        <a href="/" class="back-btn">
+            Back to Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>
