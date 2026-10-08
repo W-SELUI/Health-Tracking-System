@@ -5,30 +5,23 @@ import com.group15.health_tracking_system.medication.repository.DoseRecordReposi
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class DoseRecordService {
 
-    private final DoseRecordRepository repository;
+    private final DoseRecordRepository doseRecordRepository;
 
-    public DoseRecordService(DoseRecordRepository repository) {
-        this.repository = repository;
-    }
+    public DoseRecordService(
+            DoseRecordRepository doseRecordRepository) {
 
-    public DoseRecord save(DoseRecord doseRecord) {
-        return repository.save(doseRecord);
+        this.doseRecordRepository = doseRecordRepository;
     }
 
     public List<DoseRecord> getAll() {
-        return repository.findAll();
+        return doseRecordRepository.findAll();
     }
 
-    public Optional<DoseRecord> getById(Long id) {
-        return repository.findById(id);
-    }
-
-    public void delete(Long id) {
-        repository.deleteById(id);
+    public DoseRecord save(DoseRecord doseRecord) {
+        return doseRecordRepository.save(doseRecord);
     }
 }
