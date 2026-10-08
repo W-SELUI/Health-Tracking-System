@@ -19,6 +19,8 @@
     <span th:text="${currentUser.role.displayName}">Patient</span>
 </p>
 
+<p><a th:href="@{/activities}">My activity records</a></p>
+
 <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>
 </form>
