@@ -22,4 +22,10 @@ public interface ConsentRepository extends JpaRepository<Consent, Long> {
 
     @EntityGraph(attributePaths = "provider")
     List<Consent> findByPatient_Id(Long patientId);
+
+    @EntityGraph(attributePaths = "patient")
+    List<Consent> findByProvider_IdAndStatus(
+            Long providerId,
+            ConsentStatus status
+    );
 }

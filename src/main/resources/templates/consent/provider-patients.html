@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Patients with Active Consent</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+
+    <style>
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .patient-table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: fixed;
+            background: white;
+        }
+
+        .patient-table th,
+        .patient-table td {
+            padding: 14px;
+            text-align: left;
+            overflow-wrap: anywhere;
+        }
+
+        .patient-table th {
+            background: #e9eef5;
+        }
+
+        .patient-table tbody tr + tr {
+            border-top: 1px solid #d9dee5;
+        }
+
+        .empty-state {
+            padding: 20px;
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<nav aria-label="Dashboard navigation">
+    <a href="/provider/dashboard"
+       data-th-href="@{/provider/dashboard}">
+        Back to dashboard
+    </a>
+</nav>
+
+<main>
+    <h1>Patients with Active Consent</h1>
+
+    <p>
+        Provider:
+        <span data-th-text="${currentUser.fullName}">Provider name</span>
+    </p>
+
+    <p>
+        These patients currently have active consent for your account.
+    </p>
+
+    <p>
+        Patients:
+        <strong data-th-text="${#lists.size(patients)}">0</strong>
+    </p>
+
+    <p class="empty-state"
+       data-th-if="${#lists.isEmpty(patients)}">
+        No patients currently have active consent for your account.
+    </p>
+
+    <div class="table-container"
+         data-th-unless="${#lists.isEmpty(patients)}">
+        <table class="patient-table"
+               aria-label="Patients with active consent">
+            <thead>
+                <tr>
+                    <th scope="col">Patient name</th>
+                    <th scope="col">Email</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr data-th-each="patient : ${patients}">
+                    <td data-th-text="${patient.fullName}">
+                        Patient name
+                    </td>
+                    <td data-th-text="${patient.email}">
+                        Patient email
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

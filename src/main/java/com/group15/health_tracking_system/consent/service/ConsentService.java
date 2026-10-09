@@ -77,6 +77,26 @@ public class ConsentService {
         return consentRepository.findByPatient_Id(patientId);
     }
 
+    @Transactional
+    public List<User> getAuthorizedPatients(Long providerId) {
+        User provider = getUser(providerId);
+
+        if (provider.getRole() != Role.PROVIDER) {
+            throw new IllegalArgumentException(
+                    "User must have the PROVIDER role"
+            );
+        }
+
+        return consentRepository
+                .findByProvider_IdAndStatus(
+                        providerId,
+                        ConsentStatus.ACTIVE
+                )
+                .stream()
+                .map(Consent::getPatient)
+                .toList();
+    }
+
     private User getUser(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException(
