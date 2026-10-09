@@ -16,7 +16,13 @@
 
 <p>
     Role:
-    <span th:text="${currentUser.role.displayName}">Healthcare Provider</span>
+    <span th:text="${currentUser.role.displayName}">
+        Healthcare Provider
+    </span>
+</p>
+
+<p>
+    <a th:href="@{/profile}">My Profile</a>
 </p>
 
 <form th:action="@{/logout}" method="post">
