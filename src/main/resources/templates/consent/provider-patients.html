@@ -19,6 +19,7 @@
 
         .patient-table {
             width: 100%;
+            min-width: 600px;
             border-collapse: collapse;
             table-layout: fixed;
             background: white;
@@ -39,6 +40,10 @@
             border-top: 1px solid #d9dee5;
         }
 
+        .record-link {
+            font-weight: bold;
+        }
+
         .empty-state {
             padding: 20px;
             background: white;
@@ -47,66 +52,77 @@
         }
     </style>
 </head>
+
 <body>
+    <nav aria-label="Dashboard navigation">
+        <a href="/provider/dashboard"
+           data-th-href="@{/provider/dashboard}">
+            Back to dashboard
+        </a>
+    </nav>
 
-<nav aria-label="Dashboard navigation">
-    <a href="/provider/dashboard"
-       data-th-href="@{/provider/dashboard}">
-        Back to dashboard
-    </a>
-</nav>
+    <main>
+        <h1>Patients with Active Consent</h1>
 
-<main>
-    <h1>Patients with Active Consent</h1>
+        <p>
+            Provider:
+            <span data-th-text="${currentUser.fullName}">
+                Provider name
+            </span>
+        </p>
 
-    <p>
-        Provider:
-        <span data-th-text="${currentUser.fullName}">Provider name</span>
-    </p>
+        <p>
+            These patients currently have active consent for your account.
+        </p>
 
-    <p>
-        These patients currently have active consent for your account.
-    </p>
+        <p>
+            Patients:
+            <strong data-th-text="${#lists.size(patients)}">0</strong>
+        </p>
 
-    <p>
-        Patients:
-        <strong data-th-text="${#lists.size(patients)}">0</strong>
-    </p>
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(patients)}">
+            No patients currently have active consent for your account.
+        </p>
 
-    <p class="empty-state"
-       data-th-if="${#lists.isEmpty(patients)}">
-        No patients currently have active consent for your account.
-    </p>
+        <div class="table-container"
+             data-th-unless="${#lists.isEmpty(patients)}">
+            <table class="patient-table"
+                   aria-label="Patients with active consent">
+                <thead>
+                    <tr>
+                        <th scope="col">Patient name</th>
+                        <th scope="col">Email</th>
+                        <th scope="col">Health records</th>
+                    </tr>
+                </thead>
 
-    <div class="table-container"
-         data-th-unless="${#lists.isEmpty(patients)}">
-        <table class="patient-table"
-               aria-label="Patients with active consent">
-            <thead>
-                <tr>
-                    <th scope="col">Patient name</th>
-                    <th scope="col">Email</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr data-th-each="patient : ${patients}">
-                    <td data-th-text="${patient.fullName}">
-                        Patient name
-                    </td>
-                    <td data-th-text="${patient.email}">
-                        Patient email
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
-</main>
+                <tbody>
+                    <tr data-th-each="patient : ${patients}">
+                        <td data-th-text="${patient.fullName}">
+                            Patient name
+                        </td>
 
-<form action="/logout"
-      data-th-action="@{/logout}"
-      method="post">
-    <button type="submit">Logout</button>
-</form>
+                        <td data-th-text="${patient.email}">
+                            Patient email
+                        </td>
 
+                        <td>
+                            <a class="record-link"
+                               data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                                View health records
+                            </a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <form action="/logout"
+          data-th-action="@{/logout}"
+          method="post">
+        <button type="submit">Logout</button>
+    </form>
 </body>
 </html>
