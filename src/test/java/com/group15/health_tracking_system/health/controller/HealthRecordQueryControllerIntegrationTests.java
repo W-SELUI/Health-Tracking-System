@@ -10,9 +10,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import com.group15.health_tracking_system.health.dto.HealthRecordListItem;
+import com.group15.health_tracking_system.health.dto.HealthRecordListItem.RecordType;
+import com.group15.health_tracking_system.health.entity.BloodPressureRecord;
 import com.group15.health_tracking_system.health.entity.HealthMetricType;
 import com.group15.health_tracking_system.health.entity.HealthRecord;
 import com.group15.health_tracking_system.health.entity.HealthRecordSource;
+import com.group15.health_tracking_system.health.repository.BloodPressureRecordRepository;
 import com.group15.health_tracking_system.health.repository.HealthRecordRepository;
 import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
@@ -43,6 +47,9 @@ class HealthRecordQueryControllerIntegrationTests {
     @Autowired
     private HealthRecordRepository healthRecordRepository;
 
+    @Autowired
+    private BloodPressureRecordRepository bloodPressureRecordRepository;
+
     private MockMvc mockMvc;
 
     private User patientOne;
@@ -52,6 +59,7 @@ class HealthRecordQueryControllerIntegrationTests {
     @BeforeEach
     void setUp() {
 
+        bloodPressureRecordRepository.deleteAll();
         healthRecordRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -83,7 +91,8 @@ class HealthRecordQueryControllerIntegrationTests {
     }
 
     @Test
-    void unauthenticatedUserCannotViewHealthRecords() throws Exception {
+    void unauthenticatedUserCannotViewHealthRecords()
+            throws Exception {
 
         mockMvc.perform(
                         get("/patient/health-records")
@@ -93,7 +102,8 @@ class HealthRecordQueryControllerIntegrationTests {
     }
 
     @Test
-    void providerCannotUsePatientHealthRecordHistory() throws Exception {
+    void providerCannotUsePatientHealthRecordHistory()
+            throws Exception {
 
         mockMvc.perform(
                         get("/patient/health-records")
@@ -104,27 +114,38 @@ class HealthRecordQueryControllerIntegrationTests {
     }
 
     @Test
-    void patientHistoryShowsOnlyOwnRecords() throws Exception {
+    void patientHistoryShowsOnlyOwnRecords()
+            throws Exception {
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.HEART_RATE,
                 "72",
-                LocalDateTime.of(2026, 10, 9, 9, 0)
+                LocalDateTime.of(
+                        2026, 10, 9, 9, 0
+                )
         );
 
-        saveRecord(
+        saveBloodPressureRecord(
                 patientOne,
-                HealthMetricType.WEIGHT,
-                "75",
-                LocalDateTime.of(2026, 10, 10, 9, 0)
+                "118",
+                "76",
+                LocalDateTime.of(
+                        2026, 10, 10, 9, 0
+                )
         );
 
-        saveRecord(
+        /*
+         * This belongs to another patient and must never
+         * appear in patient one's history.
+         */
+        saveScalarRecord(
                 patientTwo,
                 HealthMetricType.HEART_RATE,
                 "90",
-                LocalDateTime.of(2026, 10, 10, 10, 0)
+                LocalDateTime.of(
+                        2026, 10, 10, 10, 0
+                )
         );
 
         MvcResult result = mockMvc.perform(
@@ -135,47 +156,139 @@ class HealthRecordQueryControllerIntegrationTests {
                 .andExpect(status().isOk())
                 .andExpect(view().name("health-records/list"))
                 .andExpect(model().attributeExists("records"))
-                .andExpect(model().attributeExists("metricTypes"))
+                .andExpect(model().attributeExists("filterOptions"))
                 .andReturn();
 
-        @SuppressWarnings("unchecked")
-        List<HealthRecord> records =
-                (List<HealthRecord>) result
-                        .getModelAndView()
-                        .getModel()
-                        .get("records");
+        List<HealthRecordListItem> records =
+                getRecords(result);
 
         assertEquals(2, records.size());
 
         assertTrue(
-                records.stream().allMatch(
-                        record -> record.getPatient()
-                                .getId()
-                                .equals(patientOne.getId())
+                records.stream().anyMatch(
+                        record ->
+                                record.getRecordType()
+                                        == RecordType.SCALAR
+                                && record.getMetricName()
+                                        .equals("Heart Rate")
+                                && record.getDisplayValue()
+                                        .equals("72 bpm")
+                )
+        );
+
+        assertTrue(
+                records.stream().anyMatch(
+                        record ->
+                                record.getRecordType()
+                                        == RecordType.BLOOD_PRESSURE
+                                && record.getDisplayValue()
+                                        .equals("118 / 76 mmHg")
+                )
+        );
+
+        assertTrue(
+                records.stream().noneMatch(
+                        record ->
+                                record.getDisplayValue()
+                                        .equals("90 bpm")
                 )
         );
     }
 
     @Test
-    void patientHistoryCanBeFilteredByMetric() throws Exception {
+    void patientHistoryCanBeFilteredByScalarMetric()
+            throws Exception {
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.HEART_RATE,
                 "72",
-                LocalDateTime.of(2026, 10, 9, 9, 0)
+                LocalDateTime.of(
+                        2026, 10, 9, 9, 0
+                )
         );
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.WEIGHT,
                 "75",
-                LocalDateTime.of(2026, 10, 9, 10, 0)
+                LocalDateTime.of(
+                        2026, 10, 9, 10, 0
+                )
+        );
+
+        saveBloodPressureRecord(
+                patientOne,
+                "118",
+                "76",
+                LocalDateTime.of(
+                        2026, 10, 9, 11, 0
+                )
         );
 
         MvcResult result = mockMvc.perform(
                         get("/patient/health-records")
-                                .param("metricType", "WEIGHT")
+                                .param(
+                                        "metricType",
+                                        "WEIGHT"
+                                )
+                                .with(user(patientOne.getEmail())
+                                        .roles(Role.PATIENT.name()))
+                )
+                .andExpect(status().isOk())
+                .andExpect(view().name("health-records/list"))
+                .andExpect(model().attributeExists("filterOptions"))
+                .andReturn();
+
+        List<HealthRecordListItem> records =
+                getRecords(result);
+
+        assertEquals(1, records.size());
+
+        assertEquals(
+                RecordType.SCALAR,
+                records.get(0).getRecordType()
+        );
+
+        assertEquals(
+                "Weight",
+                records.get(0).getMetricName()
+        );
+
+        assertEquals(
+                "75 kg",
+                records.get(0).getDisplayValue()
+        );
+    }
+
+    @Test
+    void patientHistoryCanBeFilteredByBloodPressure()
+            throws Exception {
+
+        saveScalarRecord(
+                patientOne,
+                HealthMetricType.HEART_RATE,
+                "72",
+                LocalDateTime.of(
+                        2026, 10, 9, 9, 0
+                )
+        );
+
+        saveBloodPressureRecord(
+                patientOne,
+                "118",
+                "76",
+                LocalDateTime.of(
+                        2026, 10, 9, 10, 0
+                )
+        );
+
+        MvcResult result = mockMvc.perform(
+                        get("/patient/health-records")
+                                .param(
+                                        "metricType",
+                                        "BLOOD_PRESSURE"
+                                )
                                 .with(user(patientOne.getEmail())
                                         .roles(Role.PATIENT.name()))
                 )
@@ -183,49 +296,77 @@ class HealthRecordQueryControllerIntegrationTests {
                 .andExpect(view().name("health-records/list"))
                 .andReturn();
 
-        @SuppressWarnings("unchecked")
-        List<HealthRecord> records =
-                (List<HealthRecord>) result
-                        .getModelAndView()
-                        .getModel()
-                        .get("records");
+        List<HealthRecordListItem> records =
+                getRecords(result);
 
         assertEquals(1, records.size());
 
         assertEquals(
-                HealthMetricType.WEIGHT,
-                records.get(0).getMetricType()
+                RecordType.BLOOD_PRESSURE,
+                records.get(0).getRecordType()
+        );
+
+        assertEquals(
+                "Blood Pressure",
+                records.get(0).getMetricName()
+        );
+
+        assertEquals(
+                "118 / 76 mmHg",
+                records.get(0).getDisplayValue()
         );
     }
 
     @Test
-    void patientHistoryCanBeFilteredByDateRange() throws Exception {
+    void patientHistoryCanBeFilteredByDateRange()
+            throws Exception {
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.HEART_RATE,
                 "68",
-                LocalDateTime.of(2026, 10, 1, 9, 0)
+                LocalDateTime.of(
+                        2026, 10, 1, 9, 0
+                )
         );
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
-                HealthMetricType.HEART_RATE,
-                "74",
-                LocalDateTime.of(2026, 10, 5, 9, 0)
+                HealthMetricType.WEIGHT,
+                "75",
+                LocalDateTime.of(
+                        2026, 10, 5, 9, 0
+                )
         );
 
-        saveRecord(
+        saveBloodPressureRecord(
                 patientOne,
-                HealthMetricType.HEART_RATE,
-                "80",
-                LocalDateTime.of(2026, 10, 10, 9, 0)
+                "118",
+                "76",
+                LocalDateTime.of(
+                        2026, 10, 5, 10, 0
+                )
+        );
+
+        saveBloodPressureRecord(
+                patientOne,
+                "125",
+                "82",
+                LocalDateTime.of(
+                        2026, 10, 10, 9, 0
+                )
         );
 
         MvcResult result = mockMvc.perform(
                         get("/patient/health-records")
-                                .param("startDate", "2026-10-04")
-                                .param("endDate", "2026-10-06")
+                                .param(
+                                        "startDate",
+                                        "2026-10-04"
+                                )
+                                .param(
+                                        "endDate",
+                                        "2026-10-06"
+                                )
                                 .with(user(patientOne.getEmail())
                                         .roles(Role.PATIENT.name()))
                 )
@@ -233,38 +374,66 @@ class HealthRecordQueryControllerIntegrationTests {
                 .andExpect(view().name("health-records/list"))
                 .andReturn();
 
-        @SuppressWarnings("unchecked")
-        List<HealthRecord> records =
-                (List<HealthRecord>) result
-                        .getModelAndView()
-                        .getModel()
-                        .get("records");
+        List<HealthRecordListItem> records =
+                getRecords(result);
 
-        assertEquals(1, records.size());
+        assertEquals(2, records.size());
 
-        assertEquals(
-                0,
-                records.get(0)
-                        .getMetricValue()
-                        .compareTo(new BigDecimal("74"))
+        assertTrue(
+                records.stream().anyMatch(
+                        record ->
+                                record.getMetricName()
+                                        .equals("Weight")
+                )
+        );
+
+        assertTrue(
+                records.stream().anyMatch(
+                        record ->
+                                record.getMetricName()
+                                        .equals("Blood Pressure")
+                )
         );
     }
 
     @Test
-    void metricAndDateFiltersCanBeCombined() throws Exception {
+    void metricAndDateFiltersCanBeCombined()
+            throws Exception {
 
-        saveRecord(
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.HEART_RATE,
                 "74",
-                LocalDateTime.of(2026, 10, 5, 9, 0)
+                LocalDateTime.of(
+                        2026, 10, 5, 9, 0
+                )
         );
 
-        saveRecord(
+        saveScalarRecord(
+                patientOne,
+                HealthMetricType.HEART_RATE,
+                "80",
+                LocalDateTime.of(
+                        2026, 10, 10, 9, 0
+                )
+        );
+
+        saveScalarRecord(
                 patientOne,
                 HealthMetricType.WEIGHT,
                 "75",
-                LocalDateTime.of(2026, 10, 5, 10, 0)
+                LocalDateTime.of(
+                        2026, 10, 5, 10, 0
+                )
+        );
+
+        saveBloodPressureRecord(
+                patientOne,
+                "118",
+                "76",
+                LocalDateTime.of(
+                        2026, 10, 5, 11, 0
+                )
         );
 
         MvcResult result = mockMvc.perform(
@@ -288,23 +457,25 @@ class HealthRecordQueryControllerIntegrationTests {
                 .andExpect(view().name("health-records/list"))
                 .andReturn();
 
-        @SuppressWarnings("unchecked")
-        List<HealthRecord> records =
-                (List<HealthRecord>) result
-                        .getModelAndView()
-                        .getModel()
-                        .get("records");
+        List<HealthRecordListItem> records =
+                getRecords(result);
 
         assertEquals(1, records.size());
 
         assertEquals(
-                HealthMetricType.HEART_RATE,
-                records.get(0).getMetricType()
+                "Heart Rate",
+                records.get(0).getMetricName()
+        );
+
+        assertEquals(
+                "74 bpm",
+                records.get(0).getDisplayValue()
         );
     }
 
     @Test
-    void incompleteDateRangeShowsValidationMessage() throws Exception {
+    void incompleteDateRangeShowsValidationMessage()
+            throws Exception {
 
         mockMvc.perform(
                         get("/patient/health-records")
@@ -322,18 +493,29 @@ class HealthRecordQueryControllerIntegrationTests {
                 )
                 .andExpect(
                         model().attributeExists("records")
+                )
+                .andExpect(
+                        model().attributeExists("filterOptions")
                 );
     }
 
     @Test
-    void patientCanViewOwnHealthRecord() throws Exception {
+    void patientCanViewOwnScalarHealthRecord()
+            throws Exception {
 
-        HealthRecord record = saveRecord(
-                patientOne,
-                HealthMetricType.OXYGEN_SATURATION,
-                "98",
-                LocalDateTime.of(2026, 10, 10, 10, 0)
-        );
+        HealthRecord record =
+                saveScalarRecord(
+                        patientOne,
+                        HealthMetricType.OXYGEN_SATURATION,
+                        "98",
+                        LocalDateTime.of(
+                                2026,
+                                10,
+                                10,
+                                10,
+                                0
+                        )
+                );
 
         mockMvc.perform(
                         get(
@@ -344,8 +526,24 @@ class HealthRecordQueryControllerIntegrationTests {
                                         .roles(Role.PATIENT.name()))
                 )
                 .andExpect(status().isOk())
-                .andExpect(view().name("health-records/view"))
-                .andExpect(model().attributeExists("record"));
+                .andExpect(
+                        view().name(
+                                "health-records/view"
+                        )
+                )
+                .andExpect(
+                        model().attributeExists("record")
+                );
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<HealthRecordListItem> getRecords(
+            MvcResult result) {
+
+        return (List<HealthRecordListItem>)
+                result.getModelAndView()
+                        .getModel()
+                        .get("records");
     }
 
     private User saveUser(
@@ -365,7 +563,7 @@ class HealthRecordQueryControllerIntegrationTests {
         );
     }
 
-    private HealthRecord saveRecord(
+    private HealthRecord saveScalarRecord(
             User patient,
             HealthMetricType metricType,
             String value,
@@ -377,6 +575,25 @@ class HealthRecordQueryControllerIntegrationTests {
                         patient,
                         metricType,
                         new BigDecimal(value),
+                        observedAt,
+                        null,
+                        HealthRecordSource.PATIENT_REPORTED
+                )
+        );
+    }
+
+    private BloodPressureRecord saveBloodPressureRecord(
+            User patient,
+            String systolic,
+            String diastolic,
+            LocalDateTime observedAt) {
+
+        return bloodPressureRecordRepository.save(
+                new BloodPressureRecord(
+                        patient,
+                        patient,
+                        new BigDecimal(systolic),
+                        new BigDecimal(diastolic),
                         observedAt,
                         null,
                         HealthRecordSource.PATIENT_REPORTED

@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Patient Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
 </head>
 <body>
 
@@ -21,6 +23,10 @@
 
 <p>
     <a th:href="@{/profile}">My Profile</a>
+</p>
+
+<p>
+    <a th:href="@{/patient/health-records}">Health Records</a>
 </p>
 
 <form th:action="@{/logout}" method="post">

@@ -72,6 +72,25 @@
 
 </div>
 
+<div th:if="${record.source.name() == 'PATIENT_REPORTED'}">
+
+    <p>
+        <a th:href="@{/patient/health-records/{id}/edit(id=${record.id})}">
+            Edit Health Record
+        </a>
+    </p>
+
+    <form th:action="@{/patient/health-records/{id}/delete(id=${record.id})}"
+          method="post">
+
+        <button type="submit">
+            Delete Health Record
+        </button>
+
+    </form>
+
+</div>
+
 <p>
     <a th:href="@{/patient/health-records}">
         Back to Health Records

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Health Record</title>
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>Edit Health Record</h1>
+
+<form th:action="@{/patient/health-records/{id}/edit(id=${recordId})}"
+      th:object="${healthRecordRequest}"
+      method="post">
+
+    <div>
+        <label for="metricType">Health Metric</label>
+
+        <select id="metricType"
+                th:field="*{metricType}"
+                required>
+
+            <option value="">Select a metric</option>
+
+            <option th:each="metric : ${metricTypes}"
+                    th:value="${metric}"
+                    th:text="${metric.displayName + ' (' + metric.unit + ')'}">
+                Metric
+            </option>
+
+        </select>
+
+        <p th:if="${#fields.hasErrors('metricType')}"
+           th:errors="*{metricType}">
+            Metric error
+        </p>
+    </div>
+
+    <div>
+        <label for="metricValue">Measurement Value</label>
+
+        <input type="number"
+               id="metricValue"
+               th:field="*{metricValue}"
+               step="0.001"
+               required>
+
+        <p th:if="${#fields.hasErrors('metricValue')}"
+           th:errors="*{metricValue}">
+            Measurement error
+        </p>
+    </div>
+
+    <div>
+        <label for="observedAt">
+            Observation Date and Time
+        </label>
+
+        <input type="datetime-local"
+               id="observedAt"
+               th:field="*{observedAt}"
+               step="60"
+               required>
+
+        <p th:if="${#fields.hasErrors('observedAt')}"
+           th:errors="*{observedAt}">
+            Observation time error
+        </p>
+    </div>
+
+    <div>
+        <label for="notes">Notes</label>
+
+        <textarea id="notes"
+                  th:field="*{notes}"
+                  rows="4"
+                  maxlength="1000"></textarea>
+
+        <p th:if="${#fields.hasErrors('notes')}"
+           th:errors="*{notes}">
+            Notes error
+        </p>
+    </div>
+
+    <button type="submit">
+        Save Changes
+    </button>
+
+</form>
+
+<p>
+    <a th:href="@{/patient/health-records}">
+        Cancel
+    </a>
+</p>
+
+</body>
+</html>
