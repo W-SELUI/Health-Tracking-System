@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Record Details</title>
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>Health Record Details</h1>
+
+<div>
+
+    <p>
+        <strong>Health Metric:</strong>
+
+        <span th:text="${record.metricType.displayName}">
+            Heart Rate
+        </span>
+    </p>
+
+    <p>
+        <strong>Value:</strong>
+
+        <span th:text="${record.metricValue}">
+            72
+        </span>
+
+        <span th:text="${record.unit}">
+            bpm
+        </span>
+    </p>
+
+    <p>
+        <strong>Observed At:</strong>
+
+        <span th:text="${record.observedAt}">
+            2026-10-10T09:30
+        </span>
+    </p>
+
+    <p>
+        <strong>Source:</strong>
+
+        <span th:text="${record.source.displayName}">
+            Patient Reported
+        </span>
+    </p>
+
+    <p>
+        <strong>Recorded By:</strong>
+
+        <span th:text="${record.recordedBy.fullName}">
+            User
+        </span>
+    </p>
+
+    <p>
+        <strong>Notes:</strong>
+
+        <span th:if="${record.notes != null}"
+              th:text="${record.notes}">
+            Notes
+        </span>
+
+        <span th:if="${record.notes == null}">
+            No notes provided.
+        </span>
+    </p>
+
+</div>
+
+<p>
+    <a th:href="@{/patient/health-records}">
+        Back to Health Records
+    </a>
+</p>
+
+<p>
+    <a th:href="@{/dashboard}">
+        Back to Dashboard
+    </a>
+</p>
+
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Records</title>
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>Health Records</h1>
+
+<h2>Filter Records</h2>
+
+<form th:action="@{/patient/health-records}" method="get">
+
+    <div>
+        <label for="metricType">Health Metric</label>
+
+        <select id="metricType" name="metricType">
+
+            <option value="">All Metrics</option>
+
+            <option th:each="metric : ${metricTypes}"
+                    th:value="${metric}"
+                    th:text="${metric.displayName}"
+                    th:selected="${metric == selectedMetricType}">
+                Metric
+            </option>
+
+        </select>
+    </div>
+
+    <div>
+        <label for="startDate">Start Date</label>
+
+        <input type="date"
+               id="startDate"
+               name="startDate"
+               th:value="${selectedStartDate}">
+    </div>
+
+    <div>
+        <label for="endDate">End Date</label>
+
+        <input type="date"
+               id="endDate"
+               name="endDate"
+               th:value="${selectedEndDate}">
+    </div>
+
+    <button type="submit">
+        Apply Filters
+    </button>
+
+    <a th:href="@{/patient/health-records}">
+        Clear Filters
+    </a>
+
+</form>
+
+<p th:if="${filterError}"
+   th:text="${filterError}">
+    Filter error
+</p>
+
+<hr>
+
+<div th:if="${#lists.isEmpty(records)}">
+
+    <p>No health records were found.</p>
+
+</div>
+
+<table th:unless="${#lists.isEmpty(records)}">
+
+    <thead>
+    <tr>
+        <th>Date / Time</th>
+        <th>Metric</th>
+        <th>Value</th>
+        <th>Source</th>
+        <th>Details</th>
+    </tr>
+    </thead>
+
+    <tbody>
+
+    <tr th:each="record : ${records}">
+
+        <td th:text="${record.observedAt}">
+            2026-10-10T09:30
+        </td>
+
+        <td th:text="${record.metricType.displayName}">
+            Heart Rate
+        </td>
+
+        <td>
+            <span th:text="${record.metricValue}">
+                72
+            </span>
+
+            <span th:text="${record.unit}">
+                bpm
+            </span>
+        </td>
+
+        <td th:text="${record.source.displayName}">
+            Patient Reported
+        </td>
+
+        <td>
+            <a th:href="@{/patient/health-records/{id}(id=${record.id})}">
+                View
+            </a>
+        </td>
+
+    </tr>
+
+    </tbody>
+
+</table>
+
+<p>
+    <a th:href="@{/dashboard}">
+        Back to Dashboard
+    </a>
+</p>
+
+</body>
+</html>
