@@ -2,12 +2,12 @@ package com.group15.health_tracking_system.analytics.dto;
 
 /**
  * Represents the basic descriptive direction of change in a health metric
- * over a selected reporting period.
+ * during a selected reporting period.
  *
  * <p>
- * This enum does not provide medical interpretation. It only describes
- * whether the latest recorded value is greater than, less than, or equal
- * to the earliest recorded value in the selected period.
+ * The direction compares the earliest recorded value with the latest
+ * recorded value. It does not provide medical interpretation or indicate
+ * whether the change is beneficial or harmful.
  * </p>
  */
 public enum TrendDirection {
