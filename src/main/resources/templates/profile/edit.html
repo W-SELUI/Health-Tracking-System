@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Profile</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>Edit Profile</h1>
+
+<form th:action="@{/profile/edit}"
+      th:object="${profileUpdateRequest}"
+      method="post">
+
+    <div th:if="${#fields.hasGlobalErrors()}">
+        <p th:each="error : ${#fields.globalErrors()}"
+           th:text="${error}">
+            Profile update failed.
+        </p>
+    </div>
+
+    <div>
+        <label for="firstName">First Name</label>
+
+        <input
+                type="text"
+                id="firstName"
+                th:field="*{firstName}"
+                required>
+
+        <p th:if="${#fields.hasErrors('firstName')}"
+           th:errors="*{firstName}">
+            First name error
+        </p>
+    </div>
+
+    <div>
+        <label for="lastName">Last Name</label>
+
+        <input
+                type="text"
+                id="lastName"
+                th:field="*{lastName}"
+                required>
+
+        <p th:if="${#fields.hasErrors('lastName')}"
+           th:errors="*{lastName}">
+            Last name error
+        </p>
+    </div>
+
+    <div>
+        <label>Email</label>
+        <input
+                type="email"
+                th:value="${currentUser.email}"
+                readonly>
+    </div>
+
+    <div>
+        <label>Role</label>
+        <input
+                type="text"
+                th:value="${currentUser.role.displayName}"
+                readonly>
+    </div>
+
+    <button type="submit">Save Changes</button>
+
+</form>
+
+<p>
+    <a th:href="@{/profile}">Cancel</a>
+</p>
+
+<p>
+    <a th:href="@{/dashboard}">Back to Dashboard</a>
+</p>
+
+</body>
+</html>
