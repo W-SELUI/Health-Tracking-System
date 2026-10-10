@@ -1,7 +1,9 @@
 package com.group15.health_tracking_system.health.controller;
 
-import com.group15.health_tracking_system.health.entity.HealthMetricType;
+import com.group15.health_tracking_system.health.dto.HealthRecordFilterOption;
+import com.group15.health_tracking_system.health.dto.HealthRecordListItem;
 import com.group15.health_tracking_system.health.entity.HealthRecord;
+import com.group15.health_tracking_system.health.service.HealthRecordHistoryService;
 import com.group15.health_tracking_system.health.service.HealthRecordQueryService;
 import com.group15.health_tracking_system.user.entity.User;
 import com.group15.health_tracking_system.user.service.CurrentUserService;
@@ -24,29 +26,33 @@ import org.springframework.web.bind.annotation.RequestParam;
 @RequestMapping("/patient/health-records")
 public class HealthRecordQueryController {
 
-    private final HealthRecordQueryService queryService;
+    private final HealthRecordHistoryService historyService;
+    private final HealthRecordQueryService healthRecordQueryService;
     private final CurrentUserService currentUserService;
 
     public HealthRecordQueryController(
-            HealthRecordQueryService queryService,
+            HealthRecordHistoryService historyService,
+            HealthRecordQueryService healthRecordQueryService,
             CurrentUserService currentUserService) {
 
-        this.queryService = queryService;
+        this.historyService = historyService;
+        this.healthRecordQueryService = healthRecordQueryService;
         this.currentUserService = currentUserService;
     }
 
     /**
-     * Shows the authenticated patient's health-record history.
+     * Displays the unified patient health-record history.
      *
-     * Optional filters:
-     * - metric type
-     * - start date
-     * - end date
+     * The history can contain both scalar HealthRecord entries and
+     * BloodPressureRecord entries.
      */
     @GetMapping
     public String listRecords(
-            @RequestParam(required = false)
-            HealthMetricType metricType,
+            @RequestParam(
+                    name = "metricType",
+                    required = false
+            )
+            HealthRecordFilterOption metricType,
 
             @RequestParam(required = false)
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
@@ -58,17 +64,34 @@ public class HealthRecordQueryController {
 
             Model model) {
 
-        User currentUser = currentUserService.getCurrentUser();
+        User currentUser =
+                currentUserService.getCurrentUser();
 
-        List<HealthRecord> records;
+        List<HealthRecordListItem> records;
 
         try {
-            records = selectRecords(
+
+            LocalDateTime start = null;
+            LocalDateTime end = null;
+
+            if ((startDate == null) != (endDate == null)) {
+                throw new IllegalArgumentException(
+                        "Both start date and end date are required"
+                );
+            }
+
+            if (startDate != null) {
+                start = startDate.atStartOfDay();
+                end = endDate.atTime(LocalTime.MAX);
+            }
+
+            records = historyService.getPatientHistory(
                     currentUser,
                     metricType,
-                    startDate,
-                    endDate
+                    start,
+                    end
             );
+
         } catch (IllegalArgumentException exception) {
 
             model.addAttribute(
@@ -77,16 +100,25 @@ public class HealthRecordQueryController {
             );
 
             /*
-             * If the submitted filter is invalid, still show the patient's
-             * normal history instead of failing the whole page.
+             * Invalid filters should not prevent the patient from
+             * seeing their normal health-record history.
              */
-            records = queryService.getPatientHistory(currentUser);
+            records = historyService.getPatientHistory(
+                    currentUser,
+                    null,
+                    null,
+                    null
+            );
         }
 
-        model.addAttribute("records", records);
         model.addAttribute(
-                "metricTypes",
-                HealthMetricType.values()
+                "records",
+                records
+        );
+
+        model.addAttribute(
+                "filterOptions",
+                HealthRecordFilterOption.values()
         );
 
         model.addAttribute(
@@ -108,17 +140,21 @@ public class HealthRecordQueryController {
     }
 
     /**
-     * Shows one record belonging to the authenticated patient.
+     * Displays one scalar health record belonging to the patient.
+     *
+     * Blood-pressure detail viewing will use its own route because
+     * BloodPressureRecord has an independent database identity.
      */
     @GetMapping("/{recordId}")
-    public String viewRecord(
+    public String viewScalarRecord(
             @PathVariable Long recordId,
             Model model) {
 
-        User currentUser = currentUserService.getCurrentUser();
+        User currentUser =
+                currentUserService.getCurrentUser();
 
         HealthRecord record =
-                queryService.getPatientRecord(
+                healthRecordQueryService.getPatientRecord(
                         recordId,
                         currentUser
                 );
@@ -129,71 +165,5 @@ public class HealthRecordQueryController {
         );
 
         return "health-records/view";
-    }
-
-    private List<HealthRecord> selectRecords(
-            User currentUser,
-            HealthMetricType metricType,
-            LocalDate startDate,
-            LocalDate endDate) {
-
-        boolean hasMetric = metricType != null;
-        boolean hasStart = startDate != null;
-        boolean hasEnd = endDate != null;
-
-        /*
-         * Date filtering requires both dates.
-         */
-        if (hasStart != hasEnd) {
-            throw new IllegalArgumentException(
-                    "Both start date and end date are required"
-            );
-        }
-
-        /*
-         * No date range.
-         */
-        if (!hasStart) {
-
-            if (hasMetric) {
-                return queryService
-                        .getPatientHistoryByMetric(
-                                currentUser,
-                                metricType
-                        );
-            }
-
-            return queryService
-                    .getPatientHistory(currentUser);
-        }
-
-        LocalDateTime start =
-                startDate.atStartOfDay();
-
-        LocalDateTime end =
-                endDate.atTime(LocalTime.MAX);
-
-        /*
-         * Metric + period.
-         */
-        if (hasMetric) {
-            return queryService
-                    .getPatientHistoryByMetricAndPeriod(
-                            currentUser,
-                            metricType,
-                            start,
-                            end
-                    );
-        }
-
-        /*
-         * Period only.
-         */
-        return queryService
-                .getPatientHistoryByPeriod(
-                        currentUser,
-                        start,
-                        end
-                );
     }
 }

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Blood Pressure Details</title>
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>Blood Pressure Details</h1>
+
+<div>
+
+    <p>
+        <strong>Blood Pressure:</strong>
+
+        <span th:text="${record.systolic}">
+            120
+        </span>
+
+        /
+
+        <span th:text="${record.diastolic}">
+            80
+        </span>
+
+        mmHg
+    </p>
+
+    <p>
+        <strong>Observed At:</strong>
+
+        <span th:text="${record.observedAt}">
+            2026-10-10T18:30
+        </span>
+    </p>
+
+    <p>
+        <strong>Source:</strong>
+
+        <span th:text="${record.source.displayName}">
+            Patient Reported
+        </span>
+    </p>
+
+    <p>
+        <strong>Recorded By:</strong>
+
+        <span th:text="${record.recordedBy.fullName}">
+            Patient
+        </span>
+    </p>
+
+    <p>
+        <strong>Notes:</strong>
+
+        <span th:if="${record.notes != null}"
+              th:text="${record.notes}">
+            Notes
+        </span>
+
+        <span th:if="${record.notes == null}">
+            No notes provided.
+        </span>
+    </p>
+
+</div>
+
+<div th:if="${record.source.name() == 'PATIENT_REPORTED'}">
+
+    <p>
+        <a th:href="@{/patient/health-records/blood-pressure/{id}/edit(id=${record.id})}">
+            Edit Blood Pressure
+        </a>
+    </p>
+
+    <form th:action="@{/patient/health-records/blood-pressure/{id}/delete(id=${record.id})}"
+          method="post">
+
+        <button type="submit"
+                onclick="return confirm('Are you sure you want to delete this blood-pressure record?');">
+            Delete Blood Pressure
+        </button>
+
+    </form>
+
+</div>
+
+<p>
+    <a th:href="@{/patient/health-records}">
+        Back to Health Records
+    </a>
+</p>
+
+</body>
+</html>
