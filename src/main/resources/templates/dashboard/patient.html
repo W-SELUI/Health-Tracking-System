@@ -4,10 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Patient Dashboard</title>
+
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
 </head>
+
 <body>
 
 <h1>Patient Dashboard</h1>
@@ -29,7 +31,16 @@
     </a>
 </p>
 
-<form action="/logout" data-th-action="@{/logout}" method="post">
+<p>
+    <a href="/messages"
+       data-th-href="@{/messages}">
+        Messages
+    </a>
+</p>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
     <button type="submit">Logout</button>
 </form>
 
