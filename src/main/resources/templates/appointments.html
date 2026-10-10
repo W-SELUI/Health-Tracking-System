@@ -1,293 +1,343 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Appointments</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments | Health Tracking System</title>
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body{
-            font-family:'Segoe UI',sans-serif;
-            background:#eef2f7;
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
         }
 
-        .header{
-            background:#dcecf9;
-            padding:50px 80px;
+        .header {
+            background: #dcecf9;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
         }
 
-        .header h1{
-            color:#0d2d52;
-            font-size:56px;
-            margin-bottom:15px;
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 38px;
+            font-weight: 750;
         }
 
-        .header p{
-            color:#183b63;
-            font-size:22px;
+        .header p {
+            margin: 0;
+            font-size: 17px;
+            color: #31577e;
         }
 
-        .container{
-            width:88%;
-            margin:40px auto;
-            background:white;
-            padding:40px;
-            border-radius:20px;
-            box-shadow:0 4px 12px rgba(0,0,0,0.08);
+        .container {
+            max-width: 1450px;
+            margin: 35px auto;
+            padding: 0 25px;
         }
 
-        .dashboard-link{
-            margin-bottom:25px;
+        /* Top dashboard button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #344F6F;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 650;
+            transition: background 0.2s ease;
         }
 
-        .dashboard-link a{
-            color:#1565a9;
-            font-size:18px;
-            text-decoration:none;
+        .back-link:hover {
+            background: #293F59;
         }
 
-        .dashboard-link a:hover{
-            text-decoration:underline;
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
         }
 
-        .title-section{
-            display:flex;
-            align-items:center;
-            gap:18px;
-            margin-bottom:30px;
+        .card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
         }
 
-        .title-section .icon{
-            font-size:34px;
+        h2 {
+            margin: 0;
+            font-size: 28px;
+            color: #12345a;
         }
 
-        .title-section h2{
-            color:#0d2d52;
-            font-size:40px;
-            font-weight:700;
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 18px;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 650;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease, transform 0.2s ease;
         }
 
-        .top-section{
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            margin-bottom:35px;
+        .button:hover {
+            transform: translateY(-1px);
         }
 
-        .stats-card{
-            background:#f5f9fd;
-            border-radius:12px;
-            padding:25px;
-            width:250px;
+        /* Add Appointment and Edit buttons */
+        .primary {
+            background: #1769aa;
+            color: #ffffff;
         }
 
-        .stats-card h3{
-            color:#0d2d52;
-            margin-bottom:10px;
-            font-size:18px;
+        .primary:hover {
+            background: #12558b;
         }
 
-        .stats-card .number{
-            color:#1565a9;
-            font-size:42px;
-            font-weight:bold;
+        /* Bottom dashboard button */
+        .dark {
+            background: #344F6F;
+            color: #ffffff;
         }
 
-        .add-btn{
-            background:#1565a9;
-            color:white;
-            padding:15px 30px;
-            border-radius:8px;
-            text-decoration:none;
-            font-size:16px;
-            font-weight:600;
+        .dark:hover {
+            background: #293F59;
         }
 
-        .add-btn:hover{
-            background:#0f4d84;
+        /* Delete button */
+        .danger {
+            background: #b83232;
+            color: #ffffff;
         }
 
-        .table-container{
-            overflow:hidden;
-            border-radius:18px;
-            border:1px solid #d9e3ec;
+        .danger:hover {
+            background: #922626;
         }
 
-        table{
-            width:100%;
-            border-collapse:collapse;
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #dce4ee;
+            border-radius: 12px;
         }
 
-        th{
-            background:#dce7f2;
-            color:#0d2d52;
-            padding:18px;
-            text-align:center;
-            font-size:16px;
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
         }
 
-        td{
-            padding:18px;
-            text-align:center;
-            border-bottom:1px solid #d9e3ec;
-            font-size:16px;
+        thead {
+            background: #dce7f3;
         }
 
-        tr:hover{
-            background:#f7fbff;
+        th,
+        td {
+            padding: 16px 13px;
+            border-bottom: 1px solid #dce4ee;
+            text-align: left;
+            white-space: nowrap;
         }
 
-        .edit-btn{
-            background:#1565a9;
-            color:white;
-            padding:10px 18px;
-            border-radius:6px;
-            text-decoration:none;
+        th {
+            color: #12345a;
+            font-weight: 700;
         }
 
-        .edit-btn:hover{
-            background:#0f4d84;
+        tbody tr:last-child td {
+            border-bottom: none;
         }
 
-        .delete-btn{
-            background:#dc3545;
-            color:white;
-            padding:10px 18px;
-            border-radius:6px;
-            text-decoration:none;
+        tbody tr:hover {
+            background: #f6f9fd;
         }
 
-        .delete-btn:hover{
-            background:#b02a37;
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e8f0fe;
+            color: #1769aa;
+            font-weight: 700;
+            font-size: 13px;
         }
 
-        .empty-row{
-            text-align:center;
-            color:#8b8b8b;
-            font-style:italic;
-            padding:30px;
+        .actions {
+            display: flex;
+            gap: 8px;
+            align-items: center;
         }
 
-        .footer-buttons{
-            text-align:center;
-            margin-top:30px;
+        .actions form {
+            margin: 0;
         }
 
-        .back-btn{
-            background:#344e6b;
-            color:white;
-            padding:15px 30px;
-            border-radius:8px;
-            text-decoration:none;
-            font-size:16px;
-            font-weight:600;
+        .empty {
+            padding: 30px;
+            text-align: center;
+            color: #64748b;
+            white-space: normal;
         }
 
-        .back-btn:hover{
-            background:#24384e;
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin: 28px 0;
         }
 
+        .footer .button {
+            padding: 14px 24px;
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 28px 22px;
+            }
+
+            .header h1 {
+                font-size: 29px;
+            }
+
+            .container {
+                margin: 24px auto;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .card-heading h2 {
+                font-size: 24px;
+            }
+
+            th,
+            td {
+                padding: 12px 9px;
+            }
+        }
     </style>
-
 </head>
 
 <body>
 
-<div class="header">
-    <h1>Health Tracking System</h1>
-    <p>Appointment Management</p>
-</div>
+    <header class="header">
+        <h1>Health Tracking System</h1>
+        <p>Appointment Management</p>
+    </header>
 
-<div class="container">
+    <main class="container">
 
-    <div class="dashboard-link">
-        <a href="/">← Patient Dashboard</a>
-    </div>
+        <!-- Back to Medication Dashboard -->
+        <a class="back-link" th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
 
-    <div class="title-section">
-        <div class="icon">📅</div>
-        <h2>Appointments</h2>
-    </div>
+        <section class="card">
 
-    <div class="top-section">
+            <div class="card-heading">
+                <h2>📅 Appointments</h2>
 
-        <div class="stats-card">
-            <h3>Total Appointments</h3>
-            <div class="number"
-                 th:text="${appointments.size()}">0</div>
+                <a class="button primary" th:href="@{/appointments/add}">
+                    + Add Appointment
+                </a>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Doctor Name</th>
+                            <th>Location</th>
+                            <th>Date</th>
+                            <th>Time</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr th:each="appointment : ${appointments}">
+                            <td th:text="${appointment.id}"></td>
+
+                            <td th:text="${appointment.doctorName}"></td>
+
+                            <td th:text="${appointment.location != null
+                                          ? appointment.location : '-'}"></td>
+
+                            <td th:text="${appointment.appointmentDate}"></td>
+
+                            <td th:text="${appointment.appointmentTime}"></td>
+
+                            <td>
+                                <span class="status"
+                                      th:text="${appointment.status}">
+                                </span>
+                            </td>
+
+                            <td>
+                                <div class="actions">
+
+                                    <a class="button primary"
+                                       th:href="@{/appointments/edit/{id}(id=${appointment.id})}">
+                                        Edit
+                                    </a>
+
+                                    <form
+                                        th:action="@{/appointments/delete/{id}(id=${appointment.id})}"
+                                        method="post"
+                                        onsubmit="return confirm('Delete this appointment?');">
+
+                                        <button class="button danger" type="submit">
+                                            Delete
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </td>
+                        </tr>
+
+                        <tr th:if="${#lists.isEmpty(appointments)}">
+                            <td colspan="7" class="empty">
+                                No appointments found. Click Add Appointment to create one.
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </section>
+
+        <!-- Bottom navigation -->
+        <div class="footer">
+            <a class="button dark" th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
         </div>
 
-        <a href="/appointments/add" class="add-btn">
-            + Add Appointment
-        </a>
-
-    </div>
-
-    <div class="table-container">
-
-        <table>
-
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Doctor</th>
-                <th>Location</th>
-                <th>Date & Time</th>
-                <th>Status</th>
-                <th>Edit</th>
-                <th>Delete</th>
-            </tr>
-            </thead>
-
-            <tbody>
-
-            <tr th:if="${appointments.empty}">
-                <td colspan="7" class="empty-row">
-                    No appointments found. Click "Add Appointment" to create your first appointment.
-                </td>
-            </tr>
-
-            <tr th:each="appointment : ${appointments}">
-                <td th:text="${appointment.id}"></td>
-                <td th:text="${appointment.doctorName}"></td>
-                <td th:text="${appointment.location}"></td>
-                <td th:text="${appointment.appointmentDateTime}"></td>
-                <td th:text="${appointment.status}"></td>
-
-                <td>
-                    <a class="edit-btn"
-                       th:href="@{/appointments/edit/{id}(id=${appointment.id})}">
-                        Edit
-                    </a>
-                </td>
-
-                <td>
-                    <a class="delete-btn"
-                       th:href="@{/appointments/delete/{id}(id=${appointment.id})}"
-                       onclick="return confirm('Delete this appointment?');">
-                        Delete
-                    </a>
-                </td>
-            </tr>
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-    <div class="footer-buttons">
-        <a href="/" class="back-btn">
-            Back to Dashboard
-        </a>
-    </div>
-
-</div>
+    </main>
 
 </body>
 </html>

@@ -1,151 +1,245 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Add Medication Schedule</title>
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            font-family:'Segoe UI',sans-serif;
-            background:#eef2f7;
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #0d2d52;
         }
 
-        .header{
-            background:#dcecf9;
-            padding:50px 80px;
+        header {
+            background: #dcecf9;
+            padding: 40px 6%;
+            border-bottom: 1px solid #d3e1ef;
         }
 
-        .header h1{
-            color:#0d2d52;
-            font-size:56px;
-            margin-bottom:15px;
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 42px;
+            color: #0d2d52;
         }
 
-        .header p{
-            color:#183b63;
-            font-size:22px;
+        header p {
+            margin: 0;
+            font-size: 20px;
+            color: #183b63;
         }
 
-        .container{
-            width:700px;
-            margin:40px auto;
-            background:white;
-            padding:40px;
-            border-radius:20px;
+        main {
+            width: min(750px, 92%);
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
-        .dashboard-link{
-            margin-bottom:25px;
+        .dashboard-link {
+            margin-bottom: 25px;
         }
 
-        .dashboard-link a{
-            color:#1565a9;
-            font-size:18px;
+        .dashboard-link a {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            padding: 15px 30px;
+            border-radius: 8px;
         }
 
-        h2{
-            color:#0d2d52;
-            font-size:42px;
-            margin-bottom:25px;
+        .dashboard-link a:hover {
+            background: #293F59;
         }
 
-        label{
-            display:block;
-            margin-top:15px;
-            margin-bottom:8px;
-            font-weight:600;
-            color:#0d2d52;
+        h2 {
+            margin-bottom: 12px;
+            font-size: 32px;
+            color: #0d2d52;
         }
 
-        input[type="time"]{
-            width:100%;
-            padding:14px;
-            border:1px solid #cfd8e3;
-            border-radius:8px;
-            font-size:16px;
+        .description {
+            color: #526477;
+            margin-bottom: 25px;
+            line-height: 1.6;
         }
 
-        input[type="time"]:focus{
-            outline:none;
-            border-color:#1565a9;
+        label {
+            display: block;
+            margin-top: 22px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0d2d52;
         }
 
-        .save-btn{
-            margin-top:25px;
-            background:#1565a9;
-            color:white;
-            border:none;
-            padding:15px 30px;
-            border-radius:8px;
-            font-size:16px;
-            cursor:pointer;
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd5df;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+            color: #2c3e50;
         }
 
-        .save-btn:hover{
-            background:#0f4d84;
+        input:focus,
+        select:focus {
+            outline: 2px solid #1565a9;
+            border-color: #1565a9;
         }
 
-        .back-btn{
-            display:inline-block;
-            margin-top:20px;
-            background:#1565a9;
-            color:white;
-            padding:15px 30px;
-            text-decoration:none;
-            border-radius:8px;
+        button,
+        .cancel {
+            display: inline-block;
+            margin-top: 28px;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
         }
 
-        .back-btn:hover{
-            background:#0f4d84;
+        button {
+            background: #1565a9;
+            color: white;
         }
 
+        button:hover {
+            background: #0f4d84;
+        }
+
+        .cancel {
+            margin-left: 8px;
+            background: #344F6F;
+            color: white;
+        }
+
+        .cancel:hover {
+            background: #293F59;
+        }
+
+        .bottom-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #d9e3ec;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 30px 6%;
+            }
+
+            header h1 {
+                font-size: 32px;
+            }
+
+            header p {
+                font-size: 17px;
+            }
+
+            main {
+                margin: 25px auto;
+                padding: 24px;
+            }
+
+            h2 {
+                font-size: 27px;
+            }
+
+            button,
+            .cancel {
+                margin-left: 0;
+                margin-right: 5px;
+            }
+
+            .dashboard-link a {
+                padding: 12px 18px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="header">
+<header>
     <h1>Health Tracking System</h1>
     <p>Medication Schedule Management</p>
-</div>
+</header>
 
-<div class="container">
+<main>
 
     <div class="dashboard-link">
-        <a href="/">Patient Dashboard</a>
+        <a th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
     </div>
 
-    <h2>Add Schedule</h2>
+    <h2>Add Medication Schedule</h2>
 
-    <form action="/schedules/save" method="post">
+    <p class="description">
+        Select a medication and set its scheduled time.
+    </p>
+
+    <form th:action="@{/schedules/save}" method="post">
+
+        <label for="medicationId">Select Medication</label>
+
+        <select id="medicationId"
+                name="medicationId"
+                required>
+
+            <option value="">-- Select a medication --</option>
+
+            <option th:each="med : ${medications}"
+                    th:value="${med.id}"
+                    th:text="${med.medicationName}">
+            </option>
+
+        </select>
 
         <label for="scheduledTime">Scheduled Time</label>
 
         <input type="time"
                id="scheduledTime"
                name="scheduledTime"
-               onclick="this.showPicker()"
                required>
 
-        <button type="submit" class="save-btn">
+        <button type="submit">
             Save Schedule
         </button>
 
+        <a class="cancel" th:href="@{/schedules}">
+            Cancel
+        </a>
+
     </form>
 
-    <br>
+    <div class="bottom-link">
+        <div class="dashboard-link" style="margin-bottom: 0;">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+    </div>
 
-    <a href="/schedules" class="back-btn">
-        Back to Schedule List
-    </a>
-
-</div>
+</main>
 
 </body>
 </html>

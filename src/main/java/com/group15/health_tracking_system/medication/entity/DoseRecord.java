@@ -1,6 +1,8 @@
+
 package com.group15.health_tracking_system.medication.entity;
 
 import com.group15.health_tracking_system.common.model.BaseEntity;
+
 import jakarta.persistence.*;
 import java.time.LocalDate;
 
@@ -15,7 +17,7 @@ public class DoseRecord extends BaseEntity {
     @Column(nullable = false)
     private DoseStatus status;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "medication_id", nullable = false)
     private Medication medication;
 

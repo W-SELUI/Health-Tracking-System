@@ -2,7 +2,6 @@ package com.group15.health_tracking_system.medication.entity;
 
 import com.group15.health_tracking_system.common.model.BaseEntity;
 import jakarta.persistence.*;
-
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -10,29 +9,23 @@ import java.time.LocalTime;
 @Table(name = "appointments")
 public class Appointment extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(name = "appointment_date", nullable = false)
     private LocalDate appointmentDate;
 
-    @Column(nullable = false)
+    @Column(name = "appointment_time", nullable = false)
     private LocalTime appointmentTime;
 
-    @Column(nullable = false)
+    @Column(name = "doctor_name", nullable = false)
     private String doctorName;
+
+    private String location;
 
     private String purpose;
 
-    public Appointment() {
-    }
+    @Column(nullable = false)
+    private String status = "SCHEDULED";
 
-    public Appointment(LocalDate appointmentDate,
-                       LocalTime appointmentTime,
-                       String doctorName,
-                       String purpose) {
-        this.appointmentDate = appointmentDate;
-        this.appointmentTime = appointmentTime;
-        this.doctorName = doctorName;
-        this.purpose = purpose;
-    }
+    public Appointment() {}
 
     public LocalDate getAppointmentDate() {
         return appointmentDate;
@@ -58,11 +51,27 @@ public class Appointment extends BaseEntity {
         this.doctorName = doctorName;
     }
 
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
     public String getPurpose() {
         return purpose;
     }
 
     public void setPurpose(String purpose) {
         this.purpose = purpose;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 }

@@ -1,164 +1,272 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Add Appointment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Appointment | Health Tracking System</title>
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body{
-            font-family:'Segoe UI', Arial, sans-serif;
-            background:#f4f6f9;
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
         }
 
-        .header{
-            background:linear-gradient(135deg,#1e3c72,#2a5298);
-            color:white;
-            text-align:center;
-            padding:35px;
-            box-shadow:0 3px 10px rgba(0,0,0,0.15);
+        .header {
+            background: #dcecf9;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
         }
 
-        .header h1{
-            font-size:42px;
-            margin-bottom:10px;
+        .header h1 {
+            font-size: 38px;
+            font-weight: 750;
+            color: #12345a;
+            margin-bottom: 8px;
         }
 
-        .header p{
-            font-size:18px;
-            opacity:0.9;
+        .header p {
+            font-size: 17px;
+            color: #31577e;
         }
 
-        .container{
-            width:550px;
-            margin:40px auto;
-            background:white;
-            padding:35px;
-            border-radius:15px;
-            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        .main {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 0 22px;
         }
 
-        h2{
-            text-align:center;
-            color:#2c3e50;
-            margin-bottom:25px;
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 11px 16px;
+            color: #1769aa;
+            background: #ffffff;
+            border: 1px solid #d1e2f1;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 650;
+            transition: background 0.2s ease;
         }
 
-        label{
-            display:block;
-            font-weight:bold;
-            margin-top:15px;
-            margin-bottom:8px;
-            color:#2c3e50;
+        .back-link:hover {
+            background: #dcecf9;
         }
 
-        input, select{
-            width:100%;
-            padding:12px;
-            border:1px solid #dcdcdc;
-            border-radius:8px;
-            font-size:15px;
+        .form-card {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 38px 44px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
+        }
+
+        .form-card h2 {
+            text-align: center;
+            color: #12345a;
+            font-size: 30px;
+            margin-bottom: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 23px;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #183b63;
+        }
+
+        input,
+        select {
+            display: block;
+            width: 100%;
+            min-height: 52px;
+            padding: 13px 15px;
+            font-family: inherit;
+            font-size: 16px;
+            color: #183b63;
+            background: #e8f0fe;
+            border: 1px solid #d1d9e4;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type="datetime-local"] {
+            background: #ffffff;
         }
 
         input:focus,
-        select:focus{
-            outline:none;
-            border-color:#3498db;
-            box-shadow:0 0 5px rgba(52,152,219,0.3);
+        select:focus {
+            border-color: #1769aa;
+            box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
         }
 
-        .save-btn{
-            width:100%;
-            margin-top:25px;
-            padding:14px;
-            background:#28a745;
-            color:white;
-            border:none;
-            border-radius:8px;
-            font-size:16px;
-            font-weight:bold;
-            cursor:pointer;
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 52px;
+            padding: 14px 20px;
+            margin-top: 17px;
+            border: none;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
         }
 
-        .save-btn:hover{
-            background:#218838;
+        .save-button {
+            background: #1769aa;
+            color: #ffffff;
         }
 
-        .back-btn{
-            display:block;
-            text-align:center;
-            margin-top:15px;
-            padding:12px;
-            background:#2c3e50;
-            color:white;
-            text-decoration:none;
-            border-radius:8px;
-            font-weight:bold;
+        .save-button:hover {
+            background: #12558b;
         }
 
-        .back-btn:hover{
-            background:#1a252f;
+        .cancel-button {
+    background: #344F6F;
+    color: #ffffff;
+}
+
+.cancel-button:hover {
+    background: #293F59;
+}
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin: 26px 0 35px;
         }
 
+        .footer .button {
+            width: auto;
+            padding: 14px 24px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 28px 22px;
+            }
+
+            .header h1 {
+                font-size: 29px;
+            }
+
+            .form-card {
+                padding: 28px 22px;
+            }
+
+            .form-card h2 {
+                font-size: 26px;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h1>📅 Appointment Management</h1>
-    <p>Schedule a new patient appointment</p>
-</div>
+<header class="header">
+    <h1>Health Tracking System</h1>
+    <p>Appointment Management</p>
+</header>
 
-<div class="container">
+<main class="main">
 
-    <h2>Add Appointment</h2>
-
-    <form th:action="@{/appointments/save}" method="post">
-
-        <label>Doctor Name</label>
-        <input type="text"
-               name="doctorName"
-               required>
-
-        <label>Location</label>
-        <input type="text"
-               name="location"
-               required>
-
-        <label>Date & Time</label>
-        <input type="datetime-local"
-               name="appointmentDateTime"
-               required>
-
-        <label>Status</label>
-
-        <select name="status">
-
-            <option
-                    th:each="status : ${statuses}"
-                    th:value="${status}"
-                    th:text="${status}">
-            </option>
-
-        </select>
-
-        <button type="submit" class="save-btn">
-            Save Appointment
-        </button>
-
-    </form>
-
-    <a href="/appointments" class="back-btn">
-        Back to Appointment List
+    <!-- Top navigation -->
+    <a class="back-link" th:href="@{/medication-dashboard}">
+        ← Back to Medication Dashboard
     </a>
 
-</div>
+    <section class="form-card">
+
+        <h2>📅 Add Appointment</h2>
+
+        <form th:action="@{/appointments/save}" method="post">
+
+            <div class="form-group">
+                <label for="doctorName">Doctor Name</label>
+                <input
+                    type="text"
+                    id="doctorName"
+                    name="doctorName"
+                    placeholder="Enter doctor name"
+                    maxlength="255"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input
+                    type="text"
+                    id="location"
+                    name="location"
+                    placeholder="Enter appointment location"
+                    maxlength="255"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="appointmentDateTime">Date &amp; Time</label>
+                <input
+                    type="datetime-local"
+                    id="appointmentDateTime"
+                    name="appointmentDateTime"
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select id="status" name="status" required>
+                    <option value="">-- Select Status --</option>
+                    <option value="SCHEDULED">Scheduled</option>
+                    <option value="COMPLETED">Completed</option>
+                    <option value="CANCELLED">Cancelled</option>
+                </select>
+            </div>
+
+            <button type="submit" class="button save-button">
+                Save Appointment
+            </button>
+
+            <a th:href="@{/appointments}"
+               class="button cancel-button">
+                Back to Appointment List
+            </a>
+
+        </form>
+
+    </section>
+
+    <!-- Bottom navigation -->
+    <div class="footer">
+        <a class="button cancel-button"
+           th:href="@{/medication-dashboard}">
+            ← Back to Medication Dashboard
+        </a>
+    </div>
+
+</main>
 
 </body>
 </html>

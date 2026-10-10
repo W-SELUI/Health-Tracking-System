@@ -1,7 +1,9 @@
+
 package com.group15.health_tracking_system.medication.service;
 
 import com.group15.health_tracking_system.medication.entity.Medication;
 import com.group15.health_tracking_system.medication.repository.MedicationRepository;
+
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,7 +14,8 @@ public class MedicationService {
 
     private final MedicationRepository medicationRepository;
 
-    public MedicationService(MedicationRepository medicationRepository) {
+    public MedicationService(
+            MedicationRepository medicationRepository) {
         this.medicationRepository = medicationRepository;
     }
 
@@ -24,8 +27,17 @@ public class MedicationService {
         return medicationRepository.findAll();
     }
 
+    public List<Medication> getMedicationsByUserId(Long userId) {
+        return medicationRepository.findByUserId(userId);
+    }
+
     public Optional<Medication> getMedicationById(Long id) {
         return medicationRepository.findById(id);
+    }
+
+    public Optional<Medication> getMedicationByIdAndUserId(
+            Long id, Long userId) {
+        return medicationRepository.findByIdAndUserId(id, userId);
     }
 
     public void deleteMedication(Long id) {

@@ -1,172 +1,288 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Edit Appointment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Appointment | Health Tracking System</title>
 
     <style>
-
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body{
-            font-family:'Segoe UI', Arial, sans-serif;
-            background:#f4f6f9;
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
         }
 
-        .header{
-            background:linear-gradient(135deg,#1e3c72,#2a5298);
-            color:white;
-            text-align:center;
-            padding:35px;
-            box-shadow:0 3px 10px rgba(0,0,0,0.15);
+        .header {
+            background: #dcecf9;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
         }
 
-        .header h1{
-            font-size:42px;
-            margin-bottom:10px;
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 38px;
+            font-weight: 750;
         }
 
-        .header p{
-            font-size:18px;
-            opacity:0.9;
+        .header p {
+            color: #31577e;
+            font-size: 17px;
         }
 
-        .container{
-            width:550px;
-            margin:40px auto;
-            background:white;
-            padding:35px;
-            border-radius:15px;
-            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        .container {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 0 22px;
         }
 
-        h2{
-            text-align:center;
-            color:#2c3e50;
-            margin-bottom:25px;
+        /* Top dashboard button */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 12px 18px;
+            background: #344F6F;
+            border: 1px solid #344F6F;
+            border-radius: 8px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 650;
+            transition: background 0.2s ease;
         }
 
-        label{
-            display:block;
-            font-weight:bold;
-            margin-top:15px;
-            margin-bottom:8px;
-            color:#2c3e50;
+        .back-link:hover {
+            background: #293F59;
+            border-color: #293F59;
         }
 
-        input, select{
-            width:100%;
-            padding:12px;
-            border:1px solid #dcdcdc;
-            border-radius:8px;
-            font-size:15px;
+        .card {
+            max-width: 760px;
+            margin: 0 auto;
+            padding: 38px 44px;
+            background: #ffffff;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
+        }
+
+        h2 {
+            text-align: center;
+            font-size: 30px;
+            margin-bottom: 32px;
+            color: #12345a;
+        }
+
+        .group {
+            margin-bottom: 23px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #183b63;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        input,
+        select {
+            display: block;
+            width: 100%;
+            min-height: 52px;
+            padding: 13px 15px;
+            font-family: inherit;
+            font-size: 16px;
+            color: #183b63;
+            background: #e8f0fe;
+            border: 1px solid #d1d9e4;
+            border-radius: 10px;
+            outline: none;
+        }
+
+        input[type="datetime-local"] {
+            background: #ffffff;
         }
 
         input:focus,
-        select:focus{
-            outline:none;
-            border-color:#3498db;
-            box-shadow:0 0 5px rgba(52,152,219,0.3);
+        select:focus {
+            border-color: #1769aa;
+            box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
         }
 
-        .update-btn{
-            width:100%;
-            margin-top:25px;
-            padding:14px;
-            background:#f39c12;
-            color:white;
-            border:none;
-            border-radius:8px;
-            font-size:16px;
-            font-weight:bold;
-            cursor:pointer;
+        .button {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            min-height: 52px;
+            padding: 14px 20px;
+            margin-top: 16px;
+            border: none;
+            border-radius: 9px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s ease;
         }
 
-        .update-btn:hover{
-            background:#d68910;
+        /* Update Appointment button */
+        .save {
+            background: #1769aa;
+            color: #ffffff;
         }
 
-        .back-btn{
-            display:block;
-            text-align:center;
-            margin-top:15px;
-            padding:12px;
-            background:#2c3e50;
-            color:white;
-            text-decoration:none;
-            border-radius:8px;
-            font-weight:bold;
+        .save:hover {
+            background: #12558b;
         }
 
-        .back-btn:hover{
-            background:#1a252f;
+        /* Cancel and dashboard buttons */
+        .cancel {
+            background: #344F6F;
+            color: #ffffff;
         }
 
+        .cancel:hover {
+            background: #293F59;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin: 26px 0 35px;
+        }
+
+        .footer .button {
+            width: auto;
+            padding: 14px 24px;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 28px 22px;
+            }
+
+            .header h1 {
+                font-size: 29px;
+            }
+
+            .container {
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 28px 22px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+
+            .footer .button {
+                width: 100%;
+            }
+        }
     </style>
 </head>
 
 <body>
 
-<div class="header">
-    <h1>📅 Appointment Management</h1>
-    <p>Update appointment information</p>
-</div>
+    <header class="header">
+        <h1>Health Tracking System</h1>
+        <p>Appointment Management</p>
+    </header>
 
-<div class="container">
+    <main class="container">
 
-    <h2>Edit Appointment</h2>
+        <!-- Top navigation -->
+        <a class="back-link" th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
 
-    <form th:action="@{/appointments/update}" method="post">
+        <section class="card">
 
-        <input type="hidden"
-               name="id"
-               th:value="${appointment.id}">
+            <h2>✏️ Edit Appointment</h2>
 
-        <label>Doctor Name</label>
-        <input type="text"
-               name="doctorName"
-               th:value="${appointment.doctorName}"
-               required>
+            <form th:action="@{/appointments/update/{id}(id=${appointment.id})}"
+                  method="post">
 
-        <label>Location</label>
-        <input type="text"
-               name="location"
-               th:value="${appointment.location}"
-               required>
+                <div class="group">
+                    <label for="doctorName">Doctor Name</label>
+                    <input
+                        type="text"
+                        id="doctorName"
+                        name="doctorName"
+                        th:value="${appointment.doctorName}"
+                        maxlength="255"
+                        required>
+                </div>
 
-        <label>Date & Time</label>
-        <input type="datetime-local"
-               name="appointmentDateTime"
-               th:value="${appointment.appointmentDateTime}"
-               required>
+                <div class="group">
+                    <label for="location">Location</label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        th:value="${appointment.location}"
+                        maxlength="255"
+                        required>
+                </div>
 
-        <label>Status</label>
+                <div class="group">
+                    <label for="appointmentDateTime">Date &amp; Time</label>
+                    <input
+                        type="datetime-local"
+                        id="appointmentDateTime"
+                        name="appointmentDateTime"
+                        th:value="${appointmentDateTime}"
+                        required>
+                </div>
 
-        <select name="status">
+                <div class="group">
+                    <label for="status">Status</label>
+                    <select id="status" name="status" required>
+                        <option value="">-- Select Status --</option>
 
-            <option
-                    th:each="status : ${statuses}"
-                    th:value="${status}"
-                    th:text="${status}"
-                    th:selected="${status == appointment.status}">
-            </option>
+                        <option th:each="s : ${statuses}"
+                                th:value="${s}"
+                                th:text="${s}"
+                                th:selected="${s == appointment.status}">
+                        </option>
+                    </select>
+                </div>
 
-        </select>
+                <button class="button save" type="submit">
+                    Update Appointment
+                </button>
 
-        <button type="submit" class="update-btn">
-            Update Appointment
-        </button>
+                <a class="button cancel" th:href="@{/appointments}">
+                    Cancel
+                </a>
 
-    </form>
+            </form>
 
-    <a href="/appointments" class="back-btn">
-        Back to Appointment List
-    </a>
+        </section>
 
-</div>
+        <!-- Bottom navigation -->
+        <div class="footer">
+            <a class="button cancel"
+               th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+    </main>
 
 </body>
 </html>
