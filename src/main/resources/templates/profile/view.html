@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+
+<h1>My Profile</h1>
+
+<p th:if="${param.updated}">
+    Profile updated successfully.
+</p>
+
+<div>
+    <p>
+        <strong>First Name:</strong>
+        <span th:text="${currentUser.firstName}">First Name</span>
+    </p>
+
+    <p>
+        <strong>Last Name:</strong>
+        <span th:text="${currentUser.lastName}">Last Name</span>
+    </p>
+
+    <p>
+        <strong>Email:</strong>
+        <span th:text="${currentUser.email}">email@example.com</span>
+    </p>
+
+    <p>
+        <strong>Role:</strong>
+        <span th:text="${currentUser.role.displayName}">Role</span>
+    </p>
+</div>
+
+<p>
+    <a th:href="@{/profile/edit}">Edit Profile</a>
+</p>
+
+<p>
+    <a th:href="@{/dashboard}">Back to Dashboard</a>
+</p>
+
+<form th:action="@{/logout}" method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>
