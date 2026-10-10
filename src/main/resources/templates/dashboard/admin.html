@@ -19,6 +19,10 @@
     <span th:text="${currentUser.role.displayName}">Administrator</span>
 </p>
 
+<p>
+    <a th:href="@{/profile}">My Profile</a>
+</p>
+
 <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>
 </form>
