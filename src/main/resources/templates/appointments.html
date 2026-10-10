@@ -1,0 +1,491 @@
+
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointments | Health Tracking System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
+        }
+
+        .header h1 {
+            margin-bottom: 8px;
+            font-size: 38px;
+            font-weight: 750;
+        }
+
+        .header p {
+            font-size: 17px;
+            color: #31577e;
+        }
+
+        .container {
+            max-width: 1450px;
+            margin: 35px auto;
+            padding: 0 25px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 24px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            background: #344F6F;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 650;
+        }
+
+        .back-link:hover {
+            background: #293F59;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 26px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
+        }
+
+        .card-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            margin: 0;
+            font-size: 27px;
+            color: #12345a;
+        }
+
+        .section-description {
+            color: #64748b;
+            font-size: 14px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+
+        .button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 16px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 650;
+            text-align: center;
+            text-decoration: none;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .primary {
+            background: #1769aa;
+            color: #ffffff;
+        }
+
+        .primary:hover {
+            background: #12558b;
+        }
+
+        .dark {
+            background: #344F6F;
+            color: #ffffff;
+        }
+
+        .dark:hover {
+            background: #293F59;
+        }
+
+        .cancel-button {
+            background: #344F6F;
+            color: #ffffff;
+        }
+
+        .cancel-button:hover:not(:disabled) {
+            background: #293F59;
+        }
+
+        .danger {
+            background: #b83232;
+            color: #ffffff;
+        }
+
+        .danger:hover {
+            background: #922626;
+        }
+
+        .button:disabled {
+            background: #aeb9c7;
+            color: #ffffff;
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border: 1px solid #dce4ee;
+            border-radius: 12px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        thead {
+            background: #dce7f3;
+        }
+
+        th,
+        td {
+            padding: 16px 13px;
+            border-bottom: 1px solid #dce4ee;
+            text-align: left;
+            vertical-align: middle;
+            white-space: nowrap;
+        }
+
+        th {
+            color: #12345a;
+            font-weight: 700;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f6f9fd;
+        }
+
+        /* Original blue status badges */
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e8f0fe;
+            color: #1769aa;
+            font-weight: 700;
+            font-size: 13px;
+        }
+
+        /* Smaller action buttons */
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            min-width: 0;
+            flex-wrap: nowrap;
+        }
+
+        .actions form {
+            margin: 0;
+        }
+
+        .actions .button {
+            min-width: 0;
+            padding: 8px 11px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .empty {
+            padding: 25px;
+            text-align: center;
+            color: #64748b;
+            white-space: normal;
+        }
+
+        .footer {
+            display: flex;
+            justify-content: center;
+            margin: 28px 0;
+        }
+
+        .footer .button {
+            padding: 14px 24px;
+        }
+
+        @media (max-width: 650px) {
+            .header {
+                padding: 28px 22px;
+            }
+
+            .header h1 {
+                font-size: 29px;
+            }
+
+            .container {
+                margin: 24px auto;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 18px;
+            }
+
+            .card-heading h2 {
+                font-size: 23px;
+            }
+
+            th,
+            td {
+                padding: 12px 9px;
+            }
+
+            .actions {
+                gap: 5px;
+            }
+
+            .actions .button {
+                padding: 7px 9px;
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header class="header">
+    <h1>Health Tracking System</h1>
+    <p>Appointment Management</p>
+</header>
+
+<main class="container">
+
+    <a class="back-link" th:href="@{/medication-dashboard}">
+        &larr; Back to Medication Dashboard
+    </a>
+
+    <!-- 1. Upcoming Appointments -->
+    <section class="card">
+
+        <div class="card-heading">
+            <div>
+                <h2>Upcoming Appointments</h2>
+                <p class="section-description">
+                    Scheduled appointments today and in the future.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doctor Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="appointment : ${upcomingAppointments}">
+                    <td th:text="${appointment.id}"></td>
+                    <td th:text="${appointment.doctorName}"></td>
+                    <td th:text="${appointment.location != null
+                        ? appointment.location : '-'}"></td>
+                    <td th:text="${appointment.appointmentDate}"></td>
+                    <td th:text="${appointment.appointmentTime}"></td>
+                    <td>
+                        <span class="status"
+                              th:text="${appointment.status}"></span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(upcomingAppointments)}">
+                    <td colspan="6" class="empty">
+                        No upcoming appointments found.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <!-- 2. Appointment History -->
+    <section class="card">
+
+        <div class="card-heading">
+            <div>
+                <h2>Appointment History</h2>
+                <p class="section-description">
+                    Past, completed, missed, and cancelled appointments.
+                </p>
+            </div>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doctor Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="appointment : ${previousAppointments}">
+                    <td th:text="${appointment.id}"></td>
+                    <td th:text="${appointment.doctorName}"></td>
+                    <td th:text="${appointment.location != null
+                        ? appointment.location : '-'}"></td>
+                    <td th:text="${appointment.appointmentDate}"></td>
+                    <td th:text="${appointment.appointmentTime}"></td>
+                    <td>
+                        <span class="status"
+                              th:text="${appointment.status}"></span>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(previousAppointments)}">
+                    <td colspan="6" class="empty">
+                        No appointment history found.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <!-- 3. All Appointments -->
+    <section class="card">
+
+        <div class="card-heading">
+            <div>
+                <h2>All Appointments</h2>
+                <p class="section-description">
+                    View, add, edit, cancel, or delete your appointments.
+                </p>
+            </div>
+
+            <a class="button primary" th:href="@{/appointments/add}">
+                + Add Appointment
+            </a>
+        </div>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Doctor Name</th>
+                    <th>Location</th>
+                    <th>Date</th>
+                    <th>Time</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                <tr th:each="appointment : ${appointments}">
+                    <td th:text="${appointment.id}"></td>
+                    <td th:text="${appointment.doctorName}"></td>
+                    <td th:text="${appointment.location != null
+                        ? appointment.location : '-'}"></td>
+                    <td th:text="${appointment.appointmentDate}"></td>
+                    <td th:text="${appointment.appointmentTime}"></td>
+
+                    <td>
+                        <span class="status"
+                              th:text="${appointment.status}"></span>
+                    </td>
+
+                    <td>
+                        <div class="actions">
+
+                            <a class="button primary"
+                               th:href="@{/appointments/edit/{id}(id=${appointment.id})}">
+                                Edit
+                            </a>
+
+                            <form
+                                th:action="@{/appointments/cancel/{id}(id=${appointment.id})}"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+
+                                <button
+                                    class="button cancel-button"
+                                    type="submit"
+                                    th:disabled="${appointment.status != 'SCHEDULED'}">
+                                    Cancel
+                                </button>
+                            </form>
+
+                            <form
+                                th:action="@{/appointments/delete/{id}(id=${appointment.id})}"
+                                method="post"
+                                onsubmit="return confirm('Permanently delete this appointment?');">
+
+                                <button class="button danger" type="submit">
+                                    Delete
+                                </button>
+                            </form>
+
+                        </div>
+                    </td>
+                </tr>
+
+                <tr th:if="${#lists.isEmpty(appointments)}">
+                    <td colspan="7" class="empty">
+                        No appointments found. Click Add Appointment to create one.
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </section>
+
+    <div class="footer">
+        <a class="button dark" th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
+    </div>
+
+</main>
+
+</body>
+</html>

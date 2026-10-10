@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Management</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #2c3e50;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 50px 80px;
+            border-bottom: 1px solid #d3e1ef;
+        }
+
+        .header h1 {
+            color: #0d2d52;
+            font-size: 56px;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #183b63;
+            font-size: 22px;
+        }
+
+        .container {
+            width: 88%;
+            max-width: 1500px;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Top dashboard button */
+        .dashboard-link {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-link a {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .dashboard-link a:hover {
+            background: #293F59;
+        }
+
+        .page-title {
+            color: #0d2d52;
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 30px;
+        }
+
+        .top-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+
+        .stat-card {
+            background: #f5f9fd;
+            border-radius: 12px;
+            padding: 25px;
+            width: 250px;
+        }
+
+        .stat-card h3 {
+            color: #0d2d52;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .stat-card h2 {
+            color: #1565a9;
+            font-size: 42px;
+            margin: 0;
+        }
+
+        /* Add Medication button */
+        .add-btn {
+            display: inline-block;
+            background: #1565a9;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .add-btn:hover {
+            background: #0f4d84;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 18px;
+            border: 1px solid #d9e3ec;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th {
+            background: #dce7f2;
+            color: #0d2d52;
+            padding: 18px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        td {
+            padding: 18px;
+            border-bottom: 1px solid #d9e3ec;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background: #f8fbff;
+        }
+
+        .empty-row {
+            padding: 30px;
+            color: #7f8c8d;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Edit button remains blue */
+        .edit-btn {
+            display: inline-block;
+            background: #1565a9;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .edit-btn:hover {
+            background: #0f4d84;
+        }
+
+        /* Delete button uses dark blue-grey */
+        .delete-btn {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            padding: 10px 18px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .delete-btn:hover {
+            background: #293F59;
+        }
+
+        .footer-buttons {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        /* Bottom dashboard button */
+        .back-btn {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            padding: 15px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #293F59;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 25px;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 18px;
+            }
+
+            .container {
+                width: 94%;
+                padding: 22px;
+                margin: 25px auto;
+            }
+
+            .page-title {
+                font-size: 30px;
+            }
+
+            .top-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .stat-card {
+                width: 100%;
+            }
+
+            .add-btn {
+                display: block;
+                text-align: center;
+            }
+
+            .back-btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Health Tracking System</h1>
+        <p>Medication Management</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Top dashboard button -->
+        <div class="dashboard-link">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+        <h2 class="page-title">💊 Medication List</h2>
+
+        <div class="top-section">
+
+            <div class="stat-card">
+                <h3>Total Medications</h3>
+                <h2 th:text="${medications.size()}">0</h2>
+            </div>
+
+            <a th:href="@{/medications/add}" class="add-btn">
+                + Add Medication
+            </a>
+
+        </div>
+
+        <div class="table-container">
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Medication Name</th>
+                        <th>Dosage</th>
+                        <th>Instructions</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                    <tr th:if="${#lists.isEmpty(medications)}">
+                        <td colspan="6" class="empty-row">
+                            No medications found. Click "Add Medication" to create your first medication.
+                        </td>
+                    </tr>
+
+                    <tr th:each="medication : ${medications}">
+
+                        <td th:text="${medication.id}"></td>
+
+                        <td th:text="${medication.medicationName}"></td>
+
+                        <td th:text="${medication.dosage}"></td>
+
+                        <td th:text="${medication.instructions}"></td>
+
+                        <td>
+                            <a th:href="@{/medications/edit/{id}(id=${medication.id})}"
+                               class="edit-btn">
+                                Edit
+                            </a>
+                        </td>
+
+                        <td>
+                            <a th:href="@{/medications/delete/{id}(id=${medication.id})}"
+                               class="delete-btn"
+                               onclick="return confirm('Delete this medication?');">
+                                Delete
+                            </a>
+                        </td>
+
+                    </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+
+        <!-- Bottom dashboard button -->
+        <div class="footer-buttons">
+            <a th:href="@{/medication-dashboard}" class="back-btn">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
