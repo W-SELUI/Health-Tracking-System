@@ -1,3 +1,4 @@
+
 package com.group15.health_tracking_system.medication.controller;
 
 import com.group15.health_tracking_system.medication.entity.Appointment;
@@ -59,13 +60,16 @@ public class AppointmentController {
             if (appointment.getAppointmentDate().isBefore(today)
                     && "SCHEDULED".equals(appointment.getStatus())) {
                 appointment.setStatus("MISSED");
+                appointmentService.save(appointment);
             }
         }
 
         List<Appointment> upcomingAppointments =
                 allAppointments.stream()
-                        .filter(a -> !a.getAppointmentDate().isBefore(today))
-                        .filter(a -> "SCHEDULED".equals(a.getStatus()))
+                        .filter(a ->
+                                !a.getAppointmentDate().isBefore(today))
+                        .filter(a ->
+                                "SCHEDULED".equals(a.getStatus()))
                         .toList();
 
         List<Appointment> previousAppointments =
@@ -73,12 +77,15 @@ public class AppointmentController {
                         .filter(a ->
                                 a.getAppointmentDate().isBefore(today)
                                 || "COMPLETED".equals(a.getStatus())
-                                || "MISSED".equals(a.getStatus()))
+                                || "MISSED".equals(a.getStatus())
+                                || "CANCELLED".equals(a.getStatus()))
                         .toList();
 
         model.addAttribute("appointments", allAppointments);
-        model.addAttribute("upcomingAppointments", upcomingAppointments);
-        model.addAttribute("previousAppointments", previousAppointments);
+        model.addAttribute(
+                "upcomingAppointments", upcomingAppointments);
+        model.addAttribute(
+                "previousAppointments", previousAppointments);
         model.addAttribute("statuses", statuses);
 
         return "appointments";
@@ -106,6 +113,7 @@ public class AppointmentController {
             Authentication authentication) {
 
         User user = getLoggedInUser(authentication);
+
         LocalDateTime dateTime =
                 LocalDateTime.parse(appointmentDateTime);
 
@@ -178,6 +186,30 @@ public class AppointmentController {
         return "redirect:/appointments";
     }
 
+    @PostMapping("/cancel/{id}")
+    public String cancelAppointment(
+            @PathVariable Long id,
+            Authentication authentication) {
+
+        User user = getLoggedInUser(authentication);
+
+        Appointment appointment = appointmentService
+                .getByIdAndPatientId(id, user.getId())
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Appointment not found for this patient."));
+
+        if (!"SCHEDULED".equals(appointment.getStatus())) {
+            throw new IllegalArgumentException(
+                    "Only scheduled appointments can be cancelled.");
+        }
+
+        appointment.setStatus("CANCELLED");
+        appointmentService.save(appointment);
+
+        return "redirect:/appointments";
+    }
+
     @PostMapping("/delete/{id}")
     public String deleteAppointment(
             @PathVariable Long id,
@@ -191,8 +223,10 @@ public class AppointmentController {
 
     private String validateStatus(String status) {
         if (status == null || !statuses.contains(status)) {
-            throw new IllegalArgumentException("Invalid appointment status");
+            throw new IllegalArgumentException(
+                    "Invalid appointment status");
         }
+
         return status;
     }
 }

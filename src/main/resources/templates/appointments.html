@@ -1,6 +1,6 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,7 +33,6 @@
         }
 
         .header p {
-            margin: 0;
             font-size: 17px;
             color: #31577e;
         }
@@ -56,7 +55,6 @@
             text-decoration: none;
             font-size: 15px;
             font-weight: 650;
-            transition: background 0.2s ease;
         }
 
         .back-link:hover {
@@ -99,18 +97,15 @@
             justify-content: center;
             border: none;
             border-radius: 8px;
-            padding: 12px 18px;
+            padding: 12px 16px;
             font-family: inherit;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 650;
             text-align: center;
             text-decoration: none;
+            white-space: nowrap;
             cursor: pointer;
-            transition: background 0.2s ease, transform 0.2s ease;
-        }
-
-        .button:hover {
-            transform: translateY(-1px);
+            transition: background 0.2s ease;
         }
 
         .primary {
@@ -131,6 +126,15 @@
             background: #293F59;
         }
 
+        .cancel-button {
+            background: #344F6F;
+            color: #ffffff;
+        }
+
+        .cancel-button:hover:not(:disabled) {
+            background: #293F59;
+        }
+
         .danger {
             background: #b83232;
             color: #ffffff;
@@ -138,6 +142,13 @@
 
         .danger:hover {
             background: #922626;
+        }
+
+        .button:disabled {
+            background: #aeb9c7;
+            color: #ffffff;
+            cursor: not-allowed;
+            opacity: 0.8;
         }
 
         .table-wrapper {
@@ -161,6 +172,7 @@
             padding: 16px 13px;
             border-bottom: 1px solid #dce4ee;
             text-align: left;
+            vertical-align: middle;
             white-space: nowrap;
         }
 
@@ -177,6 +189,7 @@
             background: #f6f9fd;
         }
 
+        /* Original blue status badges */
         .status {
             display: inline-block;
             padding: 6px 10px;
@@ -187,14 +200,24 @@
             font-size: 13px;
         }
 
+        /* Smaller action buttons */
         .actions {
             display: flex;
-            gap: 8px;
             align-items: center;
+            gap: 6px;
+            min-width: 0;
+            flex-wrap: nowrap;
         }
 
         .actions form {
             margin: 0;
+        }
+
+        .actions .button {
+            min-width: 0;
+            padding: 8px 11px;
+            font-size: 12px;
+            border-radius: 6px;
         }
 
         .empty {
@@ -239,6 +262,15 @@
             th,
             td {
                 padding: 12px 9px;
+            }
+
+            .actions {
+                gap: 5px;
+            }
+
+            .actions .button {
+                padding: 7px 9px;
+                font-size: 11px;
             }
         }
     </style>
@@ -287,7 +319,7 @@
                     <td th:text="${appointment.id}"></td>
                     <td th:text="${appointment.doctorName}"></td>
                     <td th:text="${appointment.location != null
-                                  ? appointment.location : '-'}"></td>
+                        ? appointment.location : '-'}"></td>
                     <td th:text="${appointment.appointmentDate}"></td>
                     <td th:text="${appointment.appointmentTime}"></td>
                     <td>
@@ -307,14 +339,14 @@
 
     </section>
 
-    <!-- 2. Previous Appointments -->
+    <!-- 2. Appointment History -->
     <section class="card">
 
         <div class="card-heading">
             <div>
-                <h2>Previous Appointments</h2>
+                <h2>Appointment History</h2>
                 <p class="section-description">
-                    Past appointments and appointments marked as completed.
+                    Past, completed, missed, and cancelled appointments.
                 </p>
             </div>
         </div>
@@ -337,7 +369,7 @@
                     <td th:text="${appointment.id}"></td>
                     <td th:text="${appointment.doctorName}"></td>
                     <td th:text="${appointment.location != null
-                                  ? appointment.location : '-'}"></td>
+                        ? appointment.location : '-'}"></td>
                     <td th:text="${appointment.appointmentDate}"></td>
                     <td th:text="${appointment.appointmentTime}"></td>
                     <td>
@@ -348,7 +380,7 @@
 
                 <tr th:if="${#lists.isEmpty(previousAppointments)}">
                     <td colspan="6" class="empty">
-                        No previous appointments found.
+                        No appointment history found.
                     </td>
                 </tr>
                 </tbody>
@@ -364,7 +396,7 @@
             <div>
                 <h2>All Appointments</h2>
                 <p class="section-description">
-                    View, add, edit, or delete your appointments.
+                    View, add, edit, cancel, or delete your appointments.
                 </p>
             </div>
 
@@ -392,7 +424,7 @@
                     <td th:text="${appointment.id}"></td>
                     <td th:text="${appointment.doctorName}"></td>
                     <td th:text="${appointment.location != null
-                                  ? appointment.location : '-'}"></td>
+                        ? appointment.location : '-'}"></td>
                     <td th:text="${appointment.appointmentDate}"></td>
                     <td th:text="${appointment.appointmentTime}"></td>
 
@@ -410,9 +442,22 @@
                             </a>
 
                             <form
+                                th:action="@{/appointments/cancel/{id}(id=${appointment.id})}"
+                                method="post"
+                                onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
+
+                                <button
+                                    class="button cancel-button"
+                                    type="submit"
+                                    th:disabled="${appointment.status != 'SCHEDULED'}">
+                                    Cancel
+                                </button>
+                            </form>
+
+                            <form
                                 th:action="@{/appointments/delete/{id}(id=${appointment.id})}"
                                 method="post"
-                                onsubmit="return confirm('Delete this appointment?');">
+                                onsubmit="return confirm('Permanently delete this appointment?');">
 
                                 <button class="button danger" type="submit">
                                     Delete

@@ -1,75 +1,83 @@
+
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dose Records</title>
+    <title>Dose Records | Health Tracking System</title>
 
     <style>
         * {
+            box-sizing: border-box;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: #eef2f7;
-            color: #0d2d52;
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
         }
 
         .header {
             background: #dcecf9;
-            padding: 35px 6%;
-            border-bottom: 1px solid #d3e1ef;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
         }
 
         .header h1 {
-            font-size: 42px;
-            margin-bottom: 10px;
-            color: #0d2d52;
+            margin-bottom: 8px;
+            font-size: 38px;
+            font-weight: 750;
+            color: #12345a;
         }
 
         .header p {
-            font-size: 18px;
-            color: #183b63;
+            font-size: 17px;
+            color: #31577e;
         }
 
         .container {
-            width: 88%;
-            max-width: 1400px;
-            margin: 40px auto;
-            background: white;
-            padding: 40px;
-            border-radius: 22px;
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+            max-width: 1450px;
+            margin: 35px auto;
+            padding: 0 25px;
         }
 
         .dashboard-link {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .dashboard-link a {
-            display: inline-block;
-            background: #344F6F;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            background: #344f6f;
+            color: #ffffff;
             text-decoration: none;
             font-size: 15px;
-            font-weight: 600;
-            padding: 12px 20px;
+            font-weight: 650;
+            padding: 12px 18px;
             border-radius: 8px;
-            transition: background 0.3s ease;
+            transition: background 0.2s ease;
         }
 
         .dashboard-link a:hover {
-            background: #293F59;
+            background: #293f59;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 26px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
         }
 
         h2 {
-            font-size: 34px;
-            color: #0d2d52;
-            margin-bottom: 30px;
+            margin: 0;
+            font-size: 27px;
+            color: #12345a;
         }
 
         .top-section {
@@ -77,7 +85,8 @@
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            margin-bottom: 35px;
+            flex-wrap: wrap;
+            margin: 25px 0;
         }
 
         .stat-card {
@@ -89,73 +98,95 @@
 
         .stat-card h3 {
             margin-bottom: 12px;
-            color: #0d2d52;
+            color: #12345a;
             font-size: 18px;
         }
 
         .count {
             font-size: 42px;
             font-weight: bold;
-            color: #1565a9;
+            color: #1769aa;
             overflow-wrap: anywhere;
         }
 
+        /* General buttons */
         .button {
-            display: inline-block;
-            padding: 12px 20px;
-            background: #1565a9;
-            color: white;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 8px 11px;
+            background: #1769aa;
+            color: #ffffff;
             border: none;
-            border-radius: 8px;
+            border-radius: 6px;
             text-decoration: none;
             cursor: pointer;
             font-family: inherit;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 12px;
+            font-weight: 650;
             text-align: center;
-            transition: background 0.3s ease;
+            white-space: nowrap;
+            transition: background 0.2s ease;
         }
 
         .button:hover {
-            background: #0f4d84;
+            background: #12558b;
+        }
+
+        /* Bigger Add Dose Record button */
+        .add-dose-button {
+            padding: 15px 24px;
+            font-size: 16px;
+            min-height: 52px;
+            border-radius: 8px;
         }
 
         /* Dark blue-grey buttons */
         .delete-button,
         .back-button {
-            background: #344F6F;
-            color: white;
+            background: #344f6f;
+            color: #ffffff;
         }
 
         .delete-button:hover,
         .back-button:hover {
-            background: #293F59;
+            background: #293f59;
         }
 
+        /* Table container */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
-            border: 1px solid #d7e2ef;
-            border-radius: 15px;
+            border: 1px solid #dce4ee;
+            border-radius: 12px;
         }
 
+        /* Five evenly spaced columns */
         table {
             width: 100%;
             min-width: 700px;
+            table-layout: fixed;
             border-collapse: collapse;
+            background: #ffffff;
+        }
+
+        thead {
+            background: #dce7f3;
+        }
+
+        th,
+        td {
+            width: 20%;
+            padding: 14px 12px;
+            border-bottom: 1px solid #dce4ee;
+            text-align: center;
+            vertical-align: middle;
+            white-space: nowrap;
         }
 
         th {
-            background: #dce7f2;
-            color: #0d2d52;
-            padding: 20px 14px;
-            text-align: center;
-        }
-
-        td {
-            padding: 15px 14px;
-            border-bottom: 1px solid #d7e2ef;
-            text-align: center;
+            color: #12345a;
+            font-weight: 700;
         }
 
         tbody tr:last-child td {
@@ -163,54 +194,75 @@
         }
 
         tbody tr:hover {
-            background: #f7fbff;
+            background: #f6f9fd;
         }
 
+        /* Blue status badges */
         .status {
-            font-weight: bold;
-        }
-
-        .taken {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 20px;
+            background: #e8f0fe;
             color: #1769aa;
+            font-weight: 700;
+            font-size: 12px;
         }
 
-        .missed {
-            color: #354b60;
+        /* Smaller Edit and Delete buttons */
+        .actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
         }
 
-        .skipped {
-            color: #65758b;
+        .actions form {
+            margin: 0;
+        }
+
+        .actions .button {
+            padding: 7px 10px;
+            font-size: 12px;
         }
 
         .empty {
-            padding: 30px;
+            padding: 25px;
             text-align: center;
-            color: #7f8c8d;
-            font-style: italic;
+            color: #64748b;
+            white-space: normal;
         }
 
         .bottom {
-            text-align: center;
-            margin-top: 35px;
+            display: flex;
+            justify-content: center;
+            margin-top: 28px;
         }
 
-        @media (max-width: 700px) {
+        .bottom .button {
+            padding: 14px 24px;
+            font-size: 14px;
+        }
+
+        @media (max-width: 650px) {
             .header {
-                padding: 30px 6%;
+                padding: 28px 22px;
             }
 
             .header h1 {
-                font-size: 32px;
+                font-size: 29px;
             }
 
             .container {
-                width: 94%;
-                margin: 25px auto;
-                padding: 22px;
+                margin: 24px auto;
+                padding: 0 14px;
+            }
+
+            .card {
+                padding: 18px;
             }
 
             h2 {
-                font-size: 28px;
+                font-size: 23px;
             }
 
             .top-section {
@@ -223,8 +275,24 @@
                 width: 100%;
             }
 
-            .button {
-                text-align: center;
+            th,
+            td {
+                padding: 12px 9px;
+            }
+
+            .actions {
+                gap: 5px;
+            }
+
+            .actions .button {
+                padding: 7px 8px;
+                font-size: 11px;
+            }
+
+            .add-dose-button {
+                padding: 13px 18px;
+                font-size: 15px;
+                min-height: 46px;
             }
         }
     </style>
@@ -232,19 +300,20 @@
 
 <body>
 
-    <div class="header">
-        <h1>Health Tracking System</h1>
-        <p>Dose Record Management</p>
+<header class="header">
+    <h1>Health Tracking System</h1>
+    <p>Dose Record Management</p>
+</header>
+
+<main class="container">
+
+    <div class="dashboard-link">
+        <a th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
     </div>
 
-    <div class="container">
-
-        <!-- Back to Medication Dashboard -->
-        <div class="dashboard-link">
-            <a th:href="@{/medication-dashboard}">
-                &larr; Back to Medication Dashboard
-            </a>
-        </div>
+    <section class="card">
 
         <h2>📝 Dose Records</h2>
 
@@ -257,7 +326,8 @@
             </div>
 
             <div>
-                <a class="button" th:href="@{/dose-records/add}">
+                <a class="button add-dose-button"
+                   th:href="@{/dose-records/add}">
                     + Add Dose Record
                 </a>
             </div>
@@ -268,72 +338,71 @@
             <table>
 
                 <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Dose Date</th>
-                        <th>Status</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
-                    </tr>
+                <tr>
+                    <th>ID</th>
+                    <th>Dose Date</th>
+                    <th>Status</th>
+                    <th>Edit</th>
+                    <th>Delete</th>
+                </tr>
                 </thead>
 
                 <tbody>
 
-                    <tr th:each="record : ${doseRecords}">
+                <tr th:each="record : ${doseRecords}">
 
-                        <td th:text="${record.id}">1</td>
+                    <td th:text="${record.id}">1</td>
 
-                        <td th:text="${record.doseDate}">2026-10-09</td>
+                    <td th:text="${record.doseDate}">2026-10-09</td>
 
-                        <td>
-                            <span class="status"
-                                  th:classappend="${record.status != null ? ' ' + #strings.toLowerCase(record.status.name()) : ''}"
-                                  th:text="${record.status}">
-                                TAKEN
-                            </span>
-                        </td>
+                    <td>
+                        <span class="status"
+                              th:text="${record.status}">
+                            TAKEN
+                        </span>
+                    </td>
 
-                        <td>
-                            <a class="button"
-                               th:href="@{/dose-records/edit/{id}(id=${record.id})}">
-                                Edit
-                            </a>
-                        </td>
+                    <td>
+                        <a class="button"
+                           th:href="@{/dose-records/edit/{id}(id=${record.id})}">
+                            Edit
+                        </a>
+                    </td>
 
-                        <td>
-                            <form
-                                th:action="@{/dose-records/delete/{id}(id=${record.id})}"
-                                method="post"
-                                style="display:inline;"
-                                onsubmit="return confirm('Are you sure you want to delete this dose record?');">
+                    <td>
+                        <form
+                            th:action="@{/dose-records/delete/{id}(id=${record.id})}"
+                            method="post"
+                            onsubmit="return confirm('Are you sure you want to delete this dose record?');">
 
-                                <button class="button delete-button" type="submit">
-                                    Delete
-                                </button>
-                            </form>
-                        </td>
+                            <button class="button delete-button" type="submit">
+                                Delete
+                            </button>
+                        </form>
+                    </td>
 
-                    </tr>
+                </tr>
 
-                    <tr th:if="${#lists.isEmpty(doseRecords)}">
-                        <td colspan="5" class="empty">
-                            No dose records found. Click Add Dose Record to create one.
-                        </td>
-                    </tr>
+                <tr th:if="${#lists.isEmpty(doseRecords)}">
+                    <td colspan="5" class="empty">
+                        No dose records found. Click Add Dose Record to create one.
+                    </td>
+                </tr>
 
                 </tbody>
             </table>
         </div>
 
-        <!-- Bottom dashboard button -->
-        <div class="bottom">
-            <a class="button back-button"
-               th:href="@{/medication-dashboard}">
-                &larr; Back to Medication Dashboard
-            </a>
-        </div>
+    </section>
 
+    <div class="bottom">
+        <a class="button back-button"
+           th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
     </div>
+
+</main>
 
 </body>
 </html>
