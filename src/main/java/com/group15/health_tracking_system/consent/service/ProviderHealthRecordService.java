@@ -1,7 +1,11 @@
 package com.group15.health_tracking_system.consent.service;
 
 import com.group15.health_tracking_system.common.exception.ResourceNotFoundException;
+import com.group15.health_tracking_system.health.dto.HealthRecordListItem;
+import com.group15.health_tracking_system.health.entity.BloodPressureRecord;
 import com.group15.health_tracking_system.health.entity.HealthRecord;
+import com.group15.health_tracking_system.health.service.BloodPressureQueryService;
+import com.group15.health_tracking_system.health.service.HealthRecordHistoryService;
 import com.group15.health_tracking_system.health.service.HealthRecordQueryService;
 import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
@@ -22,27 +26,33 @@ public class ProviderHealthRecordService {
 
     private final ProviderAccessService providerAccessService;
     private final HealthRecordQueryService healthRecordQueryService;
+    private final HealthRecordHistoryService healthRecordHistoryService;
+    private final BloodPressureQueryService bloodPressureQueryService;
     private final UserRepository userRepository;
 
     public ProviderHealthRecordService(
             ProviderAccessService providerAccessService,
             HealthRecordQueryService healthRecordQueryService,
+            HealthRecordHistoryService healthRecordHistoryService,
+            BloodPressureQueryService bloodPressureQueryService,
             UserRepository userRepository
     ) {
         this.providerAccessService = providerAccessService;
         this.healthRecordQueryService = healthRecordQueryService;
+        this.healthRecordHistoryService = healthRecordHistoryService;
+        this.bloodPressureQueryService = bloodPressureQueryService;
         this.userRepository = userRepository;
     }
 
     /**
-     * Returns patient details for the provider's record-viewing page.
+     * Returns patient details after checking the provider's consent.
      */
     public User getPatient(Long patientId) {
         return requireAuthorizedPatient(patientId);
     }
 
     /**
-     * Returns the consenting patient's health-record history.
+     * Returns single-value measurements, such as weight and heart rate.
      */
     public List<HealthRecord> getPatientHistory(Long patientId) {
         User patient = requireAuthorizedPatient(patientId);
@@ -51,7 +61,25 @@ public class ProviderHealthRecordService {
     }
 
     /**
-     * Returns a single record belonging to the consenting patient.
+     * Returns the combined history of single-value measurements
+     * and blood-pressure records, newest first.
+     */
+    public List<HealthRecordListItem> getPatientHistoryItems(
+            Long patientId
+    ) {
+        User patient = requireAuthorizedPatient(patientId);
+
+        // Null filters request all metrics and all observation dates.
+        return healthRecordHistoryService.getPatientHistory(
+                patient,
+                null,
+                null,
+                null
+        );
+    }
+
+    /**
+     * Returns a single-value record belonging to the consenting patient.
      */
     public HealthRecord getPatientRecord(
             Long patientId,
@@ -59,16 +87,31 @@ public class ProviderHealthRecordService {
     ) {
         User patient = requireAuthorizedPatient(patientId);
 
-        // The shared service also checks that this record
-        // belongs to the selected patient.
+        // The shared service also checks record ownership.
         return healthRecordQueryService.getPatientRecord(
                 recordId,
                 patient
         );
     }
 
+    /**
+     * Returns a blood-pressure record belonging to the consenting patient.
+     */
+    public BloodPressureRecord getPatientBloodPressureRecord(
+            Long patientId,
+            Long recordId
+    ) {
+        User patient = requireAuthorizedPatient(patientId);
+
+        // Blood-pressure records have their own patient-scoped query.
+        return bloodPressureQueryService.getPatientRecord(
+                recordId,
+                patient
+        );
+    }
+
     private User requireAuthorizedPatient(Long patientId) {
-        // This checks the provider who is actually logged in.
+        // Check the provider who is actually logged in.
         providerAccessService.requireActiveConsent(patientId);
 
         return userRepository.findById(patientId)

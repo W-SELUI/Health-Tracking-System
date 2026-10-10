@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Patient Health Records | Health Tracking System</title>
+    <title>Patient Health Records</title>
 
     <link rel="stylesheet"
           href="/css/app.css"
@@ -89,7 +89,6 @@
 
     <section class="patient-summary"
              aria-label="Patient and provider details">
-
         <p>
             Patient:
             <strong data-th-text="${patient.fullName}">
@@ -97,8 +96,7 @@
             </strong>
         </p>
 
-        <p class="muted"
-           data-th-text="${patient.email}">
+        <p class="muted" data-th-text="${patient.email}">
             Patient email
         </p>
 
@@ -128,10 +126,8 @@
 
     <div class="table-container"
          data-th-unless="${#lists.isEmpty(records)}">
-
         <table class="records-table"
                aria-labelledby="history-heading">
-
             <thead>
                 <tr>
                     <th scope="col">Measurement</th>
@@ -143,33 +139,31 @@
 
             <tbody>
                 <tr data-th-each="record : ${records}">
-                    <td data-th-text="${record.metricType.displayName}">
+                    <td data-th-text="${record.metricName}">
                         Measurement name
                     </td>
 
-                    <td>
-                        <span data-th-text="${record.metricValue}">
-                            Value
-                        </span>
-                        <span data-th-text="${record.unit}">
-                            Unit
-                        </span>
+                    <td data-th-text="${record.displayValue}">
+                        Measurement value and unit
                     </td>
 
                     <td>
                         <time
                             data-th-datetime="${record.observedAt}"
-                            data-th-text="${#temporals.format(
-                                record.observedAt,
-                                'dd MMM yyyy, HH:mm'
-                            )}">
+                            data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
                             Observation time
                         </time>
                     </td>
 
                     <td>
                         <a class="record-link"
-                           href="/provider/patients"
+                           data-th-if="${record.bloodPressure}"
+                           data-th-href="@{/provider/patients/{patientId}/health-records/blood-pressure/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
+                            View record
+                        </a>
+
+                        <a class="record-link"
+                           data-th-unless="${record.bloodPressure}"
                            data-th-href="@{/provider/patients/{patientId}/health-records/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
                             View record
                         </a>

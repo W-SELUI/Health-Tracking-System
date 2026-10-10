@@ -29,7 +29,7 @@ public class ProviderHealthRecordController {
     }
 
     /**
-     * Displays the selected patient's health-record history.
+     * Displays measurements and blood-pressure records together.
      */
     @GetMapping
     public String showHistory(
@@ -43,7 +43,7 @@ public class ProviderHealthRecordController {
 
         model.addAttribute(
                 "records",
-                recordService.getPatientHistory(patientId)
+                recordService.getPatientHistoryItems(patientId)
         );
 
         model.addAttribute(
@@ -55,7 +55,7 @@ public class ProviderHealthRecordController {
     }
 
     /**
-     * Displays a single record belonging to the selected patient.
+     * Displays a single-value measurement, such as weight.
      */
     @GetMapping("/{recordId}")
     public String showRecord(
@@ -79,5 +79,35 @@ public class ProviderHealthRecordController {
         );
 
         return "consent/provider-health-record";
+    }
+
+    /**
+     * Displays one blood-pressure observation.
+     */
+    @GetMapping("/blood-pressure/{recordId}")
+    public String showBloodPressureRecord(
+            @PathVariable("patientId") Long patientId,
+            @PathVariable("recordId") Long recordId,
+            Model model
+    ) {
+        model.addAttribute(
+                "patient",
+                recordService.getPatient(patientId)
+        );
+
+        model.addAttribute(
+                "record",
+                recordService.getPatientBloodPressureRecord(
+                        patientId,
+                        recordId
+                )
+        );
+
+        model.addAttribute(
+                "currentUser",
+                currentUserService.getCurrentUser()
+        );
+
+        return "consent/provider-blood-pressure-record";
     }
 }
