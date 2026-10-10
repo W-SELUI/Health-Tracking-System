@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medication Dashboard</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #2c3e50;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 35px 6%;
+            border-bottom: 1px solid #d3e1ef;
+        }
+
+        .header h1 {
+            color: #0d2d52;
+            font-size: 42px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #183b63;
+            font-size: 18px;
+        }
+
+        .container {
+            width: 95%;
+            max-width: 1600px;
+            margin: 40px auto;
+        }
+
+        .title-section {
+            margin-bottom: 30px;
+        }
+
+        .title-section h2 {
+            color: #0d2d52;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .title-section p {
+            color: #5c6f82;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(0, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            background: white;
+            border-radius: 15px;
+            padding: 22px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 22px rgba(0, 0, 0, 0.12);
+        }
+
+        .card-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 {
+            color: #0d2d52;
+            font-size: 18px;
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        .card p {
+            color: #6b7c8d;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            flex-grow: 1;
+        }
+
+        /* Module buttons remain blue */
+        .btn {
+            display: inline-block;
+            background: #1565a9;
+            color: white;
+            text-decoration: none;
+            padding: 11px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+            transition: background 0.3s ease;
+            margin-top: auto;
+        }
+
+        .btn:hover {
+            background: #0f4d84;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-bottom: 20px;
+        }
+
+        /* Back to Main Dashboard button */
+        .back-btn {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            text-decoration: none;
+            padding: 14px 25px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #293F59;
+        }
+
+        /* Tablets */
+        @media (max-width: 1200px) {
+            .card-grid {
+                grid-template-columns: repeat(3, minmax(0, 1fr));
+            }
+        }
+
+        /* Small tablets and large phones */
+        @media (max-width: 800px) {
+            .card-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 16px;
+            }
+
+            .header h1 {
+                font-size: 34px;
+            }
+
+            .title-section h2 {
+                font-size: 28px;
+            }
+        }
+
+        /* Mobile phones */
+        @media (max-width: 500px) {
+            .header {
+                padding: 28px 6%;
+            }
+
+            .header h1 {
+                font-size: 29px;
+            }
+
+            .header p {
+                font-size: 16px;
+            }
+
+            .container {
+                width: 92%;
+                margin: 28px auto;
+            }
+
+            .title-section h2 {
+                font-size: 25px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .card {
+                padding: 22px;
+            }
+
+            .btn {
+                width: 100%;
+            }
+
+            .back-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Health Tracking System</h1>
+        <p>Medication Module Dashboard</p>
+    </div>
+
+    <div class="container">
+
+        <div class="title-section">
+            <h2>💊 Medication Management Dashboard</h2>
+            <p>
+                Manage medications, schedules, dose records,
+                appointments and medication adherence information.
+            </p>
+        </div>
+
+        <div class="card-grid">
+
+            <!-- Medications -->
+            <div class="card">
+                <div class="card-icon">💊</div>
+                <h3>Medications</h3>
+                <p>
+                    Add, update and manage patient medication records.
+                </p>
+                <a th:href="@{/medications}" class="btn">
+                    View Medications
+                </a>
+            </div>
+
+            <!-- Medication Schedules -->
+            <div class="card">
+                <div class="card-icon">⏰</div>
+                <h3>Medication Schedules</h3>
+                <p>
+                    Create and manage medication reminder schedules.
+                </p>
+                <a th:href="@{/schedules}" class="btn">
+                    View Schedules
+                </a>
+            </div>
+
+            <!-- Dose Records -->
+            <div class="card">
+                <div class="card-icon">📝</div>
+                <h3>Dose Records</h3>
+                <p>
+                    Track taken, missed and skipped medication doses.
+                </p>
+                <a th:href="@{/dose-records}" class="btn">
+                    View Dose Records
+                </a>
+            </div>
+
+            <!-- Appointments -->
+            <div class="card">
+                <div class="card-icon">📅</div>
+                <h3>Appointments</h3>
+                <p>
+                    Manage doctor appointments and follow-up visits.
+                </p>
+                <a th:href="@{/appointments}" class="btn">
+                    View Appointments
+                </a>
+            </div>
+
+            <!-- Medication Adherence -->
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <h3>Medication Adherence</h3>
+                <p>
+                    View medication adherence statistics and monitor
+                    patient compliance.
+                </p>
+                <a th:href="@{/adherence}" class="btn">
+                    View Adherence
+                </a>
+            </div>
+
+        </div>
+
+        <!-- Back to Main Dashboard -->
+        <div class="footer">
+            <a th:href="@{/}" class="back-btn">
+                &larr; Back to Main Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>

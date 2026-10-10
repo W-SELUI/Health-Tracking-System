@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Health Records</title>
+
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
@@ -10,6 +11,24 @@
 <body>
 
 <h1>Health Records</h1>
+
+<p>
+    <a th:href="@{/patient/health-records/new}">
+        Add Health Record
+    </a>
+</p>
+
+<p th:if="${param.created}">
+    Health record created successfully.
+</p>
+
+<p th:if="${param.updated}">
+    Health record updated successfully.
+</p>
+
+<p th:if="${param.deleted}">
+    Health record deleted successfully.
+</p>
 
 <h2>Filter Records</h2>
 
@@ -22,10 +41,10 @@
 
             <option value="">All Metrics</option>
 
-            <option th:each="metric : ${metricTypes}"
-                    th:value="${metric}"
-                    th:text="${metric.displayName}"
-                    th:selected="${metric == selectedMetricType}">
+            <option th:each="option : ${filterOptions}"
+                    th:value="${option}"
+                    th:text="${option.displayName}"
+                    th:selected="${option == selectedMetricType}">
                 Metric
             </option>
 
@@ -68,9 +87,7 @@
 <hr>
 
 <div th:if="${#lists.isEmpty(records)}">
-
     <p>No health records were found.</p>
-
 </div>
 
 <table th:unless="${#lists.isEmpty(records)}">
@@ -81,7 +98,7 @@
         <th>Metric</th>
         <th>Value</th>
         <th>Source</th>
-        <th>Details</th>
+        <th>Actions</th>
     </tr>
     </thead>
 
@@ -93,18 +110,12 @@
             2026-10-10T09:30
         </td>
 
-        <td th:text="${record.metricType.displayName}">
+        <td th:text="${record.metricName}">
             Heart Rate
         </td>
 
-        <td>
-            <span th:text="${record.metricValue}">
-                72
-            </span>
-
-            <span th:text="${record.unit}">
-                bpm
-            </span>
+        <td th:text="${record.displayValue}">
+            72 bpm
         </td>
 
         <td th:text="${record.source.displayName}">
@@ -112,9 +123,57 @@
         </td>
 
         <td>
-            <a th:href="@{/patient/health-records/{id}(id=${record.id})}">
-                View
-            </a>
+
+            <div class="action-buttons"
+                 th:if="${!record.bloodPressure}">
+
+                <a th:href="@{/patient/health-records/{id}(id=${record.id})}">
+                    View
+                </a>
+
+                <a th:if="${record.editable}"
+                   th:href="@{/patient/health-records/{id}/edit(id=${record.id})}">
+                    Edit
+                </a>
+
+                <form th:if="${record.editable}"
+                      th:action="@{/patient/health-records/{id}/delete(id=${record.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            onclick="return confirm('Are you sure you want to delete this health record?');">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
+            <div class="action-buttons"
+                 th:if="${record.bloodPressure}">
+
+                <a th:href="@{/patient/health-records/blood-pressure/{id}(id=${record.id})}">
+                    View
+                </a>
+
+                <a th:if="${record.editable}"
+                   th:href="@{/patient/health-records/blood-pressure/{id}/edit(id=${record.id})}">
+                    Edit
+                </a>
+
+                <form th:if="${record.editable}"
+                      th:action="@{/patient/health-records/blood-pressure/{id}/delete(id=${record.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            onclick="return confirm('Are you sure you want to delete this health record?');">
+                        Delete
+                    </button>
+
+                </form>
+
+            </div>
+
         </td>
 
     </tr>

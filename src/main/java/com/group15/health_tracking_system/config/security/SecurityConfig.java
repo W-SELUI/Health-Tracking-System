@@ -31,6 +31,7 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**"
                         ).permitAll()
+                        .requestMatchers("/activities", "/activities/**").hasRole("PATIENT")
                         .requestMatchers("/patient/**").hasRole("PATIENT")
                         .requestMatchers("/provider/**").hasRole("PROVIDER")
                         .requestMatchers("/admin/**").hasRole("ADMIN")

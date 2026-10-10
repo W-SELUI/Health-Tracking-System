@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Edit Medication Schedule</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 40px 6%;
+            border-bottom: 1px solid #d3e1ef;
+        }
+
+        header h1 {
+            margin: 0 0 12px;
+            font-size: 42px;
+            color: #0d2d52;
+        }
+
+        header p {
+            margin: 0;
+            font-size: 20px;
+            color: #183b63;
+        }
+
+        main {
+            width: min(750px, 92%);
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        /* Dashboard navigation buttons */
+        .dashboard-link {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-link a {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 15px;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .dashboard-link a:hover {
+            background: #293F59;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 32px;
+            color: #0d2d52;
+        }
+
+        .description {
+            color: #526477;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin-top: 22px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0d2d52;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #ccd5df;
+            border-radius: 8px;
+            background: white;
+            font-family: inherit;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #1565a9;
+            border-color: #1565a9;
+        }
+
+        .buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        button,
+        .cancel {
+            display: inline-block;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        /* Update Schedule remains blue */
+        button {
+            background: #1565a9;
+            color: white;
+        }
+
+        button:hover {
+            background: #0f4d84;
+        }
+
+        /* Cancel matches the dark blue-grey theme */
+        .cancel {
+            background: #344F6F;
+            color: white;
+        }
+
+        .cancel:hover {
+            background: #293F59;
+        }
+
+        .bottom-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #d9e3ec;
+        }
+
+        .bottom-link .dashboard-link {
+            margin-bottom: 0;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 30px 6%;
+            }
+
+            header h1 {
+                font-size: 30px;
+            }
+
+            header p {
+                font-size: 17px;
+            }
+
+            main {
+                margin: 25px auto;
+                padding: 24px;
+            }
+
+            h2 {
+                font-size: 27px;
+            }
+
+            .buttons {
+                flex-direction: column;
+            }
+
+            .buttons button,
+            .buttons .cancel {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <h1>Health Tracking System</h1>
+        <p>Medication Schedule Management</p>
+    </header>
+
+    <main>
+
+        <!-- Top dashboard button -->
+        <div class="dashboard-link">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+        <h2>Edit Medication Schedule</h2>
+
+        <p class="description">
+            Update the medication and the time it is scheduled to be taken.
+        </p>
+
+        <form th:action="@{/schedules/update}" method="post">
+
+            <!-- Keep the ID of the existing schedule -->
+            <input type="hidden"
+                   name="id"
+                   th:value="${schedule.id}">
+
+            <!-- Medication dropdown -->
+            <label for="medicationId">Select Medication</label>
+
+            <select id="medicationId"
+                    name="medicationId"
+                    required>
+
+                <option value="">-- Select a medication --</option>
+
+                <option th:each="med : ${medications}"
+                        th:value="${med.id}"
+                        th:text="${med.medicationName}"
+                        th:selected="${schedule.medication != null and schedule.medication.id == med.id}">
+                </option>
+
+            </select>
+
+            <!-- Scheduled time -->
+            <label for="scheduledTime">Scheduled Time</label>
+
+            <input type="time"
+                   id="scheduledTime"
+                   name="scheduledTime"
+                   th:value="${schedule.scheduledTime}"
+                   required>
+
+            <!-- Form actions -->
+            <div class="buttons">
+
+                <button type="submit">
+                    Update Schedule
+                </button>
+
+                <a class="cancel" th:href="@{/schedules}">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+        <!-- Bottom dashboard button -->
+        <div class="bottom-link">
+            <div class="dashboard-link">
+                <a th:href="@{/medication-dashboard}">
+                    &larr; Back to Medication Dashboard
+                </a>
+            </div>
+        </div>
+
+    </main>
+
+</body>
+</html>

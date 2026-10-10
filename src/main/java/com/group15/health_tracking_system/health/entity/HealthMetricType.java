@@ -1,10 +1,10 @@
 package com.group15.health_tracking_system.health.entity;
 
 /**
- * Health measurements supported by the Health Records module.
+ * Scalar health measurements supported by the Health Records module.
  *
- * Each metric defines its standard display name and unit so that
- * inconsistent metric/unit combinations cannot be submitted by users.
+ * Blood pressure is deliberately not included because it consists of
+ * two related values and is represented by BloodPressureRecord.
  */
 public enum HealthMetricType {
 
@@ -12,9 +12,7 @@ public enum HealthMetricType {
     HEART_RATE("Heart Rate", "bpm"),
     BODY_TEMPERATURE("Body Temperature", "°C"),
     OXYGEN_SATURATION("Oxygen Saturation", "%"),
-    BLOOD_GLUCOSE("Blood Glucose", "mmol/L"),
-    BLOOD_PRESSURE_SYSTOLIC("Systolic Blood Pressure", "mmHg"),
-    BLOOD_PRESSURE_DIASTOLIC("Diastolic Blood Pressure", "mmHg");
+    BLOOD_GLUCOSE("Blood Glucose", "mmol/L");
 
     private final String displayName;
     private final String unit;

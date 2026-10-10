@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Medication</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #0d2d52;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 40px 6%;
+        }
+
+        .header h1 {
+            font-size: 42px;
+            margin-bottom: 12px;
+        }
+
+        .header p {
+            font-size: 20px;
+            color: #183b63;
+        }
+
+        .container {
+            width: min(700px, 92%);
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px #00000010;
+        }
+
+        /* Dashboard navigation buttons */
+        .dashboard-link {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-link a,
+        .bottom-dashboard-link a {
+            display: inline-block;
+            background: #344F6F;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: background 0.3s ease;
+        }
+
+        .dashboard-link a:hover,
+        .bottom-dashboard-link a:hover {
+            background: #293F59;
+        }
+
+        h2 {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .description {
+            color: #526477;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin-top: 18px;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cfd8e3;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        input:focus {
+            outline: 2px solid #1565a9;
+            border-color: #1565a9;
+        }
+
+        .update-btn,
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 16px;
+            text-decoration: none;
+            text-align: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        /* Update Medication remains blue */
+        .update-btn {
+            background: #1565a9;
+            color: white;
+        }
+
+        .update-btn:hover {
+            background: #0f4d84;
+        }
+
+        /* Cancel matches the dark blue-grey theme */
+        .back-btn {
+            background: #344F6F;
+            color: white;
+            margin-left: 8px;
+        }
+
+        .back-btn:hover {
+            background: #293F59;
+        }
+
+        .bottom-dashboard-link {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #d9e3ec;
+        }
+
+        @media (max-width: 600px) {
+            .header {
+                padding: 30px 6%;
+            }
+
+            .header h1 {
+                font-size: 30px;
+            }
+
+            .container {
+                margin: 25px auto;
+                padding: 24px;
+            }
+
+            h2 {
+                font-size: 28px;
+            }
+
+            .update-btn,
+            .back-btn {
+                margin-left: 0;
+                margin-right: 5px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="header">
+        <h1>Health Tracking System</h1>
+        <p>Medication Management</p>
+    </div>
+
+    <div class="container">
+
+        <!-- Top dashboard button -->
+        <div class="dashboard-link">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+        <h2>Edit Medication</h2>
+
+        <p class="description">
+            Update the medication details below.
+        </p>
+
+        <form th:action="@{/medications/update}"
+              th:object="${medication}"
+              method="post">
+
+            <!-- Preserve the existing medication ID -->
+            <input type="hidden"
+                   name="id"
+                   th:value="${medication.id}">
+
+            <label for="medicationName">Medication Name</label>
+            <input type="text"
+                   id="medicationName"
+                   th:field="*{medicationName}"
+                   required>
+
+            <label for="dosage">Dosage</label>
+            <input type="text"
+                   id="dosage"
+                   th:field="*{dosage}"
+                   required>
+
+            <label for="instructions">Instructions</label>
+            <input type="text"
+                   id="instructions"
+                   th:field="*{instructions}"
+                   required>
+
+            <button type="submit" class="update-btn">
+                Update Medication
+            </button>
+
+            <a th:href="@{/medications}" class="back-btn">
+                Cancel
+            </a>
+
+        </form>
+
+        <!-- Bottom dashboard button -->
+        <div class="bottom-dashboard-link">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+
+    </div>
+
+</body>
+</html>
