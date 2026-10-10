@@ -36,7 +36,8 @@ label {
 }
 
 input,
-select {
+select,
+textarea {
     width: 100%;
     padding: 10px 12px;
     border: 1px solid #b8c0cc;
@@ -45,7 +46,8 @@ select {
 }
 
 input:focus,
-select:focus {
+select:focus,
+textarea:focus {
     outline: none;
     border-color: #2563eb;
 }
@@ -91,4 +93,42 @@ body > a {
 
 span {
     font-weight: 600;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    background: white;
+}
+
+table th,
+table td {
+    vertical-align: top;
+    padding: 10px 12px;
+    border-bottom: 1px solid #d9dee5;
+    text-align: left;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: flex-start;
+}
+
+.action-buttons a,
+.action-buttons button {
+    display: inline-block;
+}
+
+.action-buttons form {
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: transparent;
+}
+
+.action-buttons button {
+    width: auto;
 }

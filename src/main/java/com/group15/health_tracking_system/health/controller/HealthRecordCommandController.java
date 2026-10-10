@@ -1,7 +1,11 @@
 package com.group15.health_tracking_system.health.controller;
 
+import com.group15.health_tracking_system.health.dto.BloodPressureRecordRequest;
+import com.group15.health_tracking_system.health.dto.HealthRecordCreateRequest;
+import com.group15.health_tracking_system.health.dto.HealthRecordFilterOption;
 import com.group15.health_tracking_system.health.dto.HealthRecordRequest;
 import com.group15.health_tracking_system.health.entity.HealthMetricType;
+import com.group15.health_tracking_system.health.service.BloodPressureCommandService;
 import com.group15.health_tracking_system.health.service.HealthRecordCommandService;
 import com.group15.health_tracking_system.user.entity.User;
 import com.group15.health_tracking_system.user.service.CurrentUserService;
@@ -15,18 +19,29 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
+/**
+ * Handles patient-side creation of all health-record types and modification
+ * of scalar health records.
+ *
+ * The create screen is unified for the patient. Internally, scalar
+ * measurements are stored as HealthRecord and blood-pressure observations
+ * are stored as BloodPressureRecord.
+ */
 @Controller
 @RequestMapping("/patient/health-records")
 public class HealthRecordCommandController {
 
     private final HealthRecordCommandService commandService;
+    private final BloodPressureCommandService bloodPressureCommandService;
     private final CurrentUserService currentUserService;
 
     public HealthRecordCommandController(
             HealthRecordCommandService commandService,
+            BloodPressureCommandService bloodPressureCommandService,
             CurrentUserService currentUserService) {
 
         this.commandService = commandService;
+        this.bloodPressureCommandService = bloodPressureCommandService;
         this.currentUserService = currentUserService;
     }
 
@@ -34,11 +49,11 @@ public class HealthRecordCommandController {
     public String showCreateForm(Model model) {
 
         model.addAttribute(
-                "healthRecordRequest",
-                new HealthRecordRequest()
+                "healthRecordCreateRequest",
+                new HealthRecordCreateRequest()
         );
 
-        addMetricTypes(model);
+        addCreateMetricOptions(model);
 
         return "health-records/create";
     }
@@ -46,22 +61,50 @@ public class HealthRecordCommandController {
     @PostMapping
     public String createRecord(
             @Valid
-            @ModelAttribute("healthRecordRequest")
-            HealthRecordRequest request,
+            @ModelAttribute("healthRecordCreateRequest")
+            HealthRecordCreateRequest request,
             BindingResult bindingResult,
             Model model) {
 
+        validateCreateMeasurement(request, bindingResult);
+
         if (bindingResult.hasErrors()) {
-            addMetricTypes(model);
+            addCreateMetricOptions(model);
             return "health-records/create";
         }
 
         User currentUser = currentUserService.getCurrentUser();
 
-        commandService.createPatientRecord(
-                currentUser,
-                request
-        );
+        if (request.getMetricType().isBloodPressure()) {
+
+            BloodPressureRecordRequest bloodPressureRequest =
+                    new BloodPressureRecordRequest(
+                            request.getSystolic(),
+                            request.getDiastolic(),
+                            request.getObservedAt(),
+                            request.getNotes()
+                    );
+
+            bloodPressureCommandService.createPatientRecord(
+                    currentUser,
+                    bloodPressureRequest
+            );
+
+        } else {
+
+            HealthRecordRequest scalarRequest =
+                    new HealthRecordRequest(
+                            request.getMetricType().getScalarMetricType(),
+                            request.getMetricValue(),
+                            request.getObservedAt(),
+                            request.getNotes()
+                    );
+
+            commandService.createPatientRecord(
+                    currentUser,
+                    scalarRequest
+            );
+        }
 
         return "redirect:/patient/health-records?created";
     }
@@ -89,7 +132,7 @@ public class HealthRecordCommandController {
                 recordId
         );
 
-        addMetricTypes(model);
+        addScalarMetricTypes(model);
 
         return "health-records/edit";
     }
@@ -110,7 +153,7 @@ public class HealthRecordCommandController {
                     recordId
             );
 
-            addMetricTypes(model);
+            addScalarMetricTypes(model);
 
             return "health-records/edit";
         }
@@ -140,7 +183,52 @@ public class HealthRecordCommandController {
         return "redirect:/patient/health-records?deleted";
     }
 
-    private void addMetricTypes(Model model) {
+    private void validateCreateMeasurement(
+            HealthRecordCreateRequest request,
+            BindingResult bindingResult) {
+
+        if (request.getMetricType() == null) {
+            return;
+        }
+
+        if (request.getMetricType().isBloodPressure()) {
+
+            if (request.getSystolic() == null) {
+                bindingResult.rejectValue(
+                        "systolic",
+                        "required.systolic",
+                        "Systolic value is required"
+                );
+            }
+
+            if (request.getDiastolic() == null) {
+                bindingResult.rejectValue(
+                        "diastolic",
+                        "required.diastolic",
+                        "Diastolic value is required"
+                );
+            }
+
+            return;
+        }
+
+        if (request.getMetricValue() == null) {
+            bindingResult.rejectValue(
+                    "metricValue",
+                    "required.metricValue",
+                    "Measurement value is required"
+            );
+        }
+    }
+
+    private void addCreateMetricOptions(Model model) {
+        model.addAttribute(
+                "metricOptions",
+                HealthRecordFilterOption.values()
+        );
+    }
+
+    private void addScalarMetricTypes(Model model) {
         model.addAttribute(
                 "metricTypes",
                 HealthMetricType.values()

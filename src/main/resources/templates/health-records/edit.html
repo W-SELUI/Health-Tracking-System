@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Health Record</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
 </head>
 <body>
 
@@ -89,7 +91,7 @@
 </form>
 
 <p>
-    <a th:href="@{/dashboard}">
+    <a th:href="@{/patient/health-records}">
         Cancel
     </a>
 </p>

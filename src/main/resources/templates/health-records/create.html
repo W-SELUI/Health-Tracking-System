@@ -3,14 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <title>Add Health Record</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
 </head>
 <body>
 
 <h1>Add Health Record</h1>
 
 <form th:action="@{/patient/health-records}"
-      th:object="${healthRecordRequest}"
+      th:object="${healthRecordCreateRequest}"
       method="post">
 
     <div>
@@ -22,9 +24,9 @@
 
             <option value="">Select a metric</option>
 
-            <option th:each="metric : ${metricTypes}"
-                    th:value="${metric}"
-                    th:text="${metric.displayName + ' (' + metric.unit + ')'}">
+            <option th:each="option : ${metricOptions}"
+                    th:value="${option}"
+                    th:text="${option.displayName}">
                 Metric
             </option>
 
@@ -36,19 +38,54 @@
         </p>
     </div>
 
-    <div>
+    <div id="scalarValueGroup">
         <label for="metricValue">Measurement Value</label>
 
         <input type="number"
                id="metricValue"
                th:field="*{metricValue}"
-               step="0.001"
-               required>
+               step="0.001">
 
         <p th:if="${#fields.hasErrors('metricValue')}"
            th:errors="*{metricValue}">
             Measurement error
         </p>
+    </div>
+
+    <div id="bloodPressureGroup">
+
+        <p>
+            Enter systolic and diastolic values from the same blood-pressure reading.
+        </p>
+
+        <div>
+            <label for="systolic">Systolic (mmHg)</label>
+
+            <input type="number"
+                   id="systolic"
+                   th:field="*{systolic}"
+                   step="0.1">
+
+            <p th:if="${#fields.hasErrors('systolic')}"
+               th:errors="*{systolic}">
+                Systolic error
+            </p>
+        </div>
+
+        <div>
+            <label for="diastolic">Diastolic (mmHg)</label>
+
+            <input type="number"
+                   id="diastolic"
+                   th:field="*{diastolic}"
+                   step="0.1">
+
+            <p th:if="${#fields.hasErrors('diastolic')}"
+               th:errors="*{diastolic}">
+                Diastolic error
+            </p>
+        </div>
+
     </div>
 
     <div>
@@ -89,10 +126,37 @@
 </form>
 
 <p>
-    <a th:href="@{/dashboard}">
+    <a th:href="@{/patient/health-records}">
         Cancel
     </a>
 </p>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const metricType = document.getElementById("metricType");
+        const scalarValueGroup = document.getElementById("scalarValueGroup");
+        const bloodPressureGroup = document.getElementById("bloodPressureGroup");
+        const metricValue = document.getElementById("metricValue");
+        const systolic = document.getElementById("systolic");
+        const diastolic = document.getElementById("diastolic");
+
+        function updateMeasurementFields() {
+            const selectedMetric = metricType.value;
+            const isBloodPressure = selectedMetric === "BLOOD_PRESSURE";
+            const hasSelection = selectedMetric !== "";
+
+            scalarValueGroup.hidden = !hasSelection || isBloodPressure;
+            bloodPressureGroup.hidden = !isBloodPressure;
+
+            metricValue.required = hasSelection && !isBloodPressure;
+            systolic.required = isBloodPressure;
+            diastolic.required = isBloodPressure;
+        }
+
+        metricType.addEventListener("change", updateMeasurementFields);
+        updateMeasurementFields();
+    });
+</script>
 
 </body>
 </html>
