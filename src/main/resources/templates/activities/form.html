@@ -1,0 +1,11 @@
+<!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Activity tracking</title><link rel="stylesheet" th:href="@{/css/activity.css}"></head><body><header><h1>Health Tracking System</h1><p>My activity records</p></header><main><h2>Add or edit activity</h2><form method="post" th:action="${action}" th:object="${form}">
+<div class="errors" th:if="${#fields.hasAnyErrors()}"><p>Please correct these fields:</p><ul><li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li></ul></div>
+<label>Date<input type="date" th:field="*{activityDate}" required></label>
+<label>Daily steps<input type="number" th:field="*{steps}" min="0" required></label>
+<label>Exercise type<select th:field="*{exerciseType}"><option th:each="type : ${exerciseTypes}" th:value="${type}" th:text="${type}"></option></select></label>
+<label>Custom exercise (required for OTHER)<input th:field="*{customExercise}" maxlength="100"></label>
+<label>Duration in minutes (optional)<input type="number" th:field="*{durationMinutes}" min="0"></label>
+<label>Calories burned (kcal)<input type="number" th:field="*{caloriesBurned}" min="0" step="0.01" required></label>
+<label>Notes (optional)<textarea th:field="*{notes}" maxlength="1000"></textarea></label>
+<p>Enter one daily total per day where possible. Additional entries are added together in summaries; do not repeat the same total.</p>
+<button type="submit">Save activity</button> <a th:href="@{/activities}">Cancel</a></form></main></body></html>
