@@ -12,7 +12,8 @@ public class MedicationScheduleService {
 
     private final MedicationScheduleRepository repository;
 
-    public MedicationScheduleService(MedicationScheduleRepository repository) {
+    public MedicationScheduleService(
+            MedicationScheduleRepository repository) {
         this.repository = repository;
     }
 
@@ -20,10 +21,12 @@ public class MedicationScheduleService {
         return repository.save(schedule);
     }
 
-    public List<MedicationSchedule> getAll() {
-        return repository.findAll();
+    // Get schedules belonging to one patient's medications
+    public List<MedicationSchedule> getByUserId(Long userId) {
+        return repository.findByMedication_User_Id(userId);
     }
 
+    // Get a schedule by ID (existing functionality)
     public Optional<MedicationSchedule> getById(Long id) {
         return repository.findById(id);
     }

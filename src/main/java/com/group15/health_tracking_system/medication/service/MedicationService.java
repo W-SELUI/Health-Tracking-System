@@ -40,7 +40,13 @@ public class MedicationService {
         return medicationRepository.findByIdAndUserId(id, userId);
     }
 
-    public void deleteMedication(Long id) {
-        medicationRepository.deleteById(id);
-    }
+   public void deleteMedication(Long id, Long userId) {
+    Medication medication = medicationRepository
+            .findByIdAndUserId(id, userId)
+            .orElseThrow(() ->
+                    new IllegalArgumentException(
+                            "Medication not found for this patient."));
+
+    medicationRepository.delete(medication);
+}
 }

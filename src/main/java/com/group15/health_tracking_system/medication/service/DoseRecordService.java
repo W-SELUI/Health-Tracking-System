@@ -1,9 +1,7 @@
-
 package com.group15.health_tracking_system.medication.service;
 
 import com.group15.health_tracking_system.medication.entity.DoseRecord;
 import com.group15.health_tracking_system.medication.repository.DoseRecordRepository;
-
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,26 +11,29 @@ public class DoseRecordService {
 
     private final DoseRecordRepository doseRecordRepository;
 
-    public DoseRecordService(DoseRecordRepository doseRecordRepository) {
+    public DoseRecordService(
+            DoseRecordRepository doseRecordRepository) {
         this.doseRecordRepository = doseRecordRepository;
     }
 
-    // Get all dose records
-    public List<DoseRecord> getAll() {
-        return doseRecordRepository.findAll();
+    // Get dose records belonging to a particular user
+    public List<DoseRecord> getByUserId(Long userId) {
+        return doseRecordRepository
+                .findByMedication_User_Id(userId);
     }
 
-    // Get a dose record by ID
-    public DoseRecord getById(Long id) {
-        return doseRecordRepository.findById(id)
+    // Get a dose record only if it belongs to the user
+    public DoseRecord getByIdAndUserId(
+            Long id, Long userId) {
+        return doseRecordRepository
+                .findByIdAndMedication_User_Id(id, userId)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 "Dose record not found: " + id));
     }
 
-    // Save a new or updated dose record
+    // Save a new dose record after validating its medication
     public DoseRecord save(DoseRecord doseRecord) {
-
         if (doseRecord.getMedication() == null
                 || doseRecord.getMedication().getId() == null) {
             throw new IllegalArgumentException(
@@ -42,14 +43,9 @@ public class DoseRecordService {
         return doseRecordRepository.save(doseRecord);
     }
 
-    // Delete a dose record by ID
-    public void deleteById(Long id) {
-
-        if (!doseRecordRepository.existsById(id)) {
-            throw new IllegalArgumentException(
-                    "Dose record not found: " + id);
-        }
-
-        doseRecordRepository.deleteById(id);
+    // Delete a dose record only if it belongs to the user
+    public void deleteByIdAndUserId(Long id, Long userId) {
+        DoseRecord doseRecord = getByIdAndUserId(id, userId);
+        doseRecordRepository.delete(doseRecord);
     }
 }

@@ -1,6 +1,7 @@
 package com.group15.health_tracking_system.medication.entity;
 
 import com.group15.health_tracking_system.common.model.BaseEntity;
+import com.group15.health_tracking_system.user.entity.User;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,6 +25,10 @@ public class Appointment extends BaseEntity {
 
     @Column(nullable = false)
     private String status = "SCHEDULED";
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "patient_id", nullable = false)
+    private User patient;
 
     public Appointment() {}
 
@@ -73,5 +78,13 @@ public class Appointment extends BaseEntity {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public User getPatient() {
+        return patient;
+    }
+
+    public void setPatient(User patient) {
+        this.patient = patient;
     }
 }

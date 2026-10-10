@@ -1,4 +1,3 @@
-
 package com.group15.health_tracking_system.medication.controller;
 
 import com.group15.health_tracking_system.medication.entity.Medication;
@@ -10,6 +9,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/medications")
@@ -71,7 +71,9 @@ public class MedicationController {
 
         User user = getLoggedInUser(authentication);
 
+        // Always assign the medication to the logged-in user
         medication.setUser(user);
+
         medicationService.saveMedication(medication);
 
         return "redirect:/medications";
@@ -90,15 +92,14 @@ public class MedicationController {
                 .getMedicationByIdAndUserId(id, user.getId())
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Medication ID " + id
-                                + " was not found for the logged-in user."));
+                                "Medication not found or access denied."));
 
         model.addAttribute("medication", medication);
 
         return "edit-medication";
     }
 
-    // Update an existing medication
+    // Update an existing medication owned by this user
     @PostMapping("/update")
     public String updateMedication(
             @RequestParam("id") Long medicationId,
@@ -114,8 +115,7 @@ public class MedicationController {
                         medicationId, user.getId())
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Medication ID " + medicationId
-                                + " was not found for the logged-in user."));
+                                "Medication not found or access denied."));
 
         existing.setMedicationName(medicationName);
         existing.setDosage(dosage);
@@ -126,8 +126,8 @@ public class MedicationController {
         return "redirect:/medications";
     }
 
-    // Delete a medication owned by the logged-in user
-    @GetMapping("/delete/{id}")
+    // Delete a medication only if it belongs to the logged-in user
+    @PostMapping("/delete/{id}")
     public String deleteMedication(
             @PathVariable Long id,
             Authentication authentication) {
@@ -138,10 +138,26 @@ public class MedicationController {
                 .getMedicationByIdAndUserId(id, user.getId())
                 .orElseThrow(() ->
                         new IllegalArgumentException(
-                                "Medication ID " + id
-                                + " was not found for the logged-in user."));
+                                "Medication not found or access denied."));
 
-        medicationService.deleteMedication(medication.getId());
+        medicationService.deleteMedication(
+                medication.getId(),
+                user.getId()
+        );
+
+        return "redirect:/medications";
+    }
+
+    // Redirect when a medication is missing or belongs to another user
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleMedicationAccessError(
+            IllegalArgumentException exception,
+            RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute(
+                "errorMessage",
+                "Medication not found or access denied."
+        );
 
         return "redirect:/medications";
     }

@@ -20,15 +20,25 @@ public class AppointmentService {
         return repository.save(appointment);
     }
 
-    public List<Appointment> getAll() {
-        return repository.findAll();
+    // Get appointments belonging to one patient
+    public List<Appointment> getByPatientId(Long patientId) {
+        return repository.findByPatient_Id(patientId);
     }
 
-    public Optional<Appointment> getById(Long id) {
-        return repository.findById(id);
+    // Get one appointment only if it belongs to the patient
+    public Optional<Appointment> getByIdAndPatientId(
+            Long id, Long patientId) {
+        return repository.findByIdAndPatient_Id(id, patientId);
     }
 
-    public void delete(Long id) {
-        repository.deleteById(id);
+    // Delete an appointment only if it belongs to the patient
+    public void delete(Long id, Long patientId) {
+        Appointment appointment = repository
+                .findByIdAndPatient_Id(id, patientId)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                "Appointment not found for this patient."));
+
+        repository.delete(appointment);
     }
 }
