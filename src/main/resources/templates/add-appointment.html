@@ -145,13 +145,13 @@
         }
 
         .cancel-button {
-    background: #344F6F;
-    color: #ffffff;
-}
+            background: #344F6F;
+            color: #ffffff;
+        }
 
-.cancel-button:hover {
-    background: #293F59;
-}
+        .cancel-button:hover {
+            background: #293F59;
+        }
 
         .footer {
             display: flex;
@@ -205,14 +205,24 @@
         <form th:action="@{/appointments/save}" method="post">
 
             <div class="form-group">
-                <label for="doctorName">Doctor Name</label>
-                <input
-                    type="text"
-                    id="doctorName"
-                    name="doctorName"
-                    placeholder="Enter doctor name"
-                    maxlength="255"
+                <label for="providerId">Doctor Name</label>
+
+                <select
+                    id="providerId"
+                    name="providerId"
                     required>
+
+                    <option value="">
+                        -- Select a registered doctor --
+                    </option>
+
+                    <option
+                        th:each="doctor : ${doctors}"
+                        th:value="${doctor.id}"
+                        th:text="${doctor.fullName + ' (' + doctor.email + ')'}">
+                    </option>
+
+                </select>
             </div>
 
             <div class="form-group">
@@ -237,20 +247,39 @@
 
             <div class="form-group">
                 <label for="status">Status</label>
-                <select id="status" name="status" required>
-                    <option value="">-- Select Status --</option>
-                    <option value="SCHEDULED">Scheduled</option>
-                    <option value="COMPLETED">Completed</option>
-                    <option value="CANCELLED">Cancelled</option>
+                <select
+                    id="status"
+                    name="status"
+                    required>
+
+                    <option value="">
+                        -- Select Status --
+                    </option>
+
+                    <option value="SCHEDULED">
+                        Scheduled
+                    </option>
+
+                    <option value="COMPLETED">
+                        Completed
+                    </option>
+
+                    <option value="CANCELLED">
+                        Cancelled
+                    </option>
+
                 </select>
             </div>
 
-            <button type="submit" class="button save-button">
+            <button
+                type="submit"
+                class="button save-button">
                 Save Appointment
             </button>
 
-            <a th:href="@{/appointments}"
-               class="button cancel-button">
+            <a
+                th:href="@{/appointments}"
+                class="button cancel-button">
                 Back to Appointment List
             </a>
 
@@ -260,8 +289,9 @@
 
     <!-- Bottom navigation -->
     <div class="footer">
-        <a class="button cancel-button"
-           th:href="@{/medication-dashboard}">
+        <a
+            class="button cancel-button"
+            th:href="@{/medication-dashboard}">
             ← Back to Medication Dashboard
         </a>
     </div>
