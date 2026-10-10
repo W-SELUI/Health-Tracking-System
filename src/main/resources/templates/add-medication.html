@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add Medication</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #2c3e50;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 50px 80px;
+        }
+
+        .header h1 {
+            color: #0d2d52;
+            font-size: 56px;
+            margin-bottom: 15px;
+        }
+
+        .header p {
+            color: #183b63;
+            font-size: 22px;
+        }
+
+        .container {
+            width: 700px;
+            max-width: 92%;
+            margin: 40px auto;
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard-link {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-link a {
+    display: inline-block;
+    background: #344F6F;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.dashboard-link a:hover {
+    background: #293F59;
+}
+
+        h2 {
+            color: #0d2d52;
+            font-size: 42px;
+            margin-bottom: 25px;
+        }
+
+        label {
+            display: block;
+            margin-top: 15px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #0d2d52;
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #cfd8e3;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #1565a9;
+            box-shadow: 0 0 0 2px rgba(21, 101, 169, 0.12);
+        }
+
+        .save-btn {
+            margin-top: 25px;
+            background: #1565a9;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .save-btn:hover {
+            background: #0f4d84;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            background: #1565a9;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .back-btn:hover {
+            background: #0f4d84;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 30px 25px;
+            }
+
+            .header h1 {
+                font-size: 36px;
+            }
+
+            .header p {
+                font-size: 18px;
+            }
+
+            .container {
+                padding: 25px;
+                margin: 25px auto;
+            }
+
+            h2 {
+                font-size: 32px;
+            }
+
+            .save-btn,
+            .back-btn {
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="header">
+    <h1>Health Tracking System</h1>
+    <p>Medication Management</p>
+</div>
+
+<div class="container">
+
+    <div class="dashboard-link">
+        <a th:href="@{/medication-dashboard}">
+            ← Back to Medication Dashboard
+        </a>
+    </div>
+
+    <h2>Add Medication</h2>
+
+    <form th:action="@{/medications/save}"
+          th:object="${medication}"
+          method="post">
+
+        <label for="medicationName">Medication Name</label>
+        <input type="text"
+               id="medicationName"
+               th:field="*{medicationName}"
+               required>
+
+        <label for="dosage">Dosage</label>
+        <input type="text"
+               id="dosage"
+               th:field="*{dosage}"
+               required>
+
+        <label for="instructions">Instructions</label>
+        <input type="text"
+               id="instructions"
+               th:field="*{instructions}"
+               required>
+
+        <button type="submit" class="save-btn">
+            Save Medication
+        </button>
+
+    </form>
+
+    <a th:href="@{/medications}" class="back-btn">
+        ← Back to Medication List
+    </a>
+
+    <div class="dashboard-link" style="margin-top: 25px; margin-bottom: 0;">
+        <a th:href="@{/medication-dashboard}">
+            ← Back to Medication Dashboard
+        </a>
+    </div>
+
+</div>
+
+</body>
+</html>

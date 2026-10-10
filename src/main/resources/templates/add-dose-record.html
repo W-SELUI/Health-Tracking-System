@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Add Dose Record</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #eef2f7;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 35px 6%;
+            border-bottom: 1px solid #d3e1ef;
+        }
+
+        header h1 {
+            margin-bottom: 10px;
+            font-size: 36px;
+            color: #0d2d52;
+        }
+
+        header p {
+            font-size: 18px;
+            color: #183b63;
+        }
+
+        main {
+            width: min(700px, 92%);
+            margin: 40px auto;
+            padding: 35px;
+            background: white;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .dashboard-link {
+            margin-bottom: 25px;
+        }
+
+        .dashboard-link a {
+            color: #1565a9;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .dashboard-link a:hover {
+            text-decoration: underline;
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 30px;
+            color: #0d2d52;
+        }
+
+        .description {
+            color: #526477;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+
+        label {
+            display: block;
+            margin: 20px 0 8px;
+            font-weight: 600;
+            color: #0d2d52;
+        }
+
+        input,
+        select {
+            width: 100%;
+            padding: 13px;
+            border: 1px solid #cfd8e3;
+            border-radius: 8px;
+            background: white;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        input:focus,
+        select:focus {
+            outline: 2px solid #1565a9;
+            border-color: #1565a9;
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        button,
+        .cancel {
+            display: inline-block;
+            padding: 13px 22px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        button {
+            background: #1565a9;
+            color: white;
+        }
+
+        button:hover {
+            background: #0f4d84;
+        }
+
+        .cancel {
+    background: #344F6F;
+    color: white;
+}
+
+.cancel:hover {
+    background: #293F59;
+}
+
+        .bottom-link {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #d9e3ec;
+        }
+
+        @media (max-width: 600px) {
+            header {
+                padding: 30px 6%;
+            }
+
+            header h1 {
+                font-size: 30px;
+            }
+
+            main {
+                margin: 25px auto;
+                padding: 24px;
+            }
+
+            h2 {
+                font-size: 26px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            button,
+            .cancel {
+                text-align: center;
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+    <h1>Health Tracking System</h1>
+    <p>Dose Record Management</p>
+</header>
+
+<main>
+
+    <div class="dashboard-link">
+        <a th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
+    </div>
+
+    <h2>Add Dose Record</h2>
+
+    <p class="description">
+        Select an existing medication and record its dose status.
+    </p>
+
+    <form th:action="@{/dose-records/save}"
+          th:object="${doseRecord}"
+          method="post">
+
+        <label for="medicationId">Medication</label>
+
+        <select id="medicationId"
+                name="medicationId"
+                required>
+
+            <option value="">-- Select a medication --</option>
+
+            <option th:each="med : ${medications}"
+                    th:value="${med.id}"
+                    th:text="${med.medicationName}">
+            </option>
+
+        </select>
+
+        <label for="doseDate">Dose Date</label>
+
+        <input type="date"
+               id="doseDate"
+               th:field="*{doseDate}"
+               required>
+
+        <label for="status">Dose Status</label>
+
+        <select id="status"
+                th:field="*{status}"
+                required>
+
+            <option value="">-- Select status --</option>
+
+            <option th:each="s : ${statuses}"
+                    th:value="${s}"
+                    th:text="${s}">
+            </option>
+
+        </select>
+
+        <div class="actions">
+
+            <button type="submit">
+                Save Dose Record
+            </button>
+
+            <a class="cancel" th:href="@{/dose-records}">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+    <div class="bottom-link">
+        <div class="dashboard-link" style="margin-bottom: 0;">
+            <a th:href="@{/medication-dashboard}">
+                &larr; Back to Medication Dashboard
+            </a>
+        </div>
+    </div>
+
+</main>
+
+</body>
+</html>

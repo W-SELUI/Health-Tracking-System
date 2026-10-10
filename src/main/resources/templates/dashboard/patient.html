@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -22,11 +23,18 @@
 </p>
 
 <p>
+    <a th:href="@{/activities}">My activity records</a>
+</p>
+<p>
     <a th:href="@{/profile}">My Profile</a>
 </p>
 
 <p>
     <a th:href="@{/patient/health-records}">Health Records</a>
+</p>
+
+<p>
+    <a th:href="@{/medication-dashboard}">Medication Management</a>
 </p>
 
 <form th:action="@{/logout}" method="post">
