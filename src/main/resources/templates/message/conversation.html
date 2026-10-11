@@ -3,299 +3,664 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Conversation | Health Tracking System</title>
+    <meta name="theme-color" content="#0b6b6d">
+
+    <title>Conversation | HealthTrack</title>
 
     <link rel="stylesheet"
-          href="/css/app.css"
-          data-th-href="@{/css/app.css}">
+          href="/provider-access/css/styles.css"
+          data-th-href="@{/provider-access/css/styles.css}">
 
     <style>
-        nav {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 24px;
+        form {
+            margin: 0;
         }
 
-        h1,
+        button {
+            cursor: pointer;
+            font: inherit;
+        }
+
+        button:focus-visible,
+        textarea:focus-visible {
+            outline: 3px solid var(--teal);
+            outline-offset: 4px;
+        }
+
+        .nav-item:hover {
+            background: var(--teal-soft);
+        }
+
+        .account-details {
+            min-width: 0;
+        }
+
+        .account-name,
+        .account-type,
+        .introduction h1,
         .contact-email {
             overflow-wrap: anywhere;
         }
 
-        .contact-email,
-        .message-hint {
-            color: #526071;
+        .conversation-toolbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .back-link {
+            color: var(--teal-dark);
+            font-size: 14px;
+            font-weight: 600;
+            line-height: 1.5;
+            padding-block: 10px;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        .refresh-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 44px;
+            padding: 10px 16px;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            background: var(--surface);
+            color: var(--teal-dark);
+            font-size: 14px;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .refresh-link:hover {
+            border-color: var(--teal);
+            background: var(--teal-soft);
+        }
+
+        .introduction .signed-in {
+            font-size: 13px;
         }
 
         .notice {
-            padding: 16px;
-            border-radius: 8px;
-            margin: 20px 0;
+            padding: 16px 20px;
+            border: 1px solid;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.6;
         }
 
         .notice-success {
-            background: #ecfdf5;
-            border: 1px solid #a7f3d0;
-            color: #166534;
+            border-color: #b5dcc7;
+            background: #e4f4ec;
+            color: #19734c;
         }
 
         .notice-unavailable {
-            background: #fffbeb;
-            border: 1px solid #fde68a;
-            color: #92400e;
+            margin: 24px;
+            border-color: #e8d3a4;
+            background: #fff3d9;
+            color: #7a4b10;
         }
 
         .conversation-panel {
-            background: white;
-            border: 1px solid #d9dee5;
-            border-radius: 10px;
+            min-width: 0;
+            overflow: hidden;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: var(--surface);
+        }
+
+        .history-heading {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 12px;
             padding: 24px;
-            margin: 24px 0;
+            border-bottom: 1px solid var(--border);
         }
 
-        .conversation-panel h2 {
-            margin-top: 0;
-            font-size: 21px;
+        .history-heading h2,
+        .compose-form h2 {
+            font-size: 18px;
+            line-height: 1.4;
         }
 
-        .empty-state {
-            padding: 16px;
-            background: #f4f6f8;
-            border-radius: 6px;
-            color: #526071;
+        .history-heading p {
+            margin-top: 6px;
+            color: var(--secondary);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .history-order {
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: var(--teal-soft);
+            color: var(--teal-dark);
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
         }
 
         .message-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
             list-style: none;
-            padding: 0;
             margin: 0;
+            padding: 28px 24px;
+            background: #f8fbfb;
         }
 
         .message-item {
             width: fit-content;
-            max-width: 90%;
-            padding: 14px 16px;
-            margin: 16px 0;
-            border: 1px solid #d9dee5;
-            border-radius: 10px;
+            min-width: 0;
+            max-width: 80%;
+            padding: 16px 20px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
         }
 
         .message-item.sent {
-            margin-left: auto;
-            background: #eff6ff;
-            border-color: #bfdbfe;
+            align-self: flex-end;
+            border-color: var(--teal);
+            border-bottom-right-radius: 4px;
+            background: var(--teal);
+            color: white;
         }
 
         .message-item.received {
-            margin-right: auto;
-            background: #f4f6f8;
+            align-self: flex-start;
+            border-bottom-left-radius: 4px;
+            background: var(--surface);
+            color: var(--text);
         }
 
         .message-meta {
             display: flex;
+            align-items: baseline;
             justify-content: space-between;
             flex-wrap: wrap;
-            gap: 6px 16px;
-            margin-bottom: 8px;
+            gap: 6px 20px;
+            margin-bottom: 10px;
+            font-size: 12px;
+            line-height: 1.5;
+            overflow-wrap: anywhere;
+        }
+
+        .message-meta strong {
             font-size: 13px;
         }
 
         .message-meta time {
-            color: #526071;
+            color: var(--secondary);
+        }
+
+        .sent .message-meta time {
+            color: #e0f1f0;
         }
 
         .message-content {
             margin: 0;
+            font-size: 15px;
+            line-height: 1.7;
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
 
-        textarea {
+        .conversation-empty {
+            padding: 36px 24px;
+            background: #f8fbfb;
+        }
+
+        .conversation-empty h3 {
+            margin-bottom: 8px;
+            font-size: 16px;
+        }
+
+        .conversation-empty p {
+            color: var(--secondary);
+            font-size: 14px;
+            line-height: 1.7;
+        }
+
+        .compose-form {
+            padding: 24px;
+            border-top: 1px solid var(--border);
+        }
+
+        .compose-form h2 {
+            margin-bottom: 20px;
+        }
+
+        .compose-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .compose-form textarea {
             display: block;
             width: 100%;
             min-height: 130px;
-            padding: 12px;
-            border: 1px solid #b8c0cc;
-            border-radius: 6px;
+            padding: 14px 16px;
+            border: 1px solid #adc4c5;
+            border-radius: 10px;
+            background: var(--surface);
+            color: var(--text);
             font: inherit;
+            font-size: 15px;
+            line-height: 1.6;
             resize: vertical;
         }
 
-        textarea:focus-visible {
-            outline: 2px solid #2563eb;
-            outline-offset: 2px;
+        .compose-form textarea::placeholder {
+            color: var(--secondary);
         }
 
-        textarea[aria-invalid="true"] {
+        .compose-form textarea[aria-invalid="true"] {
             border-color: #b91c1c;
         }
 
-        form .message-help {
-            color: #526071;
-            font-size: 14px;
+        .compose-footer {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-top: 16px;
         }
 
-        form .field-error {
+        .message-help {
+            color: var(--secondary);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .field-error {
+            margin-top: 10px;
             color: #b91c1c;
             font-size: 14px;
+            line-height: 1.6;
         }
 
-        @media (max-width: 480px) {
-            .conversation-panel {
-                padding: 16px;
+        .send-button {
+            min-height: 44px;
+            padding: 12px 22px;
+            border: 0;
+            border-radius: 8px;
+            background: var(--teal);
+            color: white;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .send-button:hover {
+            background: var(--teal-dark);
+        }
+
+        .conversation-page .mobile-navigation ul {
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+        }
+
+        @media (max-width: 600px) {
+            .message-item {
+                max-width: 94%;
+                padding: 14px 16px;
             }
 
-            .message-item {
-                max-width: 100%;
+            .message-list {
+                padding: 20px 16px;
+            }
+
+            .history-heading,
+            .compose-form,
+            .conversation-empty {
+                padding: 20px;
+            }
+
+            .notice-unavailable {
+                margin: 20px;
+            }
+
+            .compose-footer {
+                align-items: stretch;
+                flex-direction: column;
+            }
+
+            .send-button {
+                width: 100%;
             }
         }
     </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="conversation-page healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('messages', 'Messages')}"></div>
+    <a class="skip-link" href="#main-content">Skip to content</a>
 
-<nav aria-label="Conversation navigation">
-    <a href="/messages" data-th-href="@{/messages}">
-        Back to messages
-    </a>
+    <aside class="sidebar">
+        <div class="navigation-group">
+            <div class="brand">
+                <span class="brand-mark">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="" width="22" height="22">
+                </span>
 
-    <a href="/messages"
-       data-th-href="@{/messages/{id}(id=${partner.id})}">
-        Refresh conversation
-    </a>
-</nav>
+                <div>
+                    <p class="brand-name">HealthTrack</p>
+                    <p class="brand-tagline">Your health, clearly</p>
+                </div>
+            </div>
 
-<main>
-    <h1>
-        Conversation with
-        <span data-th-text="${partner.fullName}">Contact name</span>
-    </h1>
+            <nav aria-label="Main navigation">
+                <ul class="side-links">
+                    <li>
+                        <a class="nav-item"
+                           href="/dashboard"
+                           data-th-href="@{/dashboard}">
+                            <img src="/provider-access/assets/layout-dashboard.svg"
+                                 data-th-src="@{/provider-access/assets/layout-dashboard.svg}"
+                                 alt="" width="20" height="20">
+                            Dashboard
+                        </a>
+                    </li>
 
-    <p class="contact-email"
-       data-th-text="${partner.email}">
-        Contact email
-    </p>
+                    <li>
+                        <a class="nav-item active"
+                           href="/messages"
+                           data-th-href="@{/messages}">
+                            <img src="/provider-access/assets/message-circle.svg"
+                                 data-th-src="@{/provider-access/assets/message-circle.svg}"
+                                 alt="" width="20" height="20">
+                            Messages
+                        </a>
+                    </li>
 
-    <p>
-        Signed in as
-        <strong data-th-text="${currentUser.fullName}">
-            Your name
-        </strong>
-    </p>
+                    <li>
+                        <a class="nav-item"
+                           href="/dashboard"
+                           data-th-href="${currentUser.role.name() == 'PATIENT'}
+                               ? @{/patient/consents}
+                               : @{/provider/patients}">
+                            <img src="/provider-access/assets/users-round.svg"
+                                 data-th-src="@{/provider-access/assets/users-round.svg}"
+                                 alt="" width="20" height="20">
 
-    <p class="notice notice-success"
-       role="status"
-       data-th-if="${successMessage != null}"
-       data-th-text="${successMessage}">
-        Message sent.
-    </p>
+                            <span data-th-text="${currentUser.role.name() == 'PATIENT'
+                                ? 'Provider access'
+                                : 'My patients'}">
+                                Provider access
+                            </span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
 
-    <section class="conversation-panel"
-             aria-labelledby="history-heading">
+        <div class="account">
+            <img src="/provider-access/assets/avatar.svg"
+                 data-th-src="@{/provider-access/assets/avatar.svg}"
+                 alt="" width="38" height="38">
 
-        <h2 id="history-heading">Message history</h2>
+            <div class="account-details">
+                <p class="account-name"
+                   data-th-text="${currentUser.fullName}">
+                    Your name
+                </p>
 
-        <p class="message-hint">
-            Messages appear from oldest to newest.
-            Refresh the conversation to check for new replies.
-        </p>
+                <p class="account-type"
+                   data-th-text="${currentUser.role.displayName}">
+                    Account role
+                </p>
+            </div>
+        </div>
+    </aside>
 
-        <p class="empty-state"
-           data-th-if="${#lists.isEmpty(messages)}">
-            No messages yet. Send a message below to start
-            this conversation.
-        </p>
+    <div class="application">
+        <header class="topbar">
+            <div class="breadcrumb">
+                <a href="/messages" data-th-href="@{/messages}">
+                    Messages
+                </a>
+                <span aria-hidden="true">/</span>
+                <span class="breadcrumb-current">Conversation</span>
+            </div>
 
-        <ol class="message-list"
-            data-th-unless="${#lists.isEmpty(messages)}">
+            <form action="/logout"
+                  data-th-action="@{/logout}"
+                  method="post">
+                <button class="access-button" type="submit">
+                    Logout
+                </button>
+            </form>
+        </header>
 
-            <li class="message-item"
-                data-th-each="message : ${messages}"
-                data-th-classappend="${message.sender.id == currentUser.id
-                    ? 'sent'
-                    : 'received'}">
+        <header class="mobile-header">
+            <div class="brand">
+                <span class="brand-mark">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="" width="22" height="22">
+                </span>
 
-                <div class="message-meta">
-                    <strong
-                        data-th-text="${message.sender.id == currentUser.id
-                            ? 'You'
-                            : message.sender.fullName}">
-                        Sender
+                <p class="brand-name">HealthTrack</p>
+            </div>
+
+            <form action="/logout"
+                  data-th-action="@{/logout}"
+                  method="post">
+                <button class="access-button" type="submit">
+                    Logout
+                </button>
+            </form>
+        </header>
+
+        <main class="page-content" id="main-content">
+            <nav class="conversation-toolbar"
+                 aria-label="Conversation navigation">
+
+                <a class="back-link"
+                   href="/messages"
+                   data-th-href="@{/messages}">
+                    ← Back to messages
+                </a>
+
+                <a class="refresh-link"
+                   href="/messages"
+                   data-th-href="@{/messages/{id}(id=${partner.id})}">
+                    Refresh conversation
+                </a>
+            </nav>
+
+            <div class="introduction">
+                <h1>
+                    Conversation with
+                    <span data-th-text="${partner.fullName}">
+                        Contact name
+                    </span>
+                </h1>
+
+                <p class="contact-email"
+                   data-th-text="${partner.email}">
+                    Contact email
+                </p>
+
+                <p class="signed-in">
+                    Signed in as
+                    <strong data-th-text="${currentUser.fullName}">
+                        Your name
                     </strong>
+                </p>
+            </div>
 
-                    <time
-                        data-th-datetime="${message.createdAt}"
-                        data-th-text="${#temporals.format(
-                            message.createdAt,
-                            'dd MMM yyyy, HH:mm'
-                        )}">
-                        Sent time
-                    </time>
+            <p class="notice notice-success"
+               role="status"
+               data-th-if="${successMessage != null}"
+               data-th-text="${successMessage}">
+                Message sent.
+            </p>
+
+            <section class="conversation-panel"
+                     aria-labelledby="history-heading">
+
+                <div class="history-heading">
+                    <div>
+                        <h2 id="history-heading">Message history</h2>
+                        <p>
+                            Refresh the conversation to check
+                            for new replies.
+                        </p>
+                    </div>
+
+                    <span class="history-order">Oldest first</span>
                 </div>
 
-                <p class="message-content"
-                   data-th-text="${message.content}">Message text</p>
-            </li>
-        </ol>
-    </section>
+                <div class="conversation-empty"
+                     data-th-if="${#lists.isEmpty(messages)}">
+                    <h3>No messages yet</h3>
 
-    <form action="/messages"
-          data-th-action="@{/messages/{id}(id=${partner.id})}"
-          data-th-object="${messageRequest}"
-          data-th-if="${canSend}"
-          method="post"
-          aria-labelledby="compose-heading">
+                    <p data-th-if="${canSend}">
+                        Send your first message using the form below.
+                    </p>
 
-        <h2 id="compose-heading">Send a message</h2>
+                    <p data-th-unless="${canSend}">
+                        There are no previous messages to display.
+                    </p>
+                </div>
 
-        <label for="content">Your message</label>
+                <ol class="message-list"
+                    data-th-unless="${#lists.isEmpty(messages)}">
 
-        <textarea
-            id="content"
-            name="content"
-            rows="5"
-            maxlength="4000"
-            required
-            aria-describedby="message-help"
-            data-th-field="*{content}"
-            data-th-maxlength="${maxContentLength}"
-            data-th-attr="aria-invalid=${#fields.hasErrors('content')},
-                aria-describedby=${#fields.hasErrors('content')
-                    ? 'message-help message-error'
-                    : 'message-help'}"
-            placeholder="Write your message here..."></textarea>
+                    <li class="message-item"
+                        data-th-each="message : ${messages}"
+                        data-th-classappend="${message.sender.id == currentUser.id
+                            ? 'sent'
+                            : 'received'}">
 
-        <p id="message-help" class="message-help">
-            Maximum
-            <span data-th-text="${maxContentLength}">4000</span>
-            characters per message.
-        </p>
+                        <div class="message-meta">
+                            <strong
+                                data-th-text="${message.sender.id == currentUser.id
+                                    ? 'You'
+                                    : message.sender.fullName}">
+                                Sender
+                            </strong>
 
-        <p id="message-error"
-           class="field-error"
-           role="alert"
-           data-th-if="${#fields.hasErrors('content')}"
-           data-th-errors="*{content}">
-            Please check your message.
-        </p>
+                            <time
+                                data-th-datetime="${message.createdAt}"
+                                data-th-text="${#temporals.format(
+                                    message.createdAt,
+                                    'dd MMM yyyy, HH:mm'
+                                )}">
+                                Sent time
+                            </time>
+                        </div>
 
-        <button type="submit">Send message</button>
-    </form>
+                        <p class="message-content"
+                           data-th-text="${message.content}">Message text</p>
+                    </li>
+                </ol>
 
-    <p class="notice notice-unavailable"
-       data-th-unless="${canSend}">
-        This account is currently unavailable.
-        You can still read your previous messages, but cannot send
-        new messages to this account.
-    </p>
-</main>
+                <form class="compose-form"
+                      action="/messages"
+                      data-th-action="@{/messages/{id}(id=${partner.id})}"
+                      data-th-object="${messageRequest}"
+                      data-th-if="${canSend}"
+                      method="post"
+                      aria-labelledby="compose-heading">
 
-<form action="/logout"
-      data-th-action="@{/logout}"
-      method="post">
-    <button type="submit">Logout</button>
-</form>
+                    <h2 id="compose-heading">Send a message</h2>
 
+                    <label for="content">Your message</label>
+
+                    <textarea
+                        id="content"
+                        name="content"
+                        rows="5"
+                        maxlength="4000"
+                        required
+                        aria-describedby="message-help"
+                        data-th-field="*{content}"
+                        data-th-maxlength="${maxContentLength}"
+                        data-th-attr="aria-invalid=${#fields.hasErrors('content')},
+                            aria-describedby=${#fields.hasErrors('content')
+                                ? 'message-help message-error'
+                                : 'message-help'}"
+                        placeholder="Write your message here..."></textarea>
+
+                    <p id="message-error"
+                       class="field-error"
+                       role="alert"
+                       data-th-if="${#fields.hasErrors('content')}"
+                       data-th-errors="*{content}">
+                        Please check your message.
+                    </p>
+
+                    <div class="compose-footer">
+                        <p id="message-help" class="message-help">
+                            Maximum
+                            <span data-th-text="${maxContentLength}">
+                                4000
+                            </span>
+                            characters per message.
+                        </p>
+
+                        <button class="send-button" type="submit">
+                            Send message
+                        </button>
+                    </div>
+                </form>
+
+                <p class="notice notice-unavailable"
+                   data-th-unless="${canSend}">
+                    This account is currently unavailable.
+                    You can still read your previous messages,
+                    but cannot send new messages to this account.
+                </p>
+            </section>
+        </main>
+
+        <nav class="mobile-navigation" aria-label="Main navigation">
+            <ul>
+                <li>
+                    <a class="mobile-nav-item"
+                       href="/dashboard"
+                       data-th-href="@{/dashboard}">
+                        Dashboard
+                    </a>
+                </li>
+
+                <li>
+                    <a class="mobile-nav-item active"
+                       href="/messages"
+                       data-th-href="@{/messages}">
+                        Messages
+                    </a>
+                </li>
+
+                <li>
+                    <a class="mobile-nav-item"
+                       href="/dashboard"
+                       data-th-href="${currentUser.role.name() == 'PATIENT'}
+                           ? @{/patient/consents}
+                           : @{/provider/patients}"
+                       data-th-text="${currentUser.role.name() == 'PATIENT'
+                           ? 'Provider access'
+                           : 'My patients'}">
+                        Provider access
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
 </body>
 </html>

@@ -10,9 +10,14 @@
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body class="analytics-page">
+<body class="analytics-page healthtrack-ui analytics-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('analytics', 'Health analytics')}"></div>
+<div class="healthtrack-page-shell">
 
 <header class="analytics-header">
 
@@ -984,5 +989,6 @@
         defer>
 </script>
 
+</div>
 </body>
 </html>

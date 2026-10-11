@@ -8,9 +8,12 @@
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('patients', 'Propose record change')}"></div>
+<div class="healthtrack-page-shell">
 
 <h1>Propose Blood Pressure Edit</h1>
 
@@ -154,5 +157,6 @@
     </a>
 </p>
 
+</div>
 </body>
 </html>

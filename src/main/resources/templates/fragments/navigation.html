@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+
+<div th:fragment="navigation(activeSection, pageTitle)">
+    <aside class="ht-app-sidebar" aria-label="Application navigation">
+        <div>
+            <a class="ht-app-brand" href="/dashboard" th:href="@{/dashboard}">
+                <span class="ht-app-brand-mark">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         th:src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="">
+                </span>
+                <span>
+                    <span class="ht-app-brand-name">HealthTrack</span>
+                    <span class="ht-app-brand-tagline">Your health, clearly</span>
+                </span>
+            </a>
+
+            <nav class="ht-app-nav" aria-label="Primary navigation">
+                <a href="/dashboard"
+                   th:href="@{/dashboard}"
+                   th:classappend="${activeSection == 'dashboard'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/layout-dashboard.svg"
+                         th:src="@{/provider-access/assets/layout-dashboard.svg}"
+                         alt="">
+                    <span>Dashboard</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/patient/health-records"
+                   th:href="@{/patient/health-records}"
+                   th:classappend="${activeSection == 'health-records'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/file-heart.svg"
+                         th:src="@{/provider-access/assets/file-heart.svg}"
+                         alt="">
+                    <span>Health records</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/activities"
+                   th:href="@{/activities}"
+                   th:classappend="${activeSection == 'activity'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         th:src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="">
+                    <span>Activity</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/medication-dashboard"
+                   th:href="@{/medication-dashboard}"
+                   th:classappend="${activeSection == 'medication'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Medication</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/patient/analytics"
+                   th:href="@{/patient/analytics}"
+                   th:classappend="${activeSection == 'analytics'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         th:src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="">
+                    <span>Analytics</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/patient/health-record-change-requests"
+                   th:href="@{/patient/health-record-change-requests}"
+                   th:classappend="${activeSection == 'change-requests'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Change requests</span>
+                </a>
+
+                <a sec:authorize="hasRole('PROVIDER')"
+                   href="/provider/patients"
+                   th:href="@{/provider/patients}"
+                   th:classappend="${activeSection == 'patients'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>My patients</span>
+                </a>
+
+                <a sec:authorize="hasRole('PROVIDER')"
+                   href="/provider/appointments"
+                   th:href="@{/provider/appointments}"
+                   th:classappend="${activeSection == 'appointments'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/circle-check.svg"
+                         th:src="@{/provider-access/assets/circle-check.svg}"
+                         alt="">
+                    <span>Appointments</span>
+                </a>
+
+                <a sec:authorize="hasRole('PROVIDER')"
+                   href="/provider/verification"
+                   th:href="@{/provider/verification}"
+                   th:classappend="${activeSection == 'verification'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Verification</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/users"
+                   th:href="@{/admin/users}"
+                   th:classappend="${activeSection == 'admin-users'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>Users</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/providers"
+                   th:href="@{/admin/providers}"
+                   th:classappend="${activeSection == 'admin-providers'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>Providers</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/provider-verifications"
+                   th:href="@{/admin/provider-verifications}"
+                   th:classappend="${activeSection == 'admin-verifications'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Verifications</span>
+                </a>
+
+                <a sec:authorize="hasAnyRole('PATIENT', 'PROVIDER')"
+                   href="/messages"
+                   th:href="@{/messages}"
+                   th:classappend="${activeSection == 'messages'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/message-circle.svg"
+                         th:src="@{/provider-access/assets/message-circle.svg}"
+                         alt="">
+                    <span>Messages</span>
+                </a>
+
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/patient/consents"
+                   th:href="@{/patient/consents}"
+                   th:classappend="${activeSection == 'access'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>Provider access</span>
+                </a>
+            </nav>
+        </div>
+
+        <a class="ht-app-account"
+           href="/profile"
+           th:href="@{/profile}"
+           th:classappend="${activeSection == 'profile'} ? ' is-active' : ''">
+            <img src="/provider-access/assets/profile-avatar.svg"
+                 th:src="@{/provider-access/assets/profile-avatar.svg}"
+                 alt="">
+            <span class="ht-app-account-copy">
+                <span class="ht-app-account-name" sec:authentication="name">Account</span>
+                <span class="ht-app-account-role" sec:authorize="hasRole('PATIENT')">Patient</span>
+                <span class="ht-app-account-role" sec:authorize="hasRole('PROVIDER')">Healthcare Provider</span>
+                <span class="ht-app-account-role" sec:authorize="hasRole('ADMIN')">Administrator</span>
+            </span>
+        </a>
+    </aside>
+
+    <header class="ht-app-topbar">
+        <span class="ht-app-page-title" th:text="${pageTitle}">Current page</span>
+
+        <form class="ht-app-logout" action="/logout" th:action="@{/logout}" method="post">
+            <button type="submit">Logout</button>
+        </form>
+    </header>
+
+    <nav class="ht-app-mobile-nav" aria-label="Mobile navigation">
+        <a href="/dashboard"
+           th:href="@{/dashboard}"
+           th:classappend="${activeSection == 'dashboard'} ? ' is-active' : ''">
+            Dashboard
+        </a>
+        <a sec:authorize="hasRole('PATIENT')"
+           href="/patient/health-records"
+           th:href="@{/patient/health-records}"
+           th:classappend="${activeSection == 'health-records'} ? ' is-active' : ''">
+            Records
+        </a>
+        <a sec:authorize="hasRole('PROVIDER')"
+           href="/provider/patients"
+           th:href="@{/provider/patients}"
+           th:classappend="${activeSection == 'patients'} ? ' is-active' : ''">
+            Patients
+        </a>
+        <a sec:authorize="hasAnyRole('PATIENT', 'PROVIDER')"
+           href="/messages"
+           th:href="@{/messages}"
+           th:classappend="${activeSection == 'messages'} ? ' is-active' : ''">
+            Messages
+        </a>
+        <a href="/profile"
+           th:href="@{/profile}"
+           th:classappend="${activeSection == 'profile'} ? ' is-active' : ''">
+            Profile
+        </a>
+    </nav>
+</div>
+
+</body>
+</html>

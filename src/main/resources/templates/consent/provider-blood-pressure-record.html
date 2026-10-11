@@ -83,9 +83,14 @@
             font-size: 0.95rem;
         }
     </style>
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui records-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('patients', 'Patient records')}"></div>
+<div class="healthtrack-page-shell">
 
 <nav class="record-navigation">
 
@@ -257,5 +262,6 @@
 
 </form>
 
+</div>
 </body>
 </html>

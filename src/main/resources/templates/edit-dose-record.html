@@ -45,6 +45,7 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
+        /* Dashboard navigation buttons */
         .dashboard-link {
             margin-bottom: 25px;
         }
@@ -58,6 +59,7 @@
             text-decoration: none;
             font-size: 15px;
             font-weight: 600;
+            transition: background 0.3s ease;
         }
 
         .dashboard-link a:hover {
@@ -93,10 +95,6 @@
             margin-bottom: 0;
         }
 
-        .record-info strong {
-            color: #0d2d52;
-        }
-
         label {
             display: block;
             margin-top: 20px;
@@ -105,7 +103,8 @@
             color: #0d2d52;
         }
 
-        select {
+        select,
+        input {
             width: 100%;
             padding: 13px;
             border: 1px solid #cfd8e3;
@@ -115,7 +114,8 @@
             color: #2c3e50;
         }
 
-        select:focus {
+        select:focus,
+        input:focus {
             outline: 2px solid #1565a9;
             border-color: #1565a9;
         }
@@ -139,8 +139,10 @@
             text-decoration: none;
             text-align: center;
             cursor: pointer;
+            transition: background 0.3s ease;
         }
 
+        /* Update button remains blue */
         button {
             background: #1565a9;
             color: white;
@@ -150,6 +152,7 @@
             background: #0f4d84;
         }
 
+        /* Cancel button matches the dashboard theme */
         .cancel {
             background: #344F6F;
             color: white;
@@ -163,6 +166,10 @@
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #d9e3ec;
+        }
+
+        .bottom-link .dashboard-link {
+            margin-bottom: 0;
         }
 
         @media (max-width: 600px) {
@@ -193,104 +200,98 @@
             }
         }
     </style>
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui medication-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('medication', 'Dose records')}"></div>
+<div class="healthtrack-page-shell">
 
-<header>
-    <h1>Health Tracking System</h1>
-    <p>Dose Record Management</p>
-</header>
+    <header>
+        <h1>Health Tracking System</h1>
+        <p>Dose Record Management</p>
+    </header>
 
-<div class="container">
+    <div class="container">
 
-    <div class="dashboard-link">
-        <a th:href="@{/medication-dashboard}">
-            &larr; Back to Medication Dashboard
-        </a>
-    </div>
-
-    <h2>Edit Dose Record</h2>
-
-    <p class="description">
-        Update the status of this recorded dose.
-    </p>
-
-    <div class="record-info">
-
-        <p>
-            <strong>Medication:</strong>
-            <span th:text="${doseRecord.medication.medicationName}"></span>
-        </p>
-
-        <p>
-            <strong>Dosage:</strong>
-            <span th:text="${doseRecord.medication.dosage}"></span>
-        </p>
-
-        <p>
-            <strong>Dose Date:</strong>
-            <span th:text="${doseRecord.doseDate}"></span>
-        </p>
-
-        <p>
-            <strong>Scheduled Time:</strong>
-            <span th:text="${doseRecord.scheduledTime}"></span>
-        </p>
-
-    </div>
-
-    <form th:action="@{/dose-records/update/{id}(id=${doseRecord.id})}"
-          method="post">
-
-        <label for="status">
-            Dose Status
-        </label>
-
-        <select id="status"
-                name="status"
-                required>
-
-            <option value="">
-                -- Select status --
-            </option>
-
-            <option th:each="s : ${statuses}"
-                    th:value="${s}"
-                    th:text="${s}"
-                    th:selected="${doseRecord.status == s}">
-            </option>
-
-        </select>
-
-        <div class="actions">
-
-            <button type="submit">
-                Update Dose Record
-            </button>
-
-            <a class="cancel"
-               th:href="@{/dose-records}">
-                Cancel
-            </a>
-
-        </div>
-
-    </form>
-
-    <div class="bottom-link">
-
+        <!-- Top dashboard navigation -->
         <div class="dashboard-link">
-
             <a th:href="@{/medication-dashboard}">
                 &larr; Back to Medication Dashboard
             </a>
+        </div>
 
+        <h2>Edit Dose Record</h2>
+
+        <p class="description">
+            Update the status of this recorded dose.
+        </p>
+
+        <div class="record-info">
+            <p>
+                <strong>Medication:</strong>
+                <span th:text="${doseRecord.medication.medicationName}"></span>
+            </p>
+            <p>
+                <strong>Dosage:</strong>
+                <span th:text="${doseRecord.medication.dosage}"></span>
+            </p>
+            <p>
+                <strong>Dose Date:</strong>
+                <span th:text="${doseRecord.doseDate}"></span>
+            </p>
+            <p>
+                <strong>Scheduled Time:</strong>
+                <span th:text="${doseRecord.scheduledTime}"></span>
+            </p>
+        </div>
+
+        <form th:action="@{/dose-records/update/{id}(id=${doseRecord.id})}"
+              method="post">
+
+            <label for="status">Status</label>
+
+            <select id="status"
+                    name="status"
+                    required>
+
+                <option value="">-- Select status --</option>
+
+                <option th:each="s : ${statuses}"
+                        th:value="${s}"
+                        th:text="${s}"
+                        th:selected="${doseRecord.status == s}">
+                </option>
+
+            </select>
+
+            <div class="actions">
+
+                <button type="submit">
+                    Update Dose Record
+                </button>
+
+                <a class="cancel" th:href="@{/dose-records}">
+                    Cancel
+                </a>
+
+            </div>
+
+        </form>
+
+        <!-- Bottom dashboard navigation -->
+        <div class="bottom-link">
+            <div class="dashboard-link">
+                <a th:href="@{/medication-dashboard}">
+                    &larr; Back to Medication Dashboard
+                </a>
+            </div>
         </div>
 
     </div>
 
 </div>
-
 </body>
 </html>

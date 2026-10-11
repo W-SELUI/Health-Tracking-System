@@ -156,9 +156,12 @@
 
     </style>
 
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('verification', 'Provider verification')}"></div>
+<div class="healthtrack-page-shell">
 
 <header>
 
@@ -307,6 +310,7 @@
 
 </main>
 
+</div>
 </body>
 
 </html>

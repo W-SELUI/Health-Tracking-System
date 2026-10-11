@@ -4,8 +4,13 @@
     <meta charset="UTF-8">
     <title>Edit Profile</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
-<body>
+<body class="healthtrack-ui profile-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('profile', 'My profile')}"></div>
+<div class="healthtrack-page-shell">
 
 <h1>Edit Profile</h1>
 
@@ -78,5 +83,6 @@
     <a th:href="@{/dashboard}">Back to Dashboard</a>
 </p>
 
+</div>
 </body>
 </html>

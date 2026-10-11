@@ -188,9 +188,14 @@
             }
         }
     </style>
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui medication-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('medication', 'Schedules')}"></div>
+<div class="healthtrack-page-shell">
 
 <header>
     <h1>Health Tracking System</h1>
@@ -358,5 +363,6 @@
 
 </main>
 
+</div>
 </body>
 </html>

@@ -6,8 +6,13 @@
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
-<body>
+<body class="healthtrack-ui records-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('health-records', 'Health records')}"></div>
+<div class="healthtrack-page-shell">
 
 <h1>Add Health Record</h1>
 
@@ -158,5 +163,6 @@
     });
 </script>
 
+</div>
 </body>
 </html>
