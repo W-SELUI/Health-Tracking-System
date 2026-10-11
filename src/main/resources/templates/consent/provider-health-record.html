@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Health Record Details</title>
 
-    <link rel="stylesheet" href="/css/app.css"
+    <link rel="stylesheet"
+          href="/css/app.css"
           data-th-href="@{/css/app.css}">
 
     <style>
@@ -56,87 +57,185 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
+
+        .proposal-action {
+            margin: 24px 0;
+        }
+
+        .proposal-action a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .proposal-action a:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .proposal-explanation {
+            margin-top: 10px;
+            color: #526174;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 
 <body>
-    <nav class="record-navigation">
-        <a href="/provider/patients"
-           data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
-            Back to patient history
+
+<nav class="record-navigation">
+
+    <a href="/provider/patients"
+       data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+        Back to patient history
+    </a>
+
+</nav>
+
+
+<main>
+
+    <h1>Health Record Details</h1>
+
+
+    <p>
+        Patient:
+        <strong data-th-text="${patient.fullName}">
+            Patient name
+        </strong>
+    </p>
+
+
+    <p class="muted">
+        Signed in as
+        <strong data-th-text="${currentUser.fullName}">
+            Provider name
+        </strong>
+    </p>
+
+
+    <article class="record-card">
+
+        <h2 data-th-text="${record.metricType.displayName}">
+            Measurement
+        </h2>
+
+
+        <p class="measurement-value">
+
+            <span data-th-text="${record.metricValue}">
+                0
+            </span>
+
+            <span class="measurement-unit"
+                  data-th-text="${record.unit}">
+                unit
+            </span>
+
+        </p>
+
+
+        <dl class="record-details">
+
+            <div>
+
+                <dt>Observed at</dt>
+
+                <dd>
+                    <time
+                        data-th-datetime="${record.observedAt}"
+                        data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
+                        Observation date
+                    </time>
+                </dd>
+
+            </div>
+
+
+            <div>
+
+                <dt>Record source</dt>
+
+                <dd data-th-text="${record.source.displayName}">
+                    Source
+                </dd>
+
+            </div>
+
+
+            <div>
+
+                <dt>Added to system</dt>
+
+                <dd>
+                    <time
+                        data-th-datetime="${record.createdAt}"
+                        data-th-text="${#temporals.format(record.createdAt, 'dd MMM yyyy, HH:mm')}">
+                        Creation date
+                    </time>
+                </dd>
+
+            </div>
+
+        </dl>
+
+    </article>
+
+
+    <section class="record-card">
+
+        <h2>Notes</h2>
+
+        <p class="record-notes"
+           data-th-text="${#strings.isEmpty(record.notes) ? 'No notes were added for this record.' : record.notes}">
+            Record notes
+        </p>
+
+    </section>
+
+
+    <!--
+        Providers cannot directly edit permanent patient Health Records.
+
+        This opens a form for creating a PENDING UPDATE proposal.
+        The existing Health Record remains unchanged until the Patient
+        explicitly approves that proposal.
+    -->
+    <div class="proposal-action">
+
+        <a data-th-href="@{/provider/patients/{patientId}/health-record-proposals/scalar/{recordId}/edit(patientId=${patient.id}, recordId=${record.id})}">
+            Propose edit to this record
         </a>
-    </nav>
 
-    <main>
-        <h1>Health Record Details</h1>
-
-        <p>
-            Patient:
-            <strong data-th-text="${patient.fullName}">Patient name</strong>
+        <p class="proposal-explanation">
+            The proposed change will require patient approval before
+            this Health Record is updated.
         </p>
 
-        <p class="muted">
-            Signed in as
-            <strong data-th-text="${currentUser.fullName}">Provider name</strong>
-        </p>
+    </div>
 
-        <article class="record-card">
-            <h2 data-th-text="${record.metricType.displayName}">
-                Measurement
-            </h2>
 
-            <p class="measurement-value">
-                <span data-th-text="${record.metricValue}">0</span>
-                <span class="measurement-unit"
-                      data-th-text="${record.unit}">unit</span>
-            </p>
+    <p class="muted">
+        You can view and propose changes to this patient's health records
+        while their consent is active.
+    </p>
 
-            <dl class="record-details">
-                <div>
-                    <dt>Observed at</dt>
-                    <dd>
-                        <time data-th-datetime="${record.observedAt}"
-                              data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
-                            Observation date
-                        </time>
-                    </dd>
-                </div>
+</main>
 
-                <div>
-                    <dt>Record source</dt>
-                    <dd data-th-text="${record.source.displayName}">
-                        Source
-                    </dd>
-                </div>
 
-                <div>
-                    <dt>Added to system</dt>
-                    <dd>
-                        <time data-th-datetime="${record.createdAt}"
-                              data-th-text="${#temporals.format(record.createdAt, 'dd MMM yyyy, HH:mm')}">
-                            Creation date
-                        </time>
-                    </dd>
-                </div>
-            </dl>
-        </article>
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
 
-        <section class="record-card">
-            <h2>Notes</h2>
+    <button type="submit">
+        Logout
+    </button>
 
-            <p class="record-notes"
-               data-th-text="${#strings.isEmpty(record.notes) ? 'No notes were added for this record.' : record.notes}">
-                Record notes
-            </p>
-        </section>
+</form>
 
-        <p class="muted">
-            You can view this patient's health records while their consent is active.
-        </p>
-    </main>
-
-    <form action="/logout" data-th-action="@{/logout}" method="post">
-        <button type="submit">Logout</button>
-    </form>
 </body>
 </html>
