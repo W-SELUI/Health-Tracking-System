@@ -200,7 +200,7 @@ class ProviderAnalyticsControllerIntegrationTests {
                 .andExpect(
                         model().attribute(
                                 "backLabel",
-                                "Back to Patient Access"
+                                "Back to patient access"
                         )
                 )
                 .andExpect(

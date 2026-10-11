@@ -24,7 +24,7 @@
     <div>
 
         <h1 th:text="${pageHeading}">
-            Health &amp; Activity Analytics
+            Health and activity analytics
         </h1>
 
         <p th:text="${pageDescription}">
@@ -52,6 +52,12 @@
 
     </div>
 
+    <div class="analytics-header-visual" aria-hidden="true">
+        <img src="/images/healthtrack-dashboard-hero.png"
+             th:src="@{/images/healthtrack-dashboard-hero.png}"
+             alt="">
+    </div>
+
     <a th:href="${backUrl}"
        th:text="${backLabel}">
         Back
@@ -66,7 +72,7 @@
 
 <section class="analytics-section">
 
-    <h2>Reporting Period</h2>
+    <h2>Reporting period</h2>
 
     <form th:action="${analyticsAction}"
           method="get"
@@ -96,7 +102,7 @@
 
         <div class="analytics-form-action">
             <button type="submit">
-                Generate Analytics
+                Generate analytics
             </button>
         </div>
 
@@ -118,7 +124,7 @@
 <section class="analytics-message"
          th:if="${generated == false and periodError == null}">
 
-    <h2>Select a Reporting Period</h2>
+    <h2>Select a reporting period</h2>
 
     <p>
         Choose a start date and end date to generate your

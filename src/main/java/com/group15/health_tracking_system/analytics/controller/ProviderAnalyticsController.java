@@ -173,12 +173,12 @@ public class ProviderAnalyticsController {
 
         model.addAttribute(
                 "pageTitle",
-                "Patient Health Analytics"
+                "Patient health analytics"
         );
 
         model.addAttribute(
                 "pageHeading",
-                "Health & Activity Analytics"
+                "Health and activity analytics"
         );
 
         model.addAttribute(
@@ -206,7 +206,7 @@ public class ProviderAnalyticsController {
 
         model.addAttribute(
                 "backLabel",
-                "Back to Patient Access"
+                "Back to patient access"
         );
 
         model.addAttribute(

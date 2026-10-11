@@ -6,12 +6,19 @@ import com.group15.health_tracking_system.user.service.CurrentUserService;
 import com.group15.health_tracking_system.user.service.ProfileService;
 import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
+import org.springframework.http.CacheControl;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 /**
  * Handles viewing and editing the authenticated user's profile.
@@ -84,5 +91,53 @@ public class ProfileController {
         }
 
         return "redirect:/profile?updated";
+    }
+
+    @PostMapping("/cover-photo")
+    public String updateCoverPhoto(
+            @RequestParam("coverPhoto") MultipartFile coverPhoto,
+            RedirectAttributes redirectAttributes) {
+
+        User currentUser = currentUserService.getCurrentUser();
+
+        try {
+            profileService.updateCoverPhoto(currentUser, coverPhoto);
+        } catch (IllegalArgumentException exception) {
+            redirectAttributes.addFlashAttribute(
+                    "coverError",
+                    exception.getMessage()
+            );
+            return "redirect:/profile";
+        }
+
+        return "redirect:/profile?coverUpdated";
+    }
+
+    @PostMapping("/cover-photo/remove")
+    public String removeCoverPhoto() {
+
+        profileService.removeCoverPhoto(
+                currentUserService.getCurrentUser()
+        );
+
+        return "redirect:/profile?coverRemoved";
+    }
+
+    @GetMapping("/cover-photo")
+    @ResponseBody
+    public ResponseEntity<byte[]> viewCoverPhoto() {
+
+        User currentUser = currentUserService.getCurrentUser();
+
+        if (!currentUser.isCoverPhotoPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.noStore())
+                .contentType(MediaType.parseMediaType(
+                        currentUser.getCoverPhotoContentType()
+                ))
+                .body(currentUser.getCoverPhotoData());
     }
 }
