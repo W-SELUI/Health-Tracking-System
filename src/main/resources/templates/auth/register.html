@@ -1,10 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <meta charset="UTF-8">
     <title>Register</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <link rel="stylesheet"
+          th:href="@{/css/app.css}">
 </head>
+
 <body>
 
 <h1>Create Account</h1>
@@ -12,63 +16,96 @@
 <form
         th:action="@{/register}"
         th:object="${registrationRequest}"
-        method="post">
+        method="post"
+        enctype="multipart/form-data">
 
     <div>
-        <label for="firstName">First Name</label>
+        <label for="firstName">
+            First Name
+        </label>
+
         <input
                 type="text"
                 id="firstName"
                 th:field="*{firstName}">
+
         <p th:if="${#fields.hasErrors('firstName')}"
-           th:errors="*{firstName}"></p>
+           th:errors="*{firstName}">
+        </p>
     </div>
 
     <div>
-        <label for="lastName">Last Name</label>
+        <label for="lastName">
+            Last Name
+        </label>
+
         <input
                 type="text"
                 id="lastName"
                 th:field="*{lastName}">
+
         <p th:if="${#fields.hasErrors('lastName')}"
-           th:errors="*{lastName}"></p>
+           th:errors="*{lastName}">
+        </p>
     </div>
 
     <div>
-        <label for="email">Email</label>
+        <label for="email">
+            Email
+        </label>
+
         <input
                 type="email"
                 id="email"
                 th:field="*{email}">
+
         <p th:if="${#fields.hasErrors('email')}"
-           th:errors="*{email}"></p>
+           th:errors="*{email}">
+        </p>
     </div>
 
     <div>
-        <label for="password">Password</label>
+        <label for="password">
+            Password
+        </label>
+
         <input
                 type="password"
                 id="password"
                 th:field="*{password}">
+
         <p th:if="${#fields.hasErrors('password')}"
-           th:errors="*{password}"></p>
+           th:errors="*{password}">
+        </p>
     </div>
 
     <div>
-        <label for="confirmPassword">Confirm Password</label>
+        <label for="confirmPassword">
+            Confirm Password
+        </label>
+
         <input
                 type="password"
                 id="confirmPassword"
                 th:field="*{confirmPassword}">
+
         <p th:if="${#fields.hasErrors('confirmPassword')}"
-           th:errors="*{confirmPassword}"></p>
+           th:errors="*{confirmPassword}">
+        </p>
     </div>
 
     <div>
-        <label for="role">Account Type</label>
+        <label for="role">
+            Account Type
+        </label>
 
-        <select id="role" th:field="*{role}">
-            <option value="">Select account type</option>
+        <select
+                id="role"
+                th:field="*{role}">
+
+            <option value="">
+                Select account type
+            </option>
 
             <option
                     th:each="roleOption : ${registrationRoles}"
@@ -79,17 +116,44 @@
         </select>
 
         <p th:if="${#fields.hasErrors('role')}"
-           th:errors="*{role}"></p>
+           th:errors="*{role}">
+        </p>
     </div>
 
-    <button type="submit">Register</button>
+    <div>
+        <label for="licenceFile">
+            Healthcare Provider Licence
+        </label>
+
+        <input
+                type="file"
+                id="licenceFile"
+                name="licenceFile"
+                accept=".pdf,.jpg,.jpeg,.png">
+
+        <p>
+            Required only for Healthcare Provider accounts.
+            Accepted files: PDF, JPG, JPEG or PNG.
+        </p>
+
+        <p th:if="${licenceError}"
+           th:text="${licenceError}">
+        </p>
+    </div>
+
+    <button type="submit">
+        Register
+    </button>
 
 </form>
 
 <p>
     Already have an account?
-    <a th:href="@{/login}">Login</a>
+    <a th:href="@{/login}">
+        Login
+    </a>
 </p>
 
 </body>
+
 </html>
