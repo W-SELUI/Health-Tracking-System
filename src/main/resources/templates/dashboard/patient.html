@@ -365,6 +365,18 @@
 
                 <li>
                     <a class="nav-item"
+                       href="/patient/analytics"
+                       data-th-href="@{/patient/analytics}">
+                        <img class="nav-icon"
+                             src="/provider-access/assets/heart-pulse.svg"
+                             data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                             alt="">
+                        Health analytics
+                    </a>
+                </li>
+
+                <li>
+                    <a class="nav-item"
                        href="/messages"
                        data-th-href="@{/messages}">
                         <img class="nav-icon"
@@ -489,6 +501,27 @@
             </div>
 
             <div class="feature-grid">
+                <a class="feature-card"
+                   href="/patient/analytics"
+                   data-th-href="@{/patient/analytics}">
+                    <span class="feature-icon">
+                        <img src="/provider-access/assets/heart-pulse.svg"
+                             data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                             alt="">
+                    </span>
+
+                    <h3>Health analytics</h3>
+                    <p>
+                        Review health and activity trends across your recorded
+                        measurements.
+                    </p>
+
+                    <span class="feature-link">
+                        <span>View analytics</span>
+                        <span aria-hidden="true">&rarr;</span>
+                    </span>
+                </a>
+
                 <a class="feature-card"
                    href="/patient/health-records"
                    data-th-href="@{/patient/health-records}">

@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Health Analytics</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+</head>
+
+<body class="analytics-page">
+
+<header class="analytics-header">
+    <div>
+        <h1>Health &amp; Activity Analytics</h1>
+        <p>
+            Review your recorded health measurements and activity
+            for a selected reporting period.
+        </p>
+    </div>
+
+    <a th:href="@{/patient/dashboard}">
+        Back to Dashboard
+    </a>
+</header>
+
+
+<!-- =========================================================
+     REPORTING PERIOD
+     ========================================================= -->
+
+<section class="analytics-section">
+
+    <h2>Reporting Period</h2>
+
+    <form th:action="@{/patient/analytics}"
+          method="get"
+          class="analytics-period-form">
+
+        <div>
+            <label for="startDate">Start Date</label>
+
+            <input type="date"
+                   id="startDate"
+                   name="startDate"
+                   th:value="${period.startDate}"
+                   th:max="${today}"
+                   required>
+        </div>
+
+        <div>
+            <label for="endDate">End Date</label>
+
+            <input type="date"
+                   id="endDate"
+                   name="endDate"
+                   th:value="${period.endDate}"
+                   th:max="${today}"
+                   required>
+        </div>
+
+        <div class="analytics-form-action">
+            <button type="submit">
+                Generate Analytics
+            </button>
+        </div>
+
+    </form>
+
+    <p class="analytics-error"
+       th:if="${periodError != null}"
+       th:text="${periodError}">
+        Invalid reporting period.
+    </p>
+
+</section>
+
+
+<!-- =========================================================
+     INITIAL PAGE
+     ========================================================= -->
+
+<section class="analytics-message"
+         th:if="${generated == false and periodError == null}">
+
+    <h2>Select a Reporting Period</h2>
+
+    <p>
+        Choose a start date and end date to generate your
+        health and activity analytics.
+    </p>
+
+</section>
+
+
+<!-- =========================================================
+     GENERATED ANALYTICS
+     ========================================================= -->
+
+<div th:if="${generated == true}">
+
+    <!-- =====================================================
+         OVERVIEW
+         ===================================================== -->
+
+    <section class="analytics-section">
+
+        <h2>Overview</h2>
+
+        <p>
+            Reporting period:
+            <strong th:text="${period.startDate}">
+                2026-10-01
+            </strong>
+            to
+            <strong th:text="${period.endDate}">
+                2026-10-10
+            </strong>
+        </p>
+
+        <div class="analytics-summary-grid">
+
+            <div class="analytics-summary-card">
+                <span class="analytics-summary-label">
+                    Health Readings
+                </span>
+
+                <strong th:text="${healthAnalytics.totalReadingCount}">
+                    0
+                </strong>
+            </div>
+
+            <div class="analytics-summary-card">
+                <span class="analytics-summary-label">
+                    Health Metrics
+                </span>
+
+                <strong th:text="${healthAnalytics.metricTypesWithData}">
+                    0
+                </strong>
+            </div>
+
+            <div class="analytics-summary-card">
+                <span class="analytics-summary-label">
+                    Activity Logs
+                </span>
+
+                <strong th:text="${activityAnalytics.logCount}">
+                    0
+                </strong>
+            </div>
+
+            <div class="analytics-summary-card">
+                <span class="analytics-summary-label">
+                    Activity Tracking
+                </span>
+
+                <strong>
+                    <span th:text="${activityAnalytics.trackingCoveragePercentage}">
+                        0
+                    </span>%
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         ABSOLUTELY NO DATA
+         ===================================================== -->
+
+    <section class="analytics-message"
+             th:if="${hasAnyData == false}">
+
+        <h2>No Analytics Data</h2>
+
+        <p>
+            No health measurements or activity records were
+            recorded during the selected reporting period.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         HEALTH ANALYTICS
+         ===================================================== -->
+
+    <section class="analytics-section"
+             th:if="${healthAnalytics.hasData}">
+
+        <h2>Health Measurements</h2>
+
+        <p class="analytics-section-description">
+            Statistics below describe the measurements recorded
+            during the selected period. Changes and trends are
+            descriptive only and do not provide medical interpretation.
+        </p>
+
+
+        <!-- ===============================================
+             SCALAR HEALTH METRICS
+             =============================================== -->
+
+        <article class="metric-panel"
+                 th:each="metric : ${healthAnalytics.metricSummaries}">
+
+            <header class="metric-panel-header">
+
+                <h3 th:text="${metric.metricType.displayName}">
+                    Heart Rate
+                </h3>
+
+                <span th:text="${metric.metricType.unit}">
+                    bpm
+                </span>
+
+            </header>
+
+
+            <div class="metric-stat-grid">
+
+                <div class="metric-stat">
+                    <span>Latest</span>
+
+                    <strong>
+                        <span th:text="${metric.latestValue}">
+                            72
+                        </span>
+                        <span th:text="${metric.metricType.unit}">
+                            bpm
+                        </span>
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Average</span>
+
+                    <strong>
+                        <span th:text="${metric.averageValue}">
+                            74
+                        </span>
+                        <span th:text="${metric.metricType.unit}">
+                            bpm
+                        </span>
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Median</span>
+
+                    <strong>
+                        <span th:text="${metric.medianValue}">
+                            73
+                        </span>
+                        <span th:text="${metric.metricType.unit}">
+                            bpm
+                        </span>
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Lowest</span>
+
+                    <strong>
+                        <span th:text="${metric.minimumValue}">
+                            68
+                        </span>
+                        <span th:text="${metric.metricType.unit}">
+                            bpm
+                        </span>
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Highest</span>
+
+                    <strong>
+                        <span th:text="${metric.maximumValue}">
+                            86
+                        </span>
+                        <span th:text="${metric.metricType.unit}">
+                            bpm
+                        </span>
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Readings</span>
+
+                    <strong th:text="${metric.readingCount}">
+                        0
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <!-- Change / trend -->
+
+            <div class="metric-change">
+
+                <h4>Period Change</h4>
+
+
+                <div th:if="${metric.readingCount >= 2}">
+
+                    <p>
+                        Earliest:
+                        <strong>
+                            <span th:text="${metric.earliestValue}">
+                                70
+                            </span>
+                            <span th:text="${metric.metricType.unit}">
+                                bpm
+                            </span>
+                        </strong>
+
+                        &nbsp;→&nbsp;
+
+                        Latest:
+                        <strong>
+                            <span th:text="${metric.latestValue}">
+                                72
+                            </span>
+                            <span th:text="${metric.metricType.unit}">
+                                bpm
+                            </span>
+                        </strong>
+                    </p>
+
+
+                    <p>
+                        Absolute change:
+
+                        <strong>
+                            <span th:text="${metric.absoluteChange}">
+                                2
+                            </span>
+                            <span th:text="${metric.metricType.unit}">
+                                bpm
+                            </span>
+                        </strong>
+                    </p>
+
+
+                    <p>
+                        Percentage change:
+
+                        <strong th:if="${metric.percentageChange != null}">
+                            <span th:text="${metric.percentageChange}">
+                                2.86
+                            </span>%
+                        </strong>
+
+                        <strong th:if="${metric.percentageChange == null}">
+                            Not available
+                        </strong>
+                    </p>
+
+
+                    <p>
+                        Direction:
+
+                        <strong th:text="${metric.trendDirection.displayName}">
+                            Increased
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <p th:if="${metric.readingCount < 2}">
+                    At least two readings are required to calculate
+                    period change.
+                </p>
+
+            </div>
+
+
+            <!-- Chart container.
+                 patient-analytics.js will draw the line graph here. -->
+
+            <div class="analytics-chart-container">
+
+                <h4>
+                    <span th:text="${metric.metricType.displayName}">
+                        Heart Rate
+                    </span>
+                    Over Time
+                </h4>
+
+                <div class="metric-line-chart"
+                     th:attr="data-metric=${metric.metricType.name()},
+                              data-unit=${metric.metricType.unit}">
+
+                    <div class="chart-data-point"
+                         th:each="point : ${metric.dataPoints}"
+                         th:attr="data-time=${point.observedAt},
+                                  data-value=${point.value}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+
+        <!-- ===============================================
+             BLOOD PRESSURE
+             =============================================== -->
+
+        <article class="metric-panel"
+                 th:if="${healthAnalytics.bloodPressureSummary != null}"
+                 th:with="bp=${healthAnalytics.bloodPressureSummary}">
+
+            <header class="metric-panel-header">
+
+                <h3>Blood Pressure</h3>
+
+                <span>mmHg</span>
+
+            </header>
+
+
+            <div class="blood-pressure-latest">
+
+                <span>Latest Reading</span>
+
+                <strong>
+                    <span th:text="${bp.latestReading.systolic}">
+                        118
+                    </span>
+                    /
+                    <span th:text="${bp.latestReading.diastolic}">
+                        76
+                    </span>
+                    mmHg
+                </strong>
+
+            </div>
+
+
+            <div class="metric-stat-grid">
+
+                <div class="metric-stat">
+                    <span>Average Systolic</span>
+                    <strong th:text="${bp.averageSystolic}">
+                        120
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Average Diastolic</span>
+                    <strong th:text="${bp.averageDiastolic}">
+                        78
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Median Systolic</span>
+                    <strong th:text="${bp.medianSystolic}">
+                        120
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Median Diastolic</span>
+                    <strong th:text="${bp.medianDiastolic}">
+                        77
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Systolic Range</span>
+
+                    <strong>
+                        <span th:text="${bp.minimumSystolic}">
+                            110
+                        </span>
+                        –
+                        <span th:text="${bp.maximumSystolic}">
+                            130
+                        </span>
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Diastolic Range</span>
+
+                    <strong>
+                        <span th:text="${bp.minimumDiastolic}">
+                            70
+                        </span>
+                        –
+                        <span th:text="${bp.maximumDiastolic}">
+                            84
+                        </span>
+                    </strong>
+                </div>
+
+                <div class="metric-stat">
+                    <span>Readings</span>
+
+                    <strong th:text="${bp.readingCount}">
+                        0
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="metric-change">
+
+                <h4>Period Change</h4>
+
+
+                <div th:if="${bp.readingCount >= 2}">
+
+                    <p>
+                        Systolic change:
+
+                        <strong>
+                            <span th:text="${bp.systolicAbsoluteChange}">
+                                0
+                            </span>
+                            mmHg
+                        </strong>
+
+                        <span th:if="${bp.systolicPercentageChange != null}">
+                            (
+                            <span th:text="${bp.systolicPercentageChange}">
+                                0
+                            </span>%
+                            )
+                        </span>
+
+                        —
+                        <span th:text="${bp.systolicTrendDirection.displayName}">
+                            No Change
+                        </span>
+                    </p>
+
+
+                    <p>
+                        Diastolic change:
+
+                        <strong>
+                            <span th:text="${bp.diastolicAbsoluteChange}">
+                                0
+                            </span>
+                            mmHg
+                        </strong>
+
+                        <span th:if="${bp.diastolicPercentageChange != null}">
+                            (
+                            <span th:text="${bp.diastolicPercentageChange}">
+                                0
+                            </span>%
+                            )
+                        </span>
+
+                        —
+                        <span th:text="${bp.diastolicTrendDirection.displayName}">
+                            No Change
+                        </span>
+                    </p>
+
+                </div>
+
+
+                <p th:if="${bp.readingCount < 2}">
+                    At least two blood pressure readings are required
+                    to calculate period change.
+                </p>
+
+            </div>
+
+
+            <div class="analytics-chart-container">
+
+                <h4>Blood Pressure Over Time</h4>
+
+                <div id="blood-pressure-chart"
+                     class="blood-pressure-chart">
+
+                    <div class="chart-data-point"
+                         th:each="point : ${bp.dataPoints}"
+                         th:attr="data-time=${point.observedAt},
+                                  data-systolic=${point.systolic},
+                                  data-diastolic=${point.diastolic}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </article>
+
+    </section>
+
+
+    <!-- Health partial-data state -->
+
+    <section class="analytics-message"
+             th:if="${healthAnalytics.hasData == false and hasAnyData == true}">
+
+        <h2>Health Measurements</h2>
+
+        <p>
+            No health measurements were recorded during the
+            selected reporting period.
+        </p>
+
+    </section>
+
+
+    <!-- =====================================================
+         ACTIVITY ANALYTICS
+         ===================================================== -->
+
+    <section class="analytics-section"
+             th:if="${activityAnalytics.hasData}">
+
+        <h2>Activity</h2>
+
+
+        <!-- Tracking -->
+
+        <div class="analytics-subsection">
+
+            <h3>Tracking</h3>
+
+            <div class="analytics-summary-grid">
+
+                <div class="analytics-summary-card">
+                    <span class="analytics-summary-label">
+                        Activity Logs
+                    </span>
+
+                    <strong th:text="${activityAnalytics.logCount}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="analytics-summary-card">
+                    <span class="analytics-summary-label">
+                        Days With Entries
+                    </span>
+
+                    <strong th:text="${activityAnalytics.daysWithEntries}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="analytics-summary-card">
+                    <span class="analytics-summary-label">
+                        Calendar Days
+                    </span>
+
+                    <strong th:text="${activityAnalytics.calendarDays}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="analytics-summary-card">
+                    <span class="analytics-summary-label">
+                        Tracking Coverage
+                    </span>
+
+                    <strong>
+                        <span th:text="${activityAnalytics.trackingCoveragePercentage}">
+                            0
+                        </span>%
+                    </strong>
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Steps -->
+
+        <div class="analytics-subsection">
+
+            <h3>Steps</h3>
+
+            <div class="metric-stat-grid">
+
+                <div class="metric-stat">
+                    <span>Total Steps</span>
+
+                    <strong th:text="${activityAnalytics.totalSteps}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Average / Day</span>
+
+                    <strong th:text="${activityAnalytics.averageStepsPerCalendarDay}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Highest Daily Steps</span>
+
+                    <strong th:text="${activityAnalytics.highestDailySteps}">
+                        0
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Highest-Step Date</span>
+
+                    <strong th:text="${activityAnalytics.highestStepDate}">
+                        2026-10-08
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="analytics-chart-container">
+
+                <h4>Daily Steps</h4>
+
+                <div id="daily-steps-chart"
+                     class="activity-bar-chart">
+
+                    <div class="chart-data-point"
+                         th:each="point : ${activityAnalytics.dailyDataPoints}"
+                         th:attr="data-date=${point.date},
+                                  data-value=${point.steps},
+                                  data-log-count=${point.logCount}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Exercise Duration -->
+
+        <div class="analytics-subsection">
+
+            <h3>Exercise Duration</h3>
+
+            <div class="metric-stat-grid">
+
+                <div class="metric-stat">
+                    <span>Total Duration</span>
+
+                    <strong>
+                        <span th:text="${activityAnalytics.totalDurationMinutes}">
+                            0
+                        </span>
+                        min
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Average / Day</span>
+
+                    <strong>
+                        <span th:text="${activityAnalytics.averageDurationMinutesPerCalendarDay}">
+                            0
+                        </span>
+                        min
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="analytics-chart-container">
+
+                <h4>Daily Exercise Minutes</h4>
+
+                <div id="daily-duration-chart"
+                     class="activity-bar-chart">
+
+                    <div class="chart-data-point"
+                         th:each="point : ${activityAnalytics.dailyDataPoints}"
+                         th:attr="data-date=${point.date},
+                                  data-value=${point.durationMinutes},
+                                  data-log-count=${point.logCount}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Calories -->
+
+        <div class="analytics-subsection">
+
+            <h3>Calories Burned</h3>
+
+            <div class="metric-stat-grid">
+
+                <div class="metric-stat">
+                    <span>Total Calories</span>
+
+                    <strong>
+                        <span th:text="${activityAnalytics.totalCaloriesBurned}">
+                            0
+                        </span>
+                        kcal
+                    </strong>
+                </div>
+
+
+                <div class="metric-stat">
+                    <span>Average / Day</span>
+
+                    <strong>
+                        <span th:text="${activityAnalytics.averageCaloriesPerCalendarDay}">
+                            0
+                        </span>
+                        kcal
+                    </strong>
+                </div>
+
+            </div>
+
+
+            <div class="analytics-chart-container">
+
+                <h4>Daily Calories Burned</h4>
+
+                <div id="daily-calories-chart"
+                     class="activity-bar-chart">
+
+                    <div class="chart-data-point"
+                         th:each="point : ${activityAnalytics.dailyDataPoints}"
+                         th:attr="data-date=${point.date},
+                                  data-value=${point.caloriesBurned},
+                                  data-log-count=${point.logCount}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- Exercise Types -->
+
+        <div class="analytics-subsection"
+             th:if="${!activityAnalytics.exerciseTypeAnalytics.isEmpty()}">
+
+            <h3>Exercise by Type</h3>
+
+            <table>
+
+                <thead>
+                <tr>
+                    <th>Exercise Type</th>
+                    <th>Activity Logs</th>
+                    <th>Total Duration</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr th:each="exercise : ${activityAnalytics.exerciseTypeAnalytics}">
+
+                    <td th:text="${exercise.exerciseType}">
+                        WALKING
+                    </td>
+
+                    <td th:text="${exercise.logCount}">
+                        0
+                    </td>
+
+                    <td>
+                        <span th:text="${exercise.totalDurationMinutes}">
+                            0
+                        </span>
+                        min
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+
+            <div class="analytics-chart-container">
+
+                <h4>Exercise Duration by Type</h4>
+
+                <div id="exercise-type-chart"
+                     class="activity-bar-chart">
+
+                    <div class="chart-data-point"
+                         th:each="exercise : ${activityAnalytics.exerciseTypeAnalytics}"
+                         th:attr="data-label=${exercise.exerciseType},
+                                  data-value=${exercise.totalDurationMinutes}">
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Activity partial-data state -->
+
+    <section class="analytics-message"
+             th:if="${activityAnalytics.hasData == false and hasAnyData == true}">
+
+        <h2>Activity</h2>
+
+        <p>
+            No activity records were recorded during the
+            selected reporting period.
+        </p>
+
+    </section>
+
+</div>
+
+<script src="/js/patient-analytics.js"
+        th:src="@{/js/patient-analytics.js}"
+        defer>
+</script>
+
+</body>
+</html>
