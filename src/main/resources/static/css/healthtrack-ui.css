@@ -964,12 +964,32 @@ body.healthtrack-ui::before {
 }
 
 .analytics-ui .analytics-header {
+    align-items: center;
     padding: clamp(24px, 4vw, 38px);
     border: 1px solid var(--ht-border);
     border-radius: 20px;
     background:
         radial-gradient(circle at 85% 20%, rgba(11, 107, 109, 0.16), transparent 30%),
         linear-gradient(135deg, #ffffff, #eef7f6);
+}
+
+.analytics-ui .analytics-header > div:first-child {
+    flex: 1 1 auto;
+}
+
+.analytics-ui .analytics-header-visual {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 1 230px;
+    min-width: 180px;
+}
+
+.analytics-ui .analytics-header-visual img {
+    width: 100%;
+    max-width: 220px;
+    max-height: 150px;
+    object-fit: contain;
 }
 
 .analytics-ui .analytics-summary-card,
@@ -1023,6 +1043,128 @@ body.healthtrack-ui::before {
     color: var(--ht-secondary);
 }
 
+.records-ui .records-hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(210px, 310px);
+    align-items: center;
+    gap: 28px;
+    margin-bottom: 24px;
+    padding: clamp(24px, 4vw, 38px);
+    overflow: hidden;
+    border: 1px solid var(--ht-border);
+    border-radius: 20px;
+    background: linear-gradient(135deg, #ffffff, #e8f4f3);
+    box-shadow: 0 12px 34px rgba(22, 48, 51, 0.05);
+}
+
+.records-ui .records-hero-copy p {
+    max-width: 650px;
+    color: var(--ht-secondary);
+    line-height: 1.65;
+}
+
+.records-ui .records-hero-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 150px;
+}
+
+.records-ui .records-hero-image img {
+    width: min(100%, 280px);
+    max-height: 185px;
+    object-fit: contain;
+}
+
+.healthtrack-ui .ht-primary-action {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    min-height: 43px;
+    padding: 0 16px;
+    border: 1px solid var(--ht-teal);
+    border-radius: 9px;
+    background: var(--ht-teal);
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(7, 84, 86, 0.12);
+    transition: background-color 200ms ease, box-shadow 220ms ease;
+}
+
+.healthtrack-ui .ht-primary-action::before {
+    font-size: 20px;
+    font-weight: 400;
+    line-height: 1;
+    content: "+";
+}
+
+.healthtrack-ui .ht-primary-action:hover {
+    background: var(--ht-teal-dark);
+    box-shadow: 0 10px 22px rgba(7, 84, 86, 0.18);
+}
+
+.records-ui .records-filter-card {
+    margin: 0 0 24px;
+}
+
+.records-ui .records-filter-card h2 {
+    margin-bottom: 4px;
+}
+
+.records-ui .records-filter-card > p {
+    color: var(--ht-secondary);
+}
+
+.records-ui .records-filter-card .records-filter-form {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px;
+    margin: 20px 0 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.records-ui .records-filter-form > div {
+    margin: 0;
+}
+
+.records-ui .records-filter-form .filter-actions {
+    grid-column: 1 / -1;
+}
+
+.records-ui .action-buttons a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    padding: 0 11px;
+    border: 1px solid var(--ht-border);
+    border-radius: 8px;
+    background: var(--ht-surface-soft);
+    color: var(--ht-teal-dark);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.records-ui .action-buttons a:hover {
+    border-color: #b8cecd;
+    background: var(--ht-teal-light);
+}
+
+.records-ui .record-alert {
+    margin: 0 0 16px;
+    padding: 12px 14px;
+    border: 1px solid #b9dfcc;
+    border-radius: 10px;
+    background: var(--ht-success-bg);
+    color: var(--ht-success);
+    font-weight: 600;
+}
+
 /* Profile */
 .profile-ui .healthtrack-page-shell {
     max-width: 860px;
@@ -1040,6 +1182,106 @@ body.healthtrack-ui::before {
     border-radius: 18px;
     background: rgba(255, 255, 255, 0.97);
     box-shadow: var(--ht-shadow);
+}
+
+.profile-ui .profile-cover {
+    position: relative;
+    min-height: 230px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #dcefee, #a9d7d4);
+}
+
+.profile-ui .profile-cover > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+}
+
+.profile-ui .profile-cover-shade {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(8, 45, 48, 0.04), rgba(8, 45, 48, 0.78));
+}
+
+.profile-ui .profile-identity {
+    position: absolute;
+    inset: auto 26px 24px;
+    display: flex;
+    align-items: center;
+    gap: 13px;
+    color: #fff;
+}
+
+.profile-ui .profile-initials {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 52px;
+    width: 52px;
+    height: 52px;
+    border: 2px solid rgba(255, 255, 255, 0.75);
+    border-radius: 50%;
+    background: rgba(7, 84, 86, 0.84);
+    font-size: 17px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.profile-ui .profile-identity strong,
+.profile-ui .profile-identity small {
+    display: block;
+}
+
+.profile-ui .profile-identity strong {
+    font-size: 19px;
+}
+
+.profile-ui .profile-identity small {
+    margin-top: 3px;
+    color: rgba(255, 255, 255, 0.82);
+    font-size: 12px;
+}
+
+.profile-ui .profile-cover-controls {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px clamp(20px, 4vw, 30px);
+    border-bottom: 1px solid var(--ht-border);
+    background: #fbfdfd;
+}
+
+.profile-ui .profile-cover-upload {
+    display: grid;
+    grid-template-columns: minmax(190px, 1fr) auto;
+    align-items: end;
+    gap: 8px;
+    flex: 1 1 430px;
+}
+
+.profile-ui .profile-cover-upload label {
+    grid-column: 1 / -1;
+    margin: 0;
+}
+
+.profile-ui .profile-cover-upload input {
+    min-height: 43px;
+    padding: 7px 10px;
+}
+
+.profile-ui .profile-cover-remove {
+    flex: 0 0 auto;
+}
+
+.profile-ui .profile-cover-controls > p {
+    flex-basis: 100%;
+    margin: 0;
+    color: var(--ht-muted);
+    font-size: 11px;
 }
 
 .profile-ui .profile-grid {
@@ -1090,6 +1332,16 @@ body.healthtrack-ui::before {
     border-radius: 10px;
     background: var(--ht-success-bg);
     color: var(--ht-success);
+    font-weight: 600;
+}
+
+.profile-ui .alert-error {
+    margin: 0 0 18px;
+    padding: 12px 14px;
+    border: 1px solid #e6b9b5;
+    border-radius: 10px;
+    background: var(--ht-danger-bg);
+    color: var(--ht-danger);
     font-weight: 600;
 }
 
@@ -1202,6 +1454,10 @@ body.healthtrack-ui::before {
     .healthtrack-ui .metric-stat-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
+
+    .analytics-ui .analytics-header-visual {
+        display: none;
+    }
 }
 
 @media (max-width: 620px) {
@@ -1254,6 +1510,40 @@ body.healthtrack-ui::before {
 
     .profile-ui .profile-grid {
         grid-template-columns: 1fr;
+    }
+
+    .records-ui .records-hero {
+        grid-template-columns: 1fr;
+    }
+
+    .records-ui .records-hero-image {
+        display: none;
+    }
+
+    .records-ui .records-filter-card .records-filter-form {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-ui .profile-cover {
+        min-height: 190px;
+    }
+
+    .profile-ui .profile-identity {
+        inset: auto 18px 18px;
+    }
+
+    .profile-ui .profile-cover-upload {
+        grid-template-columns: 1fr;
+    }
+
+    .profile-ui .profile-cover-upload label {
+        grid-column: auto;
+    }
+
+    .profile-ui .profile-cover-upload button,
+    .profile-ui .profile-cover-remove,
+    .profile-ui .profile-cover-remove button {
+        width: 100%;
     }
 
     .profile-ui .profile-actions .compact-form {

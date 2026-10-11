@@ -15,22 +15,79 @@
 <h1>My Profile</h1>
 
 <p class="page-intro">
-    Review your account details and keep your personal information up to date.
+    Personalize your account and keep your details up to date.
 </p>
 
 <p class="alert-success" th:if="${param.updated}">
     Profile updated successfully.
 </p>
 
+<p class="alert-success" th:if="${param.coverUpdated}">
+    Cover photo updated successfully.
+</p>
+
+<p class="alert-success" th:if="${param.coverRemoved}">
+    Cover photo removed successfully.
+</p>
+
+<p class="alert-error" th:if="${coverError}" th:text="${coverError}">
+    Cover photo could not be updated.
+</p>
+
 <section class="profile-card" aria-label="Profile details">
+    <div class="profile-cover">
+        <img th:if="${currentUser.coverPhotoPresent}"
+             th:src="@{/profile/cover-photo(v=${currentUser.updatedAt})}"
+             alt="Your cover photo">
+        <img th:unless="${currentUser.coverPhotoPresent}"
+             src="/images/healthtrack-dashboard-hero.png"
+             th:src="@{/images/healthtrack-dashboard-hero.png}"
+             alt="HealthTrack care illustration">
+
+        <div class="profile-cover-shade"></div>
+        <div class="profile-identity">
+            <span class="profile-initials"
+                  th:text="${#strings.toUpperCase(#strings.substring(currentUser.firstName, 0, 1) + #strings.substring(currentUser.lastName, 0, 1))}">
+                HT
+            </span>
+            <span>
+                <strong th:text="${currentUser.fullName}">Account name</strong>
+                <small th:text="${currentUser.role.displayName}">Account role</small>
+            </span>
+        </div>
+    </div>
+
+    <div class="profile-cover-controls">
+        <form class="profile-cover-upload compact-form"
+              th:action="@{/profile/cover-photo}"
+              method="post"
+              enctype="multipart/form-data">
+            <label for="coverPhoto">Choose a cover photo</label>
+            <input id="coverPhoto"
+                   name="coverPhoto"
+                   type="file"
+                   accept="image/jpeg,image/png,image/webp"
+                   required>
+            <button type="submit">Upload photo</button>
+        </form>
+
+        <form class="profile-cover-remove compact-form"
+              th:if="${currentUser.coverPhotoPresent}"
+              th:action="@{/profile/cover-photo/remove}"
+              method="post">
+            <button class="button button-quiet" type="submit">Remove cover</button>
+        </form>
+        <p>JPG, PNG or WebP, up to 5 MB.</p>
+    </div>
+
     <div class="profile-grid">
         <div class="profile-field">
-        <span class="profile-label">First Name</span>
+        <span class="profile-label">First name</span>
         <span th:text="${currentUser.firstName}">First Name</span>
         </div>
 
         <div class="profile-field">
-        <span class="profile-label">Last Name</span>
+        <span class="profile-label">Last name</span>
         <span th:text="${currentUser.lastName}">Last Name</span>
         </div>
 
@@ -46,8 +103,8 @@
     </div>
 
     <div class="profile-actions">
-        <a class="button" th:href="@{/profile/edit}">Edit Profile</a>
-        <a class="button button-secondary" th:href="@{/dashboard}">Back to Dashboard</a>
+        <a class="button" th:href="@{/profile/edit}">Edit profile</a>
+        <a class="button button-secondary" th:href="@{/dashboard}">Back to dashboard</a>
 
         <form class="compact-form" th:action="@{/logout}" method="post">
             <button class="button button-quiet" type="submit">Logout</button>

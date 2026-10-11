@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.Lob;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 
@@ -39,6 +40,13 @@ public class User extends BaseEntity {
 
     @Column(nullable = false)
     private boolean enabled = true;
+
+    @Lob
+    @Column(name = "cover_photo_data")
+    private byte[] coverPhotoData;
+
+    @Column(name = "cover_photo_content_type", length = 50)
+    private String coverPhotoContentType;
 
     protected User() {
         // Required by JPA.
@@ -99,6 +107,26 @@ public class User extends BaseEntity {
 
     public void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    public byte[] getCoverPhotoData() {
+        return coverPhotoData;
+    }
+
+    public void setCoverPhotoData(byte[] coverPhotoData) {
+        this.coverPhotoData = coverPhotoData;
+    }
+
+    public String getCoverPhotoContentType() {
+        return coverPhotoContentType;
+    }
+
+    public void setCoverPhotoContentType(String coverPhotoContentType) {
+        this.coverPhotoContentType = coverPhotoContentType;
+    }
+
+    public boolean isCoverPhotoPresent() {
+        return coverPhotoData != null && coverPhotoData.length > 0;
     }
 
     public String getFullName() {

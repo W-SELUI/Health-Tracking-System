@@ -15,32 +15,47 @@
 <div data-th-replace="~{fragments/navigation :: navigation('health-records', 'Health records')}"></div>
 <div class="healthtrack-page-shell">
 
-<h1>Health Records</h1>
+<section class="records-hero">
+    <div class="records-hero-copy">
+        <h1>Health records</h1>
+        <p>
+            Keep your measurements organized in one secure place. Add new
+            readings, review past results and update patient-entered records.
+        </p>
+        <a class="ht-primary-action"
+           th:href="@{/patient/health-records/new}">
+            Add health record
+        </a>
+    </div>
+    <div class="records-hero-image" aria-hidden="true">
+        <img src="/images/healthtrack-dashboard-hero.png"
+             th:src="@{/images/healthtrack-dashboard-hero.png}"
+             alt="">
+    </div>
+</section>
 
-<p>
-    <a th:href="@{/patient/health-records/new}">
-        Add Health Record
-    </a>
-</p>
-
-<p th:if="${param.created}">
+<p class="record-alert" th:if="${param.created}">
     Health record created successfully.
 </p>
 
-<p th:if="${param.updated}">
+<p class="record-alert" th:if="${param.updated}">
     Health record updated successfully.
 </p>
 
-<p th:if="${param.deleted}">
+<p class="record-alert" th:if="${param.deleted}">
     Health record deleted successfully.
 </p>
 
-<h2>Filter Records</h2>
+<section class="records-filter-card card">
+<h2>Filter records</h2>
+<p>Narrow the list by measurement type or observation date.</p>
 
-<form th:action="@{/patient/health-records}" method="get">
+<form class="records-filter-form"
+      th:action="@{/patient/health-records}"
+      method="get">
 
     <div>
-        <label for="metricType">Health Metric</label>
+        <label for="metricType">Health metric</label>
 
         <select id="metricType" name="metricType">
 
@@ -57,7 +72,7 @@
     </div>
 
     <div>
-        <label for="startDate">Start Date</label>
+        <label for="startDate">Start date</label>
 
         <input type="date"
                id="startDate"
@@ -66,7 +81,7 @@
     </div>
 
     <div>
-        <label for="endDate">End Date</label>
+        <label for="endDate">End date</label>
 
         <input type="date"
                id="endDate"
@@ -74,13 +89,13 @@
                th:value="${selectedEndDate}">
     </div>
 
-    <button type="submit">
-        Apply Filters
-    </button>
-
-    <a th:href="@{/patient/health-records}">
-        Clear Filters
-    </a>
+    <div class="filter-actions">
+        <button type="submit">Apply filters</button>
+        <a class="button button-secondary"
+           th:href="@{/patient/health-records}">
+            Clear filters
+        </a>
+    </div>
 
 </form>
 
@@ -88,11 +103,11 @@
    th:text="${filterError}">
     Filter error
 </p>
+</section>
 
-<hr>
-
-<div th:if="${#lists.isEmpty(records)}">
-    <p>No health records were found.</p>
+<div class="empty-state" th:if="${#lists.isEmpty(records)}">
+    <h2>No records found</h2>
+    <p>Add your first measurement or adjust the selected filters.</p>
 </div>
 
 <table th:unless="${#lists.isEmpty(records)}">
@@ -188,8 +203,8 @@
 </table>
 
 <p>
-    <a th:href="@{/dashboard}">
-        Back to Dashboard
+    <a class="button button-secondary" th:href="@{/dashboard}">
+        Back to dashboard
     </a>
 </p>
 
