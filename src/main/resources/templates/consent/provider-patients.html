@@ -346,6 +346,11 @@
                                 View health records
                             </a>
 
+                            <a class="record-link"
+                               data-th-href="@{/provider/patients/{patientId}/analytics(patientId=${patient.id})}">
+                                View analytics
+                            </a>
+
                         </div>
 
                     </td>
@@ -451,7 +456,7 @@
                 <tr>
                     <th scope="col">Patient</th>
                     <th scope="col">Email</th>
-                    <th scope="col">Health records</th>
+                    <th scope="col">Actions</th>
                 </tr>
                 </thead>
 
@@ -469,10 +474,19 @@
 
                     <td>
 
-                        <a class="record-link"
-                           data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
-                            View health records
-                        </a>
+                        <div class="table-actions">
+
+                            <a class="record-link"
+                               data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                                View health records
+                            </a>
+
+                            <a class="record-link"
+                               data-th-href="@{/provider/patients/{patientId}/analytics(patientId=${patient.id})}">
+                                View analytics
+                            </a>
+
+                        </div>
 
                     </td>
 
