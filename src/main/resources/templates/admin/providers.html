@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Providers</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 30px 6%;
+        }
+
+        main {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5eaf0;
+            text-align: left;
+        }
+
+        th {
+            background: #1565a9;
+            color: white;
+        }
+
+        .enabled {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .disabled {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        .verification-btn,
+        .back-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        .verification-btn {
+            background: #1565a9;
+        }
+
+        .back-btn {
+            background: #344f6f;
+            margin-top: 25px;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Manage Providers</h1>
+
+    <p>
+        View registered healthcare providers.
+    </p>
+
+</header>
+
+<main>
+
+    <table>
+
+        <thead>
+
+        <tr>
+            <th>ID</th>
+            <th>Provider Name</th>
+            <th>Email</th>
+            <th>Account Status</th>
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        <tr th:each="provider : ${providers}">
+
+            <td th:text="${provider.id}">
+                1
+            </td>
+
+            <td th:text="${provider.fullName}">
+                Doctor Name
+            </td>
+
+            <td th:text="${provider.email}">
+                doctor@email.com
+            </td>
+
+            <td>
+
+                <span class="enabled"
+                      th:if="${provider.enabled}">
+                    Enabled
+                </span>
+
+                <span class="disabled"
+                      th:unless="${provider.enabled}">
+                    Disabled
+                </span>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <a th:href="@{/admin/provider-verifications}"
+       class="verification-btn"
+       style="margin-top: 25px;">
+        View Provider Licence Verifications
+    </a>
+
+    <br>
+
+    <a th:href="@{/admin/dashboard}"
+       class="back-btn">
+        Back to Dashboard
+    </a>
+
+</main>
+
+</body>
+
+</html>

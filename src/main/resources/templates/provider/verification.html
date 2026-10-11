@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Verification</title>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 35px 6%;
+            border-bottom: 1px solid #d3e1ef;
+        }
+
+        header h1 {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        header p {
+            color: #183b63;
+            font-size: 18px;
+        }
+
+        main {
+            width: min(760px, 92%);
+            margin: 40px auto;
+            background: white;
+            padding: 35px;
+            border-radius: 18px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        h2 {
+            margin-bottom: 12px;
+            font-size: 30px;
+        }
+
+        .description {
+            color: #526477;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .status-card {
+            background: #f5f9fd;
+            border: 1px solid #dce7f2;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .status-card p {
+            margin: 10px 0;
+            line-height: 1.5;
+        }
+
+        .status {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #c77700;
+        }
+
+        .verified {
+            color: #2e7d32;
+        }
+
+        .rejected {
+            color: #b3261e;
+        }
+
+        .admin-note {
+            margin-top: 15px;
+            padding: 12px;
+            background: #fff8e1;
+            border-radius: 8px;
+            color: #6c5300;
+        }
+
+        .info-box {
+            margin-top: 18px;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.5;
+        }
+
+        .pending-box {
+            background: #fff8e1;
+            color: #6c5300;
+            border: 1px solid #f0d98a;
+        }
+
+        .verified-box {
+            background: #e8f5e9;
+            color: #2e7d32;
+            border: 1px solid #c8e6c9;
+        }
+
+        .rejected-box {
+            background: #fff0f0;
+            color: #a12626;
+            border: 1px solid #f1caca;
+        }
+
+        .button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 13px 22px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            border: none;
+        }
+
+        .dashboard-btn {
+            background: #1565a9;
+            color: white;
+        }
+
+        .dashboard-btn:hover {
+            background: #0f4d84;
+        }
+
+        .logout-btn {
+            background: #344f6f;
+            color: white;
+            margin-left: 8px;
+        }
+
+        .logout-btn:hover {
+            background: #293f59;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Health Tracking System</h1>
+
+    <p>
+        Healthcare Provider Verification
+    </p>
+
+</header>
+
+<main>
+
+    <h2>
+        Provider Licence Verification
+    </h2>
+
+    <p class="description">
+        Your healthcare provider licence is reviewed by an administrator
+        before you can access provider features.
+    </p>
+
+    <!-- No verification record -->
+
+    <div class="status-card"
+         th:if="${verification == null}">
+
+        <p>
+            <strong>Verification Status:</strong>
+            Not Submitted
+        </p>
+
+        <div class="info-box rejected-box">
+            We could not find a licence verification record for your account.
+            Please contact the administrator.
+        </div>
+
+    </div>
+
+    <!-- Existing verification -->
+
+    <div class="status-card"
+         th:if="${verification != null}">
+
+        <p>
+            <strong>Uploaded File:</strong>
+
+            <span th:text="${verification.originalFileName}">
+                licence.pdf
+            </span>
+        </p>
+
+        <p>
+            <strong>Verification Status:</strong>
+
+            <span class="status pending"
+                  th:if="${verification.status.name() == 'PENDING'}">
+                Pending
+            </span>
+
+            <span class="status verified"
+                  th:if="${verification.status.name() == 'VERIFIED'}">
+                Verified
+            </span>
+
+            <span class="status rejected"
+                  th:if="${verification.status.name() == 'REJECTED'}">
+                Rejected
+            </span>
+
+        </p>
+
+        <!-- Pending message -->
+
+        <div class="info-box pending-box"
+             th:if="${verification.status.name() == 'PENDING'}">
+
+            Your licence has been submitted successfully and is currently
+            waiting for administrator review.
+
+            You will not be able to access provider features until your
+            account has been verified.
+
+        </div>
+
+        <!-- Verified message -->
+
+        <div class="info-box verified-box"
+             th:if="${verification.status.name() == 'VERIFIED'}">
+
+            Your healthcare provider licence has been verified successfully.
+
+            You now have access to the provider dashboard and provider features.
+
+        </div>
+
+        <!-- Rejected message -->
+
+        <div class="info-box rejected-box"
+             th:if="${verification.status.name() == 'REJECTED'}">
+
+            Your healthcare provider licence has been rejected.
+
+            You cannot access provider features unless your verification
+            status is approved by an administrator.
+
+        </div>
+
+        <!-- Admin note -->
+
+        <div class="admin-note"
+             th:if="${verification.adminNote != null
+                 and !verification.adminNote.isBlank()}">
+
+            <strong>Administrator Note:</strong>
+
+            <span th:text="${verification.adminNote}">
+            </span>
+
+        </div>
+
+        <!-- Dashboard button only for verified providers -->
+
+        <a th:if="${verification.status.name() == 'VERIFIED'}"
+           th:href="@{/provider/dashboard}"
+           class="button dashboard-btn">
+
+            Continue to Dashboard
+
+        </a>
+
+    </div>
+
+    <form th:action="@{/logout}"
+          method="post"
+          style="display: inline;">
+
+        <button type="submit"
+                class="button logout-btn">
+
+            Logout
+
+        </button>
+
+    </form>
+
+</main>
+
+</body>
+
+</html>

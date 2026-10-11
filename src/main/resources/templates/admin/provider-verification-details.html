@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Verification Details</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 30px 6%;
+        }
+
+        main {
+            width: 92%;
+            max-width: 800px;
+            margin: 35px auto;
+        }
+
+        .card {
+            background: white;
+            padding: 30px;
+            border-radius: 14px;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        .message {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #b3261e;
+        }
+
+        .row {
+            margin-bottom: 14px;
+        }
+
+        .label {
+            font-weight: bold;
+        }
+
+        .pending {
+            color: #c77700;
+            font-weight: bold;
+        }
+
+        .verified {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .rejected {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        .licence-btn,
+        .back-btn {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 7px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        .licence-btn {
+            background: #1565a9;
+        }
+
+        .back-btn {
+            background: #344f6f;
+            margin-top: 20px;
+        }
+
+        textarea {
+            width: 100%;
+            min-height: 100px;
+            padding: 12px;
+            border: 1px solid #ccd6e0;
+            border-radius: 8px;
+            margin-top: 8px;
+            resize: vertical;
+        }
+
+        button {
+            border: none;
+            border-radius: 7px;
+            padding: 11px 18px;
+            color: white;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 12px;
+            margin-right: 8px;
+        }
+
+        .verify-btn {
+            background: #2e7d32;
+        }
+
+        .reject-btn {
+            background: #b3261e;
+        }
+
+        hr {
+            margin: 25px 0;
+            border: none;
+            border-top: 1px solid #e0e6ed;
+        }
+    </style>
+
+</head>
+
+<body>
+
+<header>
+
+    <h1>Provider Verification Details</h1>
+
+</header>
+
+<main>
+
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <div class="card">
+
+        <div class="row">
+
+            <span class="label">
+                Provider:
+            </span>
+
+            <span th:text="${verification.provider.fullName}">
+                Provider Name
+            </span>
+
+        </div>
+
+        <div class="row">
+
+            <span class="label">
+                Email:
+            </span>
+
+            <span th:text="${verification.provider.email}">
+                provider@email.com
+            </span>
+
+        </div>
+
+        <div class="row">
+
+            <span class="label">
+                Uploaded File:
+            </span>
+
+            <span th:text="${verification.originalFileName}">
+                licence.pdf
+            </span>
+
+        </div>
+
+        <div class="row">
+
+            <span class="label">
+                Status:
+            </span>
+
+            <span class="pending"
+                  th:if="${verification.status.name() == 'PENDING'}">
+                Pending
+            </span>
+
+            <span class="verified"
+                  th:if="${verification.status.name() == 'VERIFIED'}">
+                Verified
+            </span>
+
+            <span class="rejected"
+                  th:if="${verification.status.name() == 'REJECTED'}">
+                Rejected
+            </span>
+
+        </div>
+
+        <div class="row"
+             th:if="${verification.adminNote != null}">
+
+            <span class="label">
+                Admin Note:
+            </span>
+
+            <span th:text="${verification.adminNote}">
+            </span>
+
+        </div>
+
+        <a class="licence-btn"
+           target="_blank"
+           th:href="@{/admin/provider-verifications/{id}/licence(id=${verification.id})}">
+            Open Licence
+        </a>
+
+        <hr>
+
+        <form th:action="@{/admin/provider-verifications/{id}/verify(id=${verification.id})}"
+              method="post">
+
+            <label>
+                Admin Note
+            </label>
+
+            <textarea name="adminNote"
+                      placeholder="Optional note"></textarea>
+
+            <button type="submit"
+                    class="verify-btn">
+                Verify Provider
+            </button>
+
+        </form>
+
+        <form th:action="@{/admin/provider-verifications/{id}/reject(id=${verification.id})}"
+              method="post">
+
+            <label>
+                Rejection Note
+            </label>
+
+            <textarea name="adminNote"
+                      placeholder="Reason for rejection"></textarea>
+
+            <button type="submit"
+                    class="reject-btn">
+                Reject Licence
+            </button>
+
+        </form>
+
+        <a th:href="@{/admin/provider-verifications}"
+           class="back-btn">
+            Back to Verifications
+        </a>
+
+    </div>
+
+</main>
+
+</body>
+
+</html>

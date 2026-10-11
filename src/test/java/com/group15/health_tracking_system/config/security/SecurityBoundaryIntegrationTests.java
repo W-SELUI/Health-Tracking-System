@@ -7,9 +7,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.view;
 
+import com.group15.health_tracking_system.user.entity.ProviderVerification;
 import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
+import com.group15.health_tracking_system.user.entity.VerificationStatus;
+import com.group15.health_tracking_system.user.repository.ProviderVerificationRepository;
 import com.group15.health_tracking_system.user.repository.UserRepository;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +35,9 @@ class SecurityBoundaryIntegrationTests {
     private UserRepository userRepository;
 
     @Autowired
+    private ProviderVerificationRepository providerVerificationRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     private MockMvc mockMvc;
@@ -40,86 +47,247 @@ class SecurityBoundaryIntegrationTests {
 
     @BeforeEach
     void setUp() {
+
+        providerVerificationRepository.deleteAll();
         userRepository.deleteAll();
 
-        patient = saveUser("patient@example.com", Role.PATIENT);
-        provider = saveUser("provider@example.com", Role.PROVIDER);
-        admin = saveUser("admin@example.com", Role.ADMIN);
+        patient =
+                saveUser(
+                        "patient@example.com",
+                        Role.PATIENT);
 
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(applicationContext)
-                .apply(springSecurity())
-                .build();
+        provider =
+                saveUser(
+                        "provider@example.com",
+                        Role.PROVIDER);
+
+        admin =
+                saveUser(
+                        "admin@example.com",
+                        Role.ADMIN);
+
+        /*
+         * This provider is treated as already verified
+         * for security boundary testing.
+         */
+        saveVerifiedProvider(
+                provider);
+
+        mockMvc =
+                MockMvcBuilders
+                        .webAppContextSetup(
+                                applicationContext)
+                        .apply(
+                                springSecurity())
+                        .build();
     }
 
     @Test
-    void unauthenticatedUserIsRedirectedToLogin() throws Exception {
-        mockMvc.perform(get("/patient/dashboard"))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/login"));
+    void unauthenticatedUserIsRedirectedToLogin()
+            throws Exception {
+
+        mockMvc.perform(
+                        get(
+                                "/patient/dashboard"))
+                .andExpect(
+                        status()
+                                .is3xxRedirection())
+                .andExpect(
+                        redirectedUrl(
+                                "/login"));
     }
 
     @Test
-    void patientCanOpenPatientAreaButNotProviderArea() throws Exception {
-        mockMvc.perform(get("/patient/dashboard")
-                        .with(user(patient.getEmail()).roles(Role.PATIENT.name())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("dashboard/patient"));
+    void patientCanOpenPatientAreaButNotProviderArea()
+            throws Exception {
 
-        mockMvc.perform(get("/provider/dashboard")
-                        .with(user(patient.getEmail()).roles(Role.PATIENT.name())))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(
+                        get(
+                                "/patient/dashboard")
+                                .with(
+                                        user(
+                                                patient.getEmail())
+                                                .roles(
+                                                        Role.PATIENT.name())))
+                .andExpect(
+                        status()
+                                .isOk())
+                .andExpect(
+                        view()
+                                .name(
+                                        "dashboard/patient"));
+
+        mockMvc.perform(
+                        get(
+                                "/provider/dashboard")
+                                .with(
+                                        user(
+                                                patient.getEmail())
+                                                .roles(
+                                                        Role.PATIENT.name())))
+                .andExpect(
+                        status()
+                                .isForbidden());
     }
 
     @Test
-    void providerCanOpenProviderAreaButNotAdminArea() throws Exception {
-        mockMvc.perform(get("/provider/dashboard")
-                        .with(user(provider.getEmail()).roles(Role.PROVIDER.name())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("dashboard/provider"));
+    void providerCanOpenProviderAreaButNotAdminArea()
+            throws Exception {
 
-        mockMvc.perform(get("/admin/dashboard")
-                        .with(user(provider.getEmail()).roles(Role.PROVIDER.name())))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(
+                        get(
+                                "/provider/dashboard")
+                                .with(
+                                        user(
+                                                provider.getEmail())
+                                                .roles(
+                                                        Role.PROVIDER.name())))
+                .andExpect(
+                        status()
+                                .isOk())
+                .andExpect(
+                        view()
+                                .name(
+                                        "dashboard/provider"));
+
+        mockMvc.perform(
+                        get(
+                                "/admin/dashboard")
+                                .with(
+                                        user(
+                                                provider.getEmail())
+                                                .roles(
+                                                        Role.PROVIDER.name())))
+                .andExpect(
+                        status()
+                                .isForbidden());
     }
 
     @Test
-    void administratorCanOpenAdminAreaButNotPatientArea() throws Exception {
-        mockMvc.perform(get("/admin/dashboard")
-                        .with(user(admin.getEmail()).roles(Role.ADMIN.name())))
-                .andExpect(status().isOk())
-                .andExpect(view().name("dashboard/admin"));
+    void administratorCanOpenAdminAreaButNotPatientArea()
+            throws Exception {
 
-        mockMvc.perform(get("/patient/dashboard")
-                        .with(user(admin.getEmail()).roles(Role.ADMIN.name())))
-                .andExpect(status().isForbidden());
+        mockMvc.perform(
+                        get(
+                                "/admin/dashboard")
+                                .with(
+                                        user(
+                                                admin.getEmail())
+                                                .roles(
+                                                        Role.ADMIN.name())))
+                .andExpect(
+                        status()
+                                .isOk())
+                .andExpect(
+                        view()
+                                .name(
+                                        "dashboard/admin"));
+
+        mockMvc.perform(
+                        get(
+                                "/patient/dashboard")
+                                .with(
+                                        user(
+                                                admin.getEmail())
+                                                .roles(
+                                                        Role.ADMIN.name())))
+                .andExpect(
+                        status()
+                                .isForbidden());
     }
 
     @Test
-    void sharedDashboardRedirectsAccordingToPersistedRole() throws Exception {
-        mockMvc.perform(get("/dashboard")
-                        .with(user(patient.getEmail()).roles(Role.PATIENT.name())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/patient/dashboard"));
+    void sharedDashboardRedirectsAccordingToPersistedRole()
+            throws Exception {
 
-        mockMvc.perform(get("/dashboard")
-                        .with(user(provider.getEmail()).roles(Role.PROVIDER.name())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/provider/dashboard"));
+        mockMvc.perform(
+                        get(
+                                "/dashboard")
+                                .with(
+                                        user(
+                                                patient.getEmail())
+                                                .roles(
+                                                        Role.PATIENT.name())))
+                .andExpect(
+                        status()
+                                .is3xxRedirection())
+                .andExpect(
+                        redirectedUrl(
+                                "/patient/dashboard"));
 
-        mockMvc.perform(get("/dashboard")
-                        .with(user(admin.getEmail()).roles(Role.ADMIN.name())))
-                .andExpect(status().is3xxRedirection())
-                .andExpect(redirectedUrl("/admin/dashboard"));
+        mockMvc.perform(
+                        get(
+                                "/dashboard")
+                                .with(
+                                        user(
+                                                provider.getEmail())
+                                                .roles(
+                                                        Role.PROVIDER.name())))
+                .andExpect(
+                        status()
+                                .is3xxRedirection())
+                .andExpect(
+                        redirectedUrl(
+                                "/provider/dashboard"));
+
+        mockMvc.perform(
+                        get(
+                                "/dashboard")
+                                .with(
+                                        user(
+                                                admin.getEmail())
+                                                .roles(
+                                                        Role.ADMIN.name())))
+                .andExpect(
+                        status()
+                                .is3xxRedirection())
+                .andExpect(
+                        redirectedUrl(
+                                "/admin/dashboard"));
     }
 
-    private User saveUser(String email, Role role) {
-        return userRepository.save(new User(
-                "Test",
-                role.getDisplayName(),
-                email,
-                passwordEncoder.encode("password123"),
-                role
-        ));
+    private User saveUser(
+            String email,
+            Role role) {
+
+        User user =
+                new User(
+                        "Test",
+                        role.getDisplayName(),
+                        email,
+                        passwordEncoder.encode(
+                                "password123"),
+                        role
+                );
+
+        user.setEnabled(true);
+
+        return userRepository.save(
+                user);
+    }
+
+    private void saveVerifiedProvider(
+            User provider) {
+
+        ProviderVerification verification =
+                new ProviderVerification();
+
+        verification.setProvider(
+                provider);
+
+        verification.setOriginalFileName(
+                "test-licence.pdf");
+
+        verification.setFileType(
+                "application/pdf");
+
+        verification.setFilePath(
+                "test/provider-licence.pdf");
+
+        verification.setStatus(
+                VerificationStatus.VERIFIED);
+
+        providerVerificationRepository.save(
+                verification);
     }
 }
