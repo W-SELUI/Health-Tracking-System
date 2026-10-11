@@ -58,9 +58,31 @@
             overflow-wrap: anywhere;
         }
     </style>
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-ui records-ui">
+<header class="healthtrack-global-header">
+    <div class="healthtrack-global-inner">
+        <a class="healthtrack-global-brand"
+           href="/dashboard"
+           data-th-href="@{/dashboard}">
+            <span class="healthtrack-global-mark">
+                <img src="/images/heart-pulse.svg"
+                     data-th-src="@{/images/heart-pulse.svg}"
+                     alt="">
+            </span>
+            <span>
+                <span class="healthtrack-global-name">HealthTrack</span>
+                <span class="healthtrack-global-tagline">Your health, clearly</span>
+            </span>
+        </a>
+        <span class="healthtrack-global-section">Health records</span>
+    </div>
+</header>
+<div class="healthtrack-page-shell">
 
 <nav class="record-navigation">
     <a href="/provider/patients"
@@ -151,5 +173,6 @@
     <button type="submit">Logout</button>
 </form>
 
+</div>
 </body>
 </html>

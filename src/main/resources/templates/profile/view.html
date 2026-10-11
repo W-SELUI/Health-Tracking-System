@@ -4,48 +4,74 @@
     <meta charset="UTF-8">
     <title>My Profile</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
+    <link rel="stylesheet"
+          href="/css/healthtrack-ui.css"
+          data-th-href="@{/css/healthtrack-ui.css}">
 </head>
-<body>
+<body class="healthtrack-ui profile-ui">
+<header class="healthtrack-global-header">
+    <div class="healthtrack-global-inner">
+        <a class="healthtrack-global-brand"
+           href="/dashboard"
+           data-th-href="@{/dashboard}">
+            <span class="healthtrack-global-mark">
+                <img src="/images/heart-pulse.svg"
+                     data-th-src="@{/images/heart-pulse.svg}"
+                     alt="">
+            </span>
+            <span>
+                <span class="healthtrack-global-name">HealthTrack</span>
+                <span class="healthtrack-global-tagline">Your health, clearly</span>
+            </span>
+        </a>
+        <span class="healthtrack-global-section">My profile</span>
+    </div>
+</header>
+<div class="healthtrack-page-shell">
 
 <h1>My Profile</h1>
 
-<p th:if="${param.updated}">
+<p class="page-intro">
+    Review your account details and keep your personal information up to date.
+</p>
+
+<p class="alert-success" th:if="${param.updated}">
     Profile updated successfully.
 </p>
 
-<div>
-    <p>
-        <strong>First Name:</strong>
+<section class="profile-card" aria-label="Profile details">
+    <div class="profile-grid">
+        <div class="profile-field">
+        <span class="profile-label">First Name</span>
         <span th:text="${currentUser.firstName}">First Name</span>
-    </p>
+        </div>
 
-    <p>
-        <strong>Last Name:</strong>
+        <div class="profile-field">
+        <span class="profile-label">Last Name</span>
         <span th:text="${currentUser.lastName}">Last Name</span>
-    </p>
+        </div>
 
-    <p>
-        <strong>Email:</strong>
+        <div class="profile-field">
+        <span class="profile-label">Email</span>
         <span th:text="${currentUser.email}">email@example.com</span>
-    </p>
+        </div>
 
-    <p>
-        <strong>Role:</strong>
+        <div class="profile-field">
+        <span class="profile-label">Role</span>
         <span th:text="${currentUser.role.displayName}">Role</span>
-    </p>
+        </div>
+    </div>
+
+    <div class="profile-actions">
+        <a class="button" th:href="@{/profile/edit}">Edit Profile</a>
+        <a class="button button-secondary" th:href="@{/dashboard}">Back to Dashboard</a>
+
+        <form class="compact-form" th:action="@{/logout}" method="post">
+            <button class="button button-quiet" type="submit">Logout</button>
+        </form>
+    </div>
+</section>
+
 </div>
-
-<p>
-    <a th:href="@{/profile/edit}">Edit Profile</a>
-</p>
-
-<p>
-    <a th:href="@{/dashboard}">Back to Dashboard</a>
-</p>
-
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
-</form>
-
 </body>
 </html>
