@@ -132,3 +132,564 @@ table td {
 .action-buttons button {
     width: auto;
 }
+
+
+/* =========================================================
+   PATIENT ANALYTICS DASHBOARD
+   ========================================================= */
+
+.analytics-page {
+    --analytics-primary: #315b9d;
+    --analytics-primary-dark: #244679;
+    --analytics-surface: #ffffff;
+    --analytics-surface-soft: #f7f9fc;
+    --analytics-border: #d9e1ec;
+    --analytics-text: #1f2937;
+    --analytics-muted: #667085;
+    --analytics-error: #b42318;
+    --analytics-error-bg: #fef3f2;
+    --analytics-grid: #e8edf4;
+    --analytics-missing: #98a2b3;
+
+    max-width: 1250px;
+    margin: 0 auto;
+    padding: 28px 22px 60px;
+    color: var(--analytics-text);
+}
+
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
+.analytics-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 24px;
+    margin-bottom: 24px;
+}
+
+.analytics-header h1 {
+    margin: 0 0 8px;
+}
+
+.analytics-header p {
+    margin: 0;
+    color: var(--analytics-muted);
+    max-width: 760px;
+}
+
+.analytics-header > a {
+    display: inline-block;
+    white-space: nowrap;
+    padding: 9px 14px;
+    border: 1px solid var(--analytics-primary);
+    border-radius: 6px;
+    color: var(--analytics-primary);
+    text-decoration: none;
+    font-weight: 600;
+    background: #ffffff;
+}
+
+.analytics-header > a:hover {
+    background: var(--analytics-primary);
+    color: #ffffff;
+    text-decoration: none;
+}
+
+
+/* =========================================================
+   MAJOR SECTIONS
+   ========================================================= */
+
+.analytics-section,
+.analytics-message {
+    margin-bottom: 26px;
+    padding: 24px;
+    background: var(--analytics-surface);
+    border: 1px solid var(--analytics-border);
+    border-radius: 10px;
+}
+
+.analytics-section > h2,
+.analytics-message > h2 {
+    margin-top: 0;
+}
+
+.analytics-section-description {
+    margin-top: -4px;
+    margin-bottom: 22px;
+    color: var(--analytics-muted);
+}
+
+.analytics-message {
+    text-align: center;
+}
+
+.analytics-message p {
+    margin-bottom: 0;
+    color: var(--analytics-muted);
+}
+
+
+/* =========================================================
+   REPORTING PERIOD FORM
+   ========================================================= */
+
+.analytics-period-form {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    gap: 18px;
+
+    margin: 18px 0 0;
+    padding: 0;
+
+    border: none;
+    background: transparent;
+}
+
+.analytics-period-form > div {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 0;
+}
+
+.analytics-period-form label {
+    margin-bottom: 0;
+    font-weight: 600;
+}
+
+.analytics-period-form input[type="date"] {
+    width: auto;
+    min-width: 180px;
+    padding: 9px 10px;
+    border: 1px solid var(--analytics-border);
+    border-radius: 6px;
+    font: inherit;
+    background: #ffffff;
+}
+
+.analytics-period-form input[type="date"]:focus {
+    outline: 2px solid rgba(49, 91, 157, 0.18);
+    border-color: var(--analytics-primary);
+}
+
+.analytics-form-action {
+    justify-content: flex-end;
+}
+
+.analytics-period-form button {
+    width: auto;
+    padding: 10px 17px;
+    border: 1px solid var(--analytics-primary);
+    border-radius: 6px;
+    background: var(--analytics-primary);
+    color: #ffffff;
+    font: inherit;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.analytics-period-form button:hover {
+    background: var(--analytics-primary-dark);
+}
+
+.analytics-error {
+    margin-top: 16px;
+    padding: 11px 13px;
+    border: 1px solid #fecdca;
+    border-radius: 6px;
+    background: var(--analytics-error-bg);
+    color: var(--analytics-error);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SUMMARY CARDS
+   ========================================================= */
+
+.analytics-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 18px;
+}
+
+.analytics-summary-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-height: 95px;
+    padding: 17px;
+    border: 1px solid var(--analytics-border);
+    border-radius: 8px;
+    background: var(--analytics-surface-soft);
+}
+
+.analytics-summary-label {
+    color: var(--analytics-muted);
+    font-size: 0.92rem;
+    font-weight: 400;
+}
+
+.analytics-summary-card strong {
+    font-size: 1.55rem;
+    line-height: 1.2;
+}
+
+
+/* =========================================================
+   HEALTH METRIC PANELS
+   ========================================================= */
+
+.metric-panel {
+    margin-top: 24px;
+    padding: 22px;
+    border: 1px solid var(--analytics-border);
+    border-radius: 9px;
+    background: var(--analytics-surface);
+}
+
+.metric-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 18px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--analytics-border);
+}
+
+.metric-panel-header h3 {
+    margin: 0;
+}
+
+.metric-panel-header > span {
+    color: var(--analytics-muted);
+    font-weight: 600;
+}
+
+.metric-stat-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.metric-stat {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    min-height: 80px;
+    padding: 14px;
+    border: 1px solid var(--analytics-border);
+    border-radius: 7px;
+    background: var(--analytics-surface-soft);
+}
+
+.metric-stat > span {
+    color: var(--analytics-muted);
+    font-size: 0.9rem;
+    font-weight: 400;
+}
+
+.metric-stat strong {
+    font-size: 1.08rem;
+}
+
+.metric-change {
+    margin-top: 18px;
+    padding: 16px;
+    border-left: 4px solid var(--analytics-primary);
+    border-radius: 4px;
+    background: var(--analytics-surface-soft);
+}
+
+.metric-change h4 {
+    margin-top: 0;
+    margin-bottom: 11px;
+}
+
+.metric-change p {
+    margin: 7px 0;
+}
+
+.blood-pressure-latest {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin-bottom: 16px;
+    padding: 16px;
+    border: 1px solid var(--analytics-border);
+    border-radius: 7px;
+    background: var(--analytics-surface-soft);
+}
+
+.blood-pressure-latest > span {
+    color: var(--analytics-muted);
+    font-weight: 400;
+}
+
+.blood-pressure-latest strong {
+    font-size: 1.45rem;
+}
+
+
+/* =========================================================
+   ACTIVITY SUBSECTIONS
+   ========================================================= */
+
+.analytics-subsection {
+    margin-top: 26px;
+    padding-top: 4px;
+}
+
+.analytics-subsection + .analytics-subsection {
+    padding-top: 24px;
+    border-top: 1px solid var(--analytics-border);
+}
+
+.analytics-subsection h3 {
+    margin-top: 0;
+}
+
+
+/* =========================================================
+   CHART CONTAINERS
+   ========================================================= */
+
+.analytics-chart-container {
+    margin-top: 20px;
+    padding: 18px;
+    overflow-x: auto;
+    border: 1px solid var(--analytics-border);
+    border-radius: 8px;
+    background: #ffffff;
+}
+
+.analytics-chart-container h4 {
+    margin-top: 0;
+    margin-bottom: 14px;
+}
+
+.metric-line-chart,
+.blood-pressure-chart,
+.activity-bar-chart {
+    min-width: 520px;
+}
+
+/*
+ * Raw Thymeleaf data elements are consumed by JavaScript.
+ * They should never be displayed directly.
+ */
+.analytics-page .chart-data-point {
+    display: none;
+}
+
+.analytics-chart-svg {
+    display: block;
+    width: 100%;
+    min-width: 520px;
+    height: auto;
+}
+
+
+/* =========================================================
+   SVG AXES / GRID / LABELS
+   ========================================================= */
+
+.analytics-page .chart-axis {
+    stroke: #667085;
+    stroke-width: 1.2;
+}
+
+.analytics-page .chart-grid-line {
+    stroke: var(--analytics-grid);
+    stroke-width: 1;
+}
+
+.analytics-page .chart-axis-label {
+    fill: #667085;
+    font-size: 12px;
+}
+
+.analytics-page .chart-unit-label {
+    fill: #475467;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.analytics-page .chart-legend {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   SCALAR LINE CHART
+   ========================================================= */
+
+.analytics-page .chart-line {
+    fill: none;
+    stroke: var(--analytics-primary);
+    stroke-width: 3;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+}
+
+.analytics-page .chart-point {
+    fill: #ffffff;
+    stroke: var(--analytics-primary);
+    stroke-width: 3;
+}
+
+
+/* =========================================================
+   BLOOD PRESSURE CHART
+   ========================================================= */
+
+.analytics-page .blood-pressure-systolic {
+    stroke: #315b9d;
+}
+
+.analytics-page .blood-pressure-diastolic {
+    stroke: #b54708;
+}
+
+.analytics-page circle.blood-pressure-systolic {
+    fill: #ffffff;
+    stroke: #315b9d;
+}
+
+.analytics-page circle.blood-pressure-diastolic {
+    fill: #ffffff;
+    stroke: #b54708;
+}
+
+.analytics-page .blood-pressure-systolic-label {
+    fill: #315b9d;
+}
+
+.analytics-page .blood-pressure-diastolic-label {
+    fill: #b54708;
+}
+
+
+/* =========================================================
+   BAR CHARTS
+   ========================================================= */
+
+.analytics-page .chart-bar {
+    fill: var(--analytics-primary);
+}
+
+.analytics-page .chart-bar:hover {
+    opacity: 0.82;
+}
+
+.analytics-page .chart-missing-marker {
+    fill: var(--analytics-missing);
+}
+
+.analytics-page .chart-missing-label {
+    fill: var(--analytics-missing);
+}
+
+
+/* =========================================================
+   EMPTY CHART STATE
+   ========================================================= */
+
+.chart-empty-message {
+    padding: 25px 10px;
+    text-align: center;
+    color: var(--analytics-muted);
+}
+
+
+/* =========================================================
+   ANALYTICS TABLE
+   ========================================================= */
+
+.analytics-page table {
+    width: 100%;
+    margin-top: 14px;
+    border-collapse: collapse;
+    background: #ffffff;
+}
+
+.analytics-page th,
+.analytics-page td {
+    padding: 11px 12px;
+    text-align: left;
+    vertical-align: top;
+    border-bottom: 1px solid var(--analytics-border);
+}
+
+.analytics-page th {
+    background: var(--analytics-surface-soft);
+    font-weight: 600;
+}
+
+
+/* =========================================================
+   RESPONSIVE LAYOUT
+   ========================================================= */
+
+@media (max-width: 900px) {
+
+    .analytics-summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .metric-stat-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+
+@media (max-width: 650px) {
+
+    .analytics-page {
+        padding: 18px 12px 40px;
+    }
+
+    .analytics-header {
+        flex-direction: column;
+    }
+
+    .analytics-period-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .analytics-period-form > div {
+        width: 100%;
+    }
+
+    .analytics-period-form input[type="date"] {
+        width: 100%;
+    }
+
+    .analytics-period-form button {
+        width: 100%;
+    }
+
+    .analytics-summary-grid,
+    .metric-stat-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .analytics-section,
+    .analytics-message,
+    .metric-panel {
+        padding: 16px;
+    }
+
+    .metric-panel-header {
+        align-items: flex-start;
+    }
+}
