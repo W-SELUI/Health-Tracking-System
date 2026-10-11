@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Messages | Health Tracking System</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+
+    <style>
+        nav {
+            margin-bottom: 24px;
+        }
+
+        .message-panel {
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 10px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .message-panel h2 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .section-description,
+        .contact-email,
+        .contact-role {
+            color: #526071;
+        }
+
+        .contact-list {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0 0;
+        }
+
+        .contact-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding: 18px 0;
+        }
+
+        .contact-row + .contact-row {
+            border-top: 1px solid #e5e9ef;
+        }
+
+        .contact-details {
+            flex: 1 1 220px;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .contact-details p {
+            margin: 4px 0;
+        }
+
+        .contact-name {
+            font-weight: 700;
+        }
+
+        .contact-email,
+        .contact-role {
+            font-size: 14px;
+        }
+
+        .contact-link {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 6px;
+            background: #2563eb;
+            color: white;
+            font-weight: 600;
+        }
+
+        .contact-link:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .contact-link:focus-visible {
+            outline: 3px solid #1e40af;
+            outline-offset: 3px;
+        }
+
+        .empty-state {
+            padding: 16px;
+            margin-top: 20px;
+            background: #f4f6f8;
+            border-radius: 6px;
+            color: #526071;
+        }
+
+        .account-status {
+            color: #92400e;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .message-panel {
+                padding: 18px;
+            }
+
+            .contact-link {
+                width: 100%;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav aria-label="Dashboard navigation">
+    <a href="/dashboard" data-th-href="@{/dashboard}">
+        Back to dashboard
+    </a>
+</nav>
+
+<main>
+    <h1>Messages</h1>
+
+    <p>
+        Signed in as
+        <strong data-th-text="${currentUser.fullName}">
+            Your name
+        </strong>
+    </p>
+
+    <p>Choose a contact to open your conversation.</p>
+
+    <section class="message-panel"
+             aria-labelledby="conversations-heading">
+
+        <h2 id="conversations-heading">Your conversations</h2>
+
+        <p class="section-description">
+            Continue a conversation or read your previous messages.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(conversationPartners)}">
+            You have no conversations yet. Choose an available contact
+            below to send your first message.
+        </p>
+
+        <ul class="contact-list"
+            data-th-unless="${#lists.isEmpty(conversationPartners)}">
+
+            <li class="contact-row"
+                data-th-each="partner : ${conversationPartners}">
+
+                <div class="contact-details">
+                    <p class="contact-name"
+                       data-th-text="${partner.fullName}">
+                        Contact name
+                    </p>
+
+                    <p class="contact-email"
+                       data-th-text="${partner.email}">
+                        Contact email
+                    </p>
+
+                    <p class="account-status"
+                       data-th-if="${!partner.enabled}">
+                        Account unavailable — previous messages are
+                        still available to read.
+                    </p>
+                </div>
+
+                <a class="contact-link"
+                   href="/messages"
+                   data-th-href="@{/messages/{id}(id=${partner.id})}"
+                   data-th-text="${partner.enabled
+                       ? 'Open conversation'
+                       : 'View history'}">
+                    Open conversation
+                </a>
+            </li>
+        </ul>
+    </section>
+
+    <section class="message-panel"
+             aria-labelledby="contacts-heading">
+
+        <h2 id="contacts-heading">Available contacts</h2>
+
+        <p class="section-description">
+            People you can currently message.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(availableRecipients)}">
+            No contacts are currently available.
+        </p>
+
+        <ul class="contact-list"
+            data-th-unless="${#lists.isEmpty(availableRecipients)}">
+
+            <li class="contact-row"
+                data-th-each="contact : ${availableRecipients}">
+
+                <div class="contact-details">
+                    <p class="contact-name"
+                       data-th-text="${contact.fullName}">
+                        Contact name
+                    </p>
+
+                    <p class="contact-role"
+                       data-th-text="${contact.role.name() == 'PROVIDER'
+                           ? 'Healthcare provider'
+                           : 'Patient'}">
+                        Role
+                    </p>
+
+                    <p class="contact-email"
+                       data-th-text="${contact.email}">
+                        Contact email
+                    </p>
+                </div>
+
+                <a class="contact-link"
+                   href="/messages"
+                   data-th-href="@{/messages/{id}(id=${contact.id})}">
+                    Message
+                </a>
+            </li>
+        </ul>
+    </section>
+</main>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>

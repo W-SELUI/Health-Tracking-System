@@ -1,31 +1,55 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Provider Dashboard</title>
-    <link rel="stylesheet" th:href="@{/css/app.css}">
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
 </head>
+
 <body>
 
 <h1>Healthcare Provider Dashboard</h1>
 
 <p>
     Welcome,
-    <span th:text="${currentUser.fullName}">Provider</span>
+    <span data-th-text="${currentUser.fullName}">Provider</span>
 </p>
 
 <p>
     Role:
-    <span th:text="${currentUser.role.displayName}">
+    <span data-th-text="${currentUser.role.displayName}">
         Healthcare Provider
     </span>
 </p>
 
 <p>
-    <a th:href="@{/profile}">My Profile</a>
+    <a href="/profile"
+       data-th-href="@{/profile}">
+        My Profile
+    </a>
 </p>
 
-<form th:action="@{/logout}" method="post">
+<p>
+    <a href="/provider/patients"
+       data-th-href="@{/provider/patients}">
+        View Patients with Active Consent
+    </a>
+</p>
+
+<p>
+    <a href="/messages"
+       data-th-href="@{/messages}">
+        Messages
+    </a>
+</p>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
     <button type="submit">Logout</button>
 </form>
 
