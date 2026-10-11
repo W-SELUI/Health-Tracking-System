@@ -72,6 +72,36 @@
             line-height: 1.6;
         }
 
+        .message {
+            margin-bottom: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            line-height: 1.5;
+            font-weight: 600;
+        }
+
+        .error-message {
+            background: #fff0f0;
+            border: 1px solid #f1caca;
+            color: #a12626;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            border: 1px solid #c8e6c9;
+            color: #2e7d32;
+        }
+
+        .notice {
+            margin-bottom: 20px;
+            padding: 14px;
+            background: #f5f9fd;
+            border: 1px solid #dce7f2;
+            border-radius: 8px;
+            color: #35506d;
+            line-height: 1.5;
+        }
+
         label {
             display: block;
             margin: 20px 0 8px;
@@ -96,6 +126,13 @@
             border-color: #1565a9;
         }
 
+        .hint {
+            margin-top: 7px;
+            color: #6b7b8d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
         .actions {
             display: flex;
             gap: 12px;
@@ -104,7 +141,8 @@
         }
 
         button,
-        .cancel {
+        .cancel,
+        .refresh-btn {
             display: inline-block;
             padding: 13px 22px;
             border: none;
@@ -125,13 +163,23 @@
         }
 
         .cancel {
-    background: #344F6F;
-    color: white;
-}
+            background: #344F6F;
+            color: white;
+        }
 
-.cancel:hover {
-    background: #293F59;
-}
+        .cancel:hover {
+            background: #293F59;
+        }
+
+        .refresh-btn {
+            background: #5c7896;
+            color: white;
+            margin-top: 18px;
+        }
+
+        .refresh-btn:hover {
+            background: #48627c;
+        }
 
         .bottom-link {
             margin-top: 30px;
@@ -162,7 +210,8 @@
             }
 
             button,
-            .cancel {
+            .cancel,
+            .refresh-btn {
                 text-align: center;
                 width: 100%;
             }
@@ -193,42 +242,160 @@
     <h2>Add Dose Record</h2>
 
     <p class="description">
-        Select an existing medication and record its dose status.
+        Select a medication schedule and date first.
+        The system will calculate the valid dose times automatically.
     </p>
 
-    <form th:action="@{/dose-records/save}"
-          th:object="${doseRecord}"
-          method="post">
+    <div th:if="${errorMessage}"
+         class="message error-message"
+         th:text="${errorMessage}">
+    </div>
 
-        <label for="medicationId">Medication</label>
+    <div th:if="${successMessage}"
+         class="message success-message"
+         th:text="${successMessage}">
+    </div>
 
-        <select id="medicationId"
-                name="medicationId"
+    <div class="notice"
+         th:if="${#lists.isEmpty(schedules)}">
+
+        You do not have any medication schedules yet.
+        Create a medication schedule before adding a dose record.
+
+    </div>
+
+    <!-- First form: choose schedule and date -->
+    <form th:action="@{/dose-records/add}"
+          method="get"
+          th:if="${!#lists.isEmpty(schedules)}">
+
+        <label for="scheduleId">
+            Medication Schedule
+        </label>
+
+        <select id="scheduleId"
+                name="scheduleId"
                 required>
 
-            <option value="">-- Select a medication --</option>
+            <option value="">
+                -- Select a medication schedule --
+            </option>
 
-            <option th:each="med : ${medications}"
-                    th:value="${med.id}"
-                    th:text="${med.medicationName}">
+            <option th:each="schedule : ${schedules}"
+                    th:value="${schedule.id}"
+                    th:selected="${selectedScheduleId != null
+                        and selectedScheduleId == schedule.id}"
+                    th:text="${schedule.medication.medicationName
+                        + ' - '
+                        + schedule.medication.dosage
+                        + ' - first dose '
+                        + schedule.scheduledTime
+                        + ' - every '
+                        + schedule.intervalHours
+                        + ' hours'}">
             </option>
 
         </select>
 
-        <label for="doseDate">Dose Date</label>
+        <label for="doseDate">
+            Dose Date
+        </label>
 
         <input type="date"
                id="doseDate"
-               th:field="*{doseDate}"
+               name="doseDate"
+               th:value="${selectedDate}"
+               th:max="${today}"
                required>
 
-        <label for="status">Dose Status</label>
+        <p class="hint">
+            Choose the date you want to record.
+        </p>
 
-        <select id="status"
-                th:field="*{status}"
+        <button type="submit"
+                class="refresh-btn">
+            Show Dose Times
+        </button>
+
+    </form>
+
+    <!-- Message when schedule/date is chosen but no times exist -->
+    <div class="notice"
+         th:if="${selectedSchedule != null
+            and doseTimes != null
+            and #lists.isEmpty(doseTimes)}">
+
+        No scheduled doses are available for this date.
+
+    </div>
+
+    <!-- Second form: record exact dose occurrence -->
+    <form th:action="@{/dose-records/save}"
+          method="post"
+          th:if="${selectedSchedule != null
+            and doseTimes != null
+            and !#lists.isEmpty(doseTimes)}">
+
+        <input type="hidden"
+               name="scheduleId"
+               th:value="${selectedSchedule.id}">
+
+        <input type="hidden"
+               name="doseDate"
+               th:value="${selectedDate}">
+
+        <label>
+            Selected Medication
+        </label>
+
+        <input type="text"
+               th:value="${selectedSchedule.medication.medicationName
+                    + ' - '
+                    + selectedSchedule.medication.dosage}"
+               readonly>
+
+        <label>
+            Dose Date
+        </label>
+
+        <input type="text"
+               th:value="${selectedDate}"
+               readonly>
+
+        <label for="scheduledTime">
+            Scheduled Dose Time
+        </label>
+
+        <select id="scheduledTime"
+                name="scheduledTime"
                 required>
 
-            <option value="">-- Select status --</option>
+            <option value="">
+                -- Select dose time --
+            </option>
+
+            <option th:each="time : ${doseTimes}"
+                    th:value="${time}"
+                    th:text="${time}">
+            </option>
+
+        </select>
+
+        <p class="hint">
+            These times are calculated from the medication schedule interval.
+        </p>
+
+        <label for="status">
+            Dose Status
+        </label>
+
+        <select id="status"
+                name="status"
+                required>
+
+            <option value="">
+                -- Select status --
+            </option>
 
             <option th:each="s : ${statuses}"
                     th:value="${s}"
@@ -243,7 +410,8 @@
                 Save Dose Record
             </button>
 
-            <a class="cancel" th:href="@{/dose-records}">
+            <a class="cancel"
+               th:href="@{/dose-records}">
                 Cancel
             </a>
 
@@ -251,12 +419,27 @@
 
     </form>
 
+    <div class="actions"
+         th:if="${#lists.isEmpty(schedules)}">
+
+        <a class="cancel"
+           th:href="@{/schedules/add}">
+            Add Medication Schedule
+        </a>
+
+    </div>
+
     <div class="bottom-link">
-        <div class="dashboard-link" style="margin-bottom: 0;">
+
+        <div class="dashboard-link"
+             style="margin-bottom: 0;">
+
             <a th:href="@{/medication-dashboard}">
                 &larr; Back to Medication Dashboard
             </a>
+
         </div>
+
     </div>
 
 </main>

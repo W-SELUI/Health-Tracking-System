@@ -34,7 +34,8 @@
 <form
         th:action="@{/register}"
         th:object="${registrationRequest}"
-        method="post">
+        method="post"
+        enctype="multipart/form-data">
 
     <div>
         <label for="firstName">First Name</label>
@@ -102,6 +103,19 @@
 
         <p th:if="${#fields.hasErrors('role')}"
            th:errors="*{role}"></p>
+    </div>
+
+    <div>
+        <label for="licenceFile">Healthcare Provider Licence</label>
+        <input type="file"
+               id="licenceFile"
+               name="licenceFile"
+               accept=".pdf,.jpg,.jpeg,.png">
+        <p class="muted">
+            Required only for Healthcare Provider accounts. Accepted files: PDF, JPG, JPEG or PNG.
+        </p>
+        <p th:if="${licenceError}"
+           th:text="${licenceError}"></p>
     </div>
 
     <button type="submit">Register</button>

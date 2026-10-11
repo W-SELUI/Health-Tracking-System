@@ -2,7 +2,10 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Health Analytics</title>
+
+    <title th:text="${pageTitle}">
+        Health Analytics
+    </title>
 
     <link rel="stylesheet"
           href="/css/app.css"
@@ -17,17 +20,43 @@
 <div class="healthtrack-page-shell">
 
 <header class="analytics-header">
+
     <div>
-        <h1>Health &amp; Activity Analytics</h1>
-        <p>
-            Review your recorded health measurements and activity
+
+        <h1 th:text="${pageHeading}">
+            Health &amp; Activity Analytics
+        </h1>
+
+        <p th:text="${pageDescription}">
+            Review recorded health measurements and activity
             for a selected reporting period.
         </p>
+
+        <p th:if="${providerView == true}">
+
+            Patient:
+
+            <strong th:text="${viewedPatient.fullName}">
+                Patient Name
+            </strong>
+
+            <span>
+                (
+                <span th:text="${viewedPatient.email}">
+                    patient@example.com
+                </span>
+                )
+            </span>
+
+        </p>
+
     </div>
 
-    <a th:href="@{/patient/dashboard}">
-        Back to Dashboard
+    <a th:href="${backUrl}"
+       th:text="${backLabel}">
+        Back
     </a>
+
 </header>
 
 
@@ -39,7 +68,7 @@
 
     <h2>Reporting Period</h2>
 
-    <form th:action="@{/patient/analytics}"
+    <form th:action="${analyticsAction}"
           method="get"
           class="analytics-period-form">
 

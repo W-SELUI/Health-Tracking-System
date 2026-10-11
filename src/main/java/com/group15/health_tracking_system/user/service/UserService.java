@@ -5,12 +5,14 @@ import com.group15.health_tracking_system.user.dto.RegistrationRequest;
 import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
 import com.group15.health_tracking_system.user.repository.UserRepository;
+
 import java.util.Locale;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-//Handles user account tasks.
+// Handles user account tasks.
 
 @Service
 public class UserService {
@@ -27,50 +29,74 @@ public class UserService {
     }
 
     /*
-      Registers a Patient or Healthcare Provider account.
-     
-      Administrator accounts cannot be created through public registration.
+     * Registers a Patient or Healthcare Provider account.
+     *
+     * Administrator accounts cannot be created through public registration.
+     *
+     * Provider access is controlled by verification status,
+     * not by disabling the user account.
      */
-    
     @Transactional
-    public User register(RegistrationRequest request) {
+    public User register(
+            RegistrationRequest request) {
 
-        if (request.getRole() == null || request.getRole() == Role.ADMIN) {
+        if (request.getRole() == null
+                || request.getRole() == Role.ADMIN) {
+
             throw new IllegalArgumentException(
                     "Only patient and healthcare provider accounts can self-register"
             );
         }
 
-        if (!request.getPassword().equals(request.getConfirmPassword())) {
-            throw new IllegalArgumentException("Passwords do not match");
+        if (!request.getPassword()
+                .equals(request.getConfirmPassword())) {
+
+            throw new IllegalArgumentException(
+                    "Passwords do not match"
+            );
         }
 
-        String normalizedEmail = normalizeEmail(request.getEmail());
+        String normalizedEmail =
+                normalizeEmail(
+                        request.getEmail());
 
-        if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+        if (userRepository
+                .existsByEmailIgnoreCase(
+                        normalizedEmail)) {
+
             throw new DuplicateResourceException(
                     "An account with this email already exists"
             );
         }
 
-        User user = new User(
-                request.getFirstName().trim(),
-                request.getLastName().trim(),
-                normalizedEmail,
-                passwordEncoder.encode(request.getPassword()),
-                request.getRole()
-        );
+        User user =
+                new User(
+                        request.getFirstName().trim(),
+                        request.getLastName().trim(),
+                        normalizedEmail,
+                        passwordEncoder.encode(
+                                request.getPassword()),
+                        request.getRole()
+                );
 
-        return userRepository.save(user);
+        /*
+         * Both patients and providers can authenticate.
+         *
+         * Providers will still be restricted from provider
+         * features until their licence is verified.
+         */
+        user.setEnabled(true);
+
+        return userRepository.save(
+                user);
     }
 
     /*
-      Creates an Administrator account through a trusted application path.
-     
-      This method is intended for administrator bootstrap and is not exposed
-      through public registration.
+     * Creates an Administrator account through a trusted application path.
+     *
+     * This method is intended for administrator bootstrap and is not exposed
+     * through public registration.
      */
-    
     @Transactional
     public User createAdministrator(
             String firstName,
@@ -78,19 +104,25 @@ public class UserService {
             String email,
             String rawPassword) {
 
-        if (firstName == null || firstName.isBlank()) {
+        if (firstName == null
+                || firstName.isBlank()) {
+
             throw new IllegalArgumentException(
                     "Administrator first name is required"
             );
         }
 
-        if (lastName == null || lastName.isBlank()) {
+        if (lastName == null
+                || lastName.isBlank()) {
+
             throw new IllegalArgumentException(
                     "Administrator last name is required"
             );
         }
 
-        if (email == null || email.isBlank()) {
+        if (email == null
+                || email.isBlank()) {
+
             throw new IllegalArgumentException(
                     "Administrator email is required"
             );
@@ -105,30 +137,44 @@ public class UserService {
             );
         }
 
-        String normalizedEmail = normalizeEmail(email);
+        String normalizedEmail =
+                normalizeEmail(
+                        email);
 
-        if (userRepository.existsByEmailIgnoreCase(normalizedEmail)) {
+        if (userRepository
+                .existsByEmailIgnoreCase(
+                        normalizedEmail)) {
+
             throw new DuplicateResourceException(
                     "An account with this email already exists"
             );
         }
 
-        User administrator = new User(
-                firstName.trim(),
-                lastName.trim(),
-                normalizedEmail,
-                passwordEncoder.encode(rawPassword),
-                Role.ADMIN
-        );
+        User administrator =
+                new User(
+                        firstName.trim(),
+                        lastName.trim(),
+                        normalizedEmail,
+                        passwordEncoder.encode(
+                                rawPassword),
+                        Role.ADMIN
+                );
 
-        return userRepository.save(administrator);
+        administrator.setEnabled(true);
+
+        return userRepository.save(
+                administrator);
     }
 
     /*
-     Normalizes email addresses so identity comparisons are consistent.
+     * Normalizes email addresses so identity comparisons are consistent.
      */
-    
-    private String normalizeEmail(String email) {
-        return email.trim().toLowerCase(Locale.ROOT);
+    private String normalizeEmail(
+            String email) {
+
+        return email
+                .trim()
+                .toLowerCase(
+                        Locale.ROOT);
     }
 }

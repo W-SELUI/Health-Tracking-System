@@ -69,6 +69,16 @@
                     <span>Analytics</span>
                 </a>
 
+                <a sec:authorize="hasRole('PATIENT')"
+                   href="/patient/health-record-change-requests"
+                   th:href="@{/patient/health-record-change-requests}"
+                   th:classappend="${activeSection == 'change-requests'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Change requests</span>
+                </a>
+
                 <a sec:authorize="hasRole('PROVIDER')"
                    href="/provider/patients"
                    th:href="@{/provider/patients}"
@@ -77,6 +87,56 @@
                          th:src="@{/provider-access/assets/users-round.svg}"
                          alt="">
                     <span>My patients</span>
+                </a>
+
+                <a sec:authorize="hasRole('PROVIDER')"
+                   href="/provider/appointments"
+                   th:href="@{/provider/appointments}"
+                   th:classappend="${activeSection == 'appointments'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/circle-check.svg"
+                         th:src="@{/provider-access/assets/circle-check.svg}"
+                         alt="">
+                    <span>Appointments</span>
+                </a>
+
+                <a sec:authorize="hasRole('PROVIDER')"
+                   href="/provider/verification"
+                   th:href="@{/provider/verification}"
+                   th:classappend="${activeSection == 'verification'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Verification</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/users"
+                   th:href="@{/admin/users}"
+                   th:classappend="${activeSection == 'admin-users'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>Users</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/providers"
+                   th:href="@{/admin/providers}"
+                   th:classappend="${activeSection == 'admin-providers'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/users-round.svg"
+                         th:src="@{/provider-access/assets/users-round.svg}"
+                         alt="">
+                    <span>Providers</span>
+                </a>
+
+                <a sec:authorize="hasRole('ADMIN')"
+                   href="/admin/provider-verifications"
+                   th:href="@{/admin/provider-verifications}"
+                   th:classappend="${activeSection == 'admin-verifications'} ? ' is-active' : ''">
+                    <img src="/provider-access/assets/shield-check.svg"
+                         th:src="@{/provider-access/assets/shield-check.svg}"
+                         alt="">
+                    <span>Verifications</span>
                 </a>
 
                 <a sec:authorize="hasAnyRole('PATIENT', 'PROVIDER')"

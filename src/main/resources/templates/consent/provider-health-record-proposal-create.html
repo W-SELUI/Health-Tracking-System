@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Propose Health Record</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
+</head>
+
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('patients', 'Propose health record')}"></div>
+<div class="healthtrack-page-shell">
+
+<h1>Propose New Health Record</h1>
+
+<p>
+    Patient:
+    <strong data-th-text="${patient.fullName}">
+        Patient Name
+    </strong>
+</p>
+
+<p>
+    This will create a <strong>pending proposal</strong>.
+    The patient's permanent Health Records will not change until
+    the patient approves it.
+</p>
+
+<form data-th-action="@{/provider/patients/{patientId}/health-record-proposals/new(patientId=${patient.id})}"
+      data-th-object="${healthRecordCreateRequest}"
+      method="post">
+
+    <div data-th-if="${#fields.hasGlobalErrors()}">
+        <p data-th-each="error : ${#fields.globalErrors()}"
+           data-th-text="${error}">
+            Proposal error
+        </p>
+    </div>
+
+    <div>
+        <label for="metricType">Health Metric</label>
+
+        <select id="metricType"
+                data-th-field="*{metricType}"
+                required>
+
+            <option value="">Select a metric</option>
+
+            <option data-th-each="option : ${metricOptions}"
+                    data-th-value="${option}"
+                    data-th-text="${option.displayName}">
+                Metric
+            </option>
+
+        </select>
+
+        <p data-th-if="${#fields.hasErrors('metricType')}"
+           data-th-errors="*{metricType}">
+            Metric error
+        </p>
+    </div>
+
+    <div id="scalarValueGroup">
+
+        <label for="metricValue">
+            Measurement Value
+        </label>
+
+        <input type="number"
+               id="metricValue"
+               data-th-field="*{metricValue}"
+               step="0.001">
+
+        <p data-th-if="${#fields.hasErrors('metricValue')}"
+           data-th-errors="*{metricValue}">
+            Measurement error
+        </p>
+
+    </div>
+
+    <div id="bloodPressureGroup">
+
+        <p>
+            Systolic and diastolic must come from the same
+            blood-pressure observation.
+        </p>
+
+        <div>
+            <label for="systolic">
+                Systolic (mmHg)
+            </label>
+
+            <input type="number"
+                   id="systolic"
+                   data-th-field="*{systolic}"
+                   step="0.1">
+
+            <p data-th-if="${#fields.hasErrors('systolic')}"
+               data-th-errors="*{systolic}">
+                Systolic error
+            </p>
+        </div>
+
+        <div>
+            <label for="diastolic">
+                Diastolic (mmHg)
+            </label>
+
+            <input type="number"
+                   id="diastolic"
+                   data-th-field="*{diastolic}"
+                   step="0.1">
+
+            <p data-th-if="${#fields.hasErrors('diastolic')}"
+               data-th-errors="*{diastolic}">
+                Diastolic error
+            </p>
+        </div>
+
+    </div>
+
+    <div>
+        <label for="observedAt">
+            Observation Date and Time
+        </label>
+
+        <input type="datetime-local"
+               id="observedAt"
+               data-th-field="*{observedAt}"
+               step="60"
+               required>
+
+        <p data-th-if="${#fields.hasErrors('observedAt')}"
+           data-th-errors="*{observedAt}">
+            Observation time error
+        </p>
+    </div>
+
+    <div>
+        <label for="notes">
+            Notes
+        </label>
+
+        <textarea id="notes"
+                  data-th-field="*{notes}"
+                  rows="4"
+                  maxlength="1000"></textarea>
+
+        <p data-th-if="${#fields.hasErrors('notes')}"
+           data-th-errors="*{notes}">
+            Notes error
+        </p>
+    </div>
+
+    <button type="submit">
+        Submit Proposal
+    </button>
+
+</form>
+
+<p>
+    <a data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+        Cancel
+    </a>
+</p>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        const metricType =
+                document.getElementById("metricType");
+
+        const scalarValueGroup =
+                document.getElementById("scalarValueGroup");
+
+        const bloodPressureGroup =
+                document.getElementById("bloodPressureGroup");
+
+        const metricValue =
+                document.getElementById("metricValue");
+
+        const systolic =
+                document.getElementById("systolic");
+
+        const diastolic =
+                document.getElementById("diastolic");
+
+        function updateMeasurementFields() {
+
+            const selectedMetric =
+                    metricType.value;
+
+            const isBloodPressure =
+                    selectedMetric === "BLOOD_PRESSURE";
+
+            const hasSelection =
+                    selectedMetric !== "";
+
+            scalarValueGroup.hidden =
+                    !hasSelection || isBloodPressure;
+
+            bloodPressureGroup.hidden =
+                    !isBloodPressure;
+
+            metricValue.required =
+                    hasSelection && !isBloodPressure;
+
+            systolic.required =
+                    isBloodPressure;
+
+            diastolic.required =
+                    isBloodPressure;
+        }
+
+        metricType.addEventListener(
+                "change",
+                updateMeasurementFields
+        );
+
+        updateMeasurementFields();
+    });
+</script>
+
+</div>
+</body>
+</html>

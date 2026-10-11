@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
@@ -40,7 +39,7 @@
         }
 
         .container {
-            max-width: 1450px;
+            max-width: 1500px;
             margin: 35px auto;
             padding: 0 25px;
         }
@@ -59,7 +58,6 @@
             font-weight: 650;
             padding: 12px 18px;
             border-radius: 8px;
-            transition: background 0.2s ease;
         }
 
         .dashboard-link a:hover {
@@ -106,10 +104,8 @@
             font-size: 42px;
             font-weight: bold;
             color: #1769aa;
-            overflow-wrap: anywhere;
         }
 
-        /* General buttons */
         .button {
             display: inline-flex;
             align-items: center;
@@ -124,16 +120,13 @@
             font-family: inherit;
             font-size: 12px;
             font-weight: 650;
-            text-align: center;
             white-space: nowrap;
-            transition: background 0.2s ease;
         }
 
         .button:hover {
             background: #12558b;
         }
 
-        /* Bigger Add Dose Record button */
         .add-dose-button {
             padding: 15px 24px;
             font-size: 16px;
@@ -141,11 +134,9 @@
             border-radius: 8px;
         }
 
-        /* Dark blue-grey buttons */
         .delete-button,
         .back-button {
             background: #344f6f;
-            color: #ffffff;
         }
 
         .delete-button:hover,
@@ -153,7 +144,6 @@
             background: #293f59;
         }
 
-        /* Table container */
         .table-wrapper {
             width: 100%;
             overflow-x: auto;
@@ -161,11 +151,9 @@
             border-radius: 12px;
         }
 
-        /* Five evenly spaced columns */
         table {
             width: 100%;
-            min-width: 700px;
-            table-layout: fixed;
+            min-width: 1100px;
             border-collapse: collapse;
             background: #ffffff;
         }
@@ -176,12 +164,10 @@
 
         th,
         td {
-            width: 20%;
             padding: 14px 12px;
             border-bottom: 1px solid #dce4ee;
             text-align: center;
             vertical-align: middle;
-            white-space: nowrap;
         }
 
         th {
@@ -197,18 +183,29 @@
             background: #f6f9fd;
         }
 
-        /* Blue status badges */
         .status {
             display: inline-block;
-            padding: 6px 10px;
+            padding: 6px 11px;
             border-radius: 20px;
-            background: #e8f0fe;
-            color: #1769aa;
             font-weight: 700;
             font-size: 12px;
         }
 
-        /* Smaller Edit and Delete buttons */
+        .taken {
+            background: #dff3e7;
+            color: #167343;
+        }
+
+        .missed {
+            background: #fde7e7;
+            color: #a72828;
+        }
+
+        .skipped {
+            background: #fff2d8;
+            color: #8a5d00;
+        }
+
         .actions {
             display: flex;
             justify-content: center;
@@ -220,16 +217,15 @@
             margin: 0;
         }
 
-        .actions .button {
-            padding: 7px 10px;
-            font-size: 12px;
-        }
-
         .empty {
             padding: 25px;
             text-align: center;
             color: #64748b;
-            white-space: normal;
+        }
+
+        .not-recorded {
+            color: #7b8794;
+            font-style: italic;
         }
 
         .bottom {
@@ -244,6 +240,7 @@
         }
 
         @media (max-width: 650px) {
+
             .header {
                 padding: 28px 22px;
             }
@@ -273,20 +270,6 @@
             .stat-card {
                 min-width: 0;
                 width: 100%;
-            }
-
-            th,
-            td {
-                padding: 12px 9px;
-            }
-
-            .actions {
-                gap: 5px;
-            }
-
-            .actions .button {
-                padding: 7px 8px;
-                font-size: 11px;
             }
 
             .add-dose-button {
@@ -326,8 +309,11 @@
 
             <div class="stat-card">
                 <h3>Total Dose Records</h3>
+
                 <p class="count"
-                   th:text="${#lists.size(doseRecords)}">0</p>
+                   th:text="${#lists.size(doseRecords)}">
+                    0
+                </p>
             </div>
 
             <div>
@@ -340,15 +326,19 @@
         </div>
 
         <div class="table-wrapper">
+
             <table>
 
                 <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Medication</th>
+                    <th>Dosage</th>
+                    <th>Scheduled Time</th>
                     <th>Dose Date</th>
                     <th>Status</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
+                    <th>Actual Taken Time</th>
+                    <th>Actions</th>
                 </tr>
                 </thead>
 
@@ -356,55 +346,122 @@
 
                 <tr th:each="record : ${doseRecords}">
 
-                    <td th:text="${record.id}">1</td>
+                    <td th:text="${record.id}">
+                        1
+                    </td>
 
-                    <td th:text="${record.doseDate}">2026-10-09</td>
+                    <td th:text="${record.medication.medicationName}">
+                        Medication
+                    </td>
+
+                    <td th:text="${record.medication.dosage}">
+                        500 mg
+                    </td>
 
                     <td>
+
+                        <span th:if="${record.scheduledTime != null}"
+                              th:text="${record.scheduledTime}">
+                        </span>
+
+                        <span th:if="${record.scheduledTime == null}"
+                              class="not-recorded">
+                            Not available
+                        </span>
+
+                    </td>
+
+                    <td th:text="${record.doseDate}">
+                        2026-10-11
+                    </td>
+
+                    <td>
+
                         <span class="status"
+                              th:classappend="${
+                                  record.status.name() == 'TAKEN'
+                                      ? ' taken'
+                                      : record.status.name() == 'MISSED'
+                                      ? ' missed'
+                                      : ' skipped'
+                              }"
                               th:text="${record.status}">
                             TAKEN
                         </span>
+
                     </td>
 
                     <td>
-                        <a class="button"
-                           th:href="@{/dose-records/edit/{id}(id=${record.id})}">
-                            Edit
-                        </a>
+
+                        <span th:if="${record.actualTakenAt != null}"
+                              th:text="${#temporals.format(
+                                  record.actualTakenAt,
+                                  'yyyy-MM-dd HH:mm'
+                              )}">
+                        </span>
+
+                        <span th:if="${record.actualTakenAt == null}"
+                              class="not-recorded">
+                            —
+                        </span>
+
                     </td>
 
                     <td>
-                        <form
-                            th:action="@{/dose-records/delete/{id}(id=${record.id})}"
-                            method="post"
-                            onsubmit="return confirm('Are you sure you want to delete this dose record?');">
 
-                            <button class="button delete-button" type="submit">
-                                Delete
-                            </button>
-                        </form>
+                        <div class="actions">
+
+                            <a class="button"
+                               th:href="@{/dose-records/edit/{id}(id=${record.id})}">
+                                Edit
+                            </a>
+
+                            <form th:action="@{/dose-records/delete/{id}(id=${record.id})}"
+                                  method="post"
+                                  onsubmit="return confirm('Are you sure you want to delete this dose record?');">
+
+                                <button class="button delete-button"
+                                        type="submit">
+                                    Delete
+                                </button>
+
+                            </form>
+
+                        </div>
+
                     </td>
 
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(doseRecords)}">
-                    <td colspan="5" class="empty">
-                        No dose records found. Click Add Dose Record to create one.
+
+                    <td colspan="8"
+                        class="empty">
+
+                        No dose records found.
+                        Click Add Dose Record to record your first scheduled dose.
+
                     </td>
+
                 </tr>
 
                 </tbody>
+
             </table>
+
         </div>
 
     </section>
 
     <div class="bottom">
+
         <a class="button back-button"
            th:href="@{/medication-dashboard}">
+
             &larr; Back to Medication Dashboard
+
         </a>
+
     </div>
 
 </main>

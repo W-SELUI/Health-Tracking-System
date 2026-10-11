@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Manage Users</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 30px 6%;
+        }
+
+        main {
+            width: 92%;
+            max-width: 1100px;
+            margin: 35px auto;
+        }
+
+        .message {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #b3261e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5eaf0;
+            text-align: left;
+        }
+
+        th {
+            background: #1565a9;
+            color: white;
+        }
+
+        .enabled {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .disabled {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        button {
+            padding: 8px 14px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            color: white;
+            font-weight: 600;
+        }
+
+        .enable-btn {
+            background: #2e7d32;
+        }
+
+        .disable-btn {
+            background: #b3261e;
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-top: 25px;
+            padding: 11px 18px;
+            background: #344f6f;
+            color: white;
+            text-decoration: none;
+            border-radius: 7px;
+        }
+
+        form {
+            display: inline;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
+</head>
+
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('admin-users', 'Users')}"></div>
+<div class="healthtrack-page-shell">
+
+<header>
+    <h1>Manage Users</h1>
+    <p>View and manage registered system users.</p>
+</header>
+
+<main>
+
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Role</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="user : ${users}">
+
+            <td th:text="${user.id}">
+                1
+            </td>
+
+            <td th:text="${user.fullName}">
+                User Name
+            </td>
+
+            <td th:text="${user.email}">
+                user@email.com
+            </td>
+
+            <td th:text="${user.role.displayName}">
+                Patient
+            </td>
+
+            <td>
+
+                <span class="enabled"
+                      th:if="${user.enabled}">
+                    Enabled
+                </span>
+
+                <span class="disabled"
+                      th:unless="${user.enabled}">
+                    Disabled
+                </span>
+
+            </td>
+
+            <td>
+
+                <form th:if="${!user.enabled}"
+                      th:action="@{/admin/users/{id}/enable(id=${user.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            class="enable-btn">
+                        Enable
+                    </button>
+
+                </form>
+
+                <form th:if="${user.enabled and user.role.name() != 'ADMIN'}"
+                      th:action="@{/admin/users/{id}/disable(id=${user.id})}"
+                      method="post">
+
+                    <button type="submit"
+                            class="disable-btn">
+                        Disable
+                    </button>
+
+                </form>
+
+                <span th:if="${user.role.name() == 'ADMIN'}">
+                    Administrator
+                </span>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <a th:href="@{/admin/dashboard}"
+       class="back-btn">
+        Back to Dashboard
+    </a>
+
+</main>
+
+</div>
+</body>
+</html>

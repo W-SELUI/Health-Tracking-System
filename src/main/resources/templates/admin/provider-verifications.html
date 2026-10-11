@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Licence Verifications</title>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            color: #0d2d52;
+        }
+
+        header {
+            background: #dcecf9;
+            padding: 30px 6%;
+        }
+
+        main {
+            width: 92%;
+            max-width: 1150px;
+            margin: 35px auto;
+        }
+
+        .message {
+            padding: 14px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .error {
+            background: #fff0f0;
+            color: #b3261e;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+        }
+
+        th,
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #e5eaf0;
+            text-align: left;
+        }
+
+        th {
+            background: #1565a9;
+            color: white;
+        }
+
+        .pending {
+            color: #c77700;
+            font-weight: bold;
+        }
+
+        .verified {
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
+        .rejected {
+            color: #b3261e;
+            font-weight: bold;
+        }
+
+        .view-btn,
+        .back-btn {
+            display: inline-block;
+            padding: 9px 15px;
+            border-radius: 7px;
+            text-decoration: none;
+            color: white;
+            font-weight: 600;
+        }
+
+        .view-btn {
+            background: #1565a9;
+        }
+
+        .back-btn {
+            background: #344f6f;
+            margin-top: 25px;
+        }
+    </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
+</head>
+
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('admin-verifications', 'Provider verifications')}"></div>
+<div class="healthtrack-page-shell">
+
+<header>
+    <h1>Provider Licence Verifications</h1>
+    <p>
+        Review provider licence submissions.
+    </p>
+</header>
+
+<main>
+
+    <div th:if="${successMessage}"
+         class="message success"
+         th:text="${successMessage}">
+    </div>
+
+    <div th:if="${errorMessage}"
+         class="message error"
+         th:text="${errorMessage}">
+    </div>
+
+    <table>
+
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Provider</th>
+            <th>Email</th>
+            <th>File</th>
+            <th>Status</th>
+            <th>Action</th>
+        </tr>
+        </thead>
+
+        <tbody>
+
+        <tr th:each="verification : ${verifications}">
+
+            <td th:text="${verification.id}">
+                1
+            </td>
+
+            <td th:text="${verification.provider.fullName}">
+                Provider Name
+            </td>
+
+            <td th:text="${verification.provider.email}">
+                provider@email.com
+            </td>
+
+            <td th:text="${verification.originalFileName}">
+                licence.pdf
+            </td>
+
+            <td>
+
+                <span class="pending"
+                      th:if="${verification.status.name() == 'PENDING'}">
+                    Pending
+                </span>
+
+                <span class="verified"
+                      th:if="${verification.status.name() == 'VERIFIED'}">
+                    Verified
+                </span>
+
+                <span class="rejected"
+                      th:if="${verification.status.name() == 'REJECTED'}">
+                    Rejected
+                </span>
+
+            </td>
+
+            <td>
+
+                <a class="view-btn"
+                   th:href="@{/admin/provider-verifications/{id}(id=${verification.id})}">
+                    Review
+                </a>
+
+            </td>
+
+        </tr>
+
+        </tbody>
+
+    </table>
+
+    <a th:href="@{/admin/dashboard}"
+       class="back-btn">
+        Back to Dashboard
+    </a>
+
+</main>
+
+</div>
+</body>
+</html>

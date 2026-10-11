@@ -31,6 +31,33 @@
             color: #526071;
         }
 
+        .proposal-success {
+            padding: 14px 16px;
+            margin: 16px 0;
+            background: #ecfdf3;
+            border: 1px solid #86efac;
+            border-radius: 8px;
+        }
+
+        .proposal-action {
+            margin: 18px 0 24px;
+        }
+
+        .proposal-action a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .proposal-action a:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
         .table-container {
             overflow-x: auto;
             border: 1px solid #d9dee5;
@@ -90,10 +117,12 @@
 </nav>
 
 <main>
+
     <h1>Patient Health Records</h1>
 
     <section class="patient-summary"
              aria-label="Patient and provider details">
+
         <p>
             Patient:
             <strong data-th-text="${patient.fullName}">
@@ -101,7 +130,8 @@
             </strong>
         </p>
 
-        <p class="muted" data-th-text="${patient.email}">
+        <p class="muted"
+           data-th-text="${patient.email}">
             Patient email
         </p>
 
@@ -111,9 +141,38 @@
                 Provider name
             </strong>
         </p>
+
     </section>
 
-    <h2 id="history-heading">Health-record history</h2>
+
+    <!--
+        Shown after a Provider successfully submits a proposal.
+
+        The wording deliberately makes it clear that the patient's
+        permanent Health Records have not changed yet.
+    -->
+    <p class="proposal-success"
+       data-th-if="${param.proposalSubmitted}">
+        Health Record change proposal submitted successfully.
+        The patient must approve it before their permanent
+        Health Records change.
+    </p>
+
+
+    <!--
+        Providers never write directly to permanent Health Records.
+        This route creates a PENDING proposal instead.
+    -->
+    <p class="proposal-action">
+        <a data-th-href="@{/provider/patients/{patientId}/health-record-proposals/new(patientId=${patient.id})}">
+            Propose new health record
+        </a>
+    </p>
+
+
+    <h2 id="history-heading">
+        Health-record history
+    </h2>
 
     <p class="muted">
         Newest measurements appear first.
@@ -121,36 +180,58 @@
 
     <p>
         Records:
-        <strong data-th-text="${#lists.size(records)}">0</strong>
+        <strong data-th-text="${#lists.size(records)}">
+            0
+        </strong>
     </p>
+
 
     <p class="empty-state"
        data-th-if="${#lists.isEmpty(records)}">
         No health records have been added for this patient yet.
     </p>
 
+
     <div class="table-container"
          data-th-unless="${#lists.isEmpty(records)}">
+
         <table class="records-table"
                aria-labelledby="history-heading">
+
             <thead>
                 <tr>
-                    <th scope="col">Measurement</th>
-                    <th scope="col">Value</th>
-                    <th scope="col">Observed at</th>
-                    <th scope="col">Details</th>
+                    <th scope="col">
+                        Measurement
+                    </th>
+
+                    <th scope="col">
+                        Value
+                    </th>
+
+                    <th scope="col">
+                        Observed at
+                    </th>
+
+                    <th scope="col">
+                        Details
+                    </th>
                 </tr>
             </thead>
 
+
             <tbody>
+
                 <tr data-th-each="record : ${records}">
+
                     <td data-th-text="${record.metricName}">
                         Measurement name
                     </td>
 
+
                     <td data-th-text="${record.displayValue}">
                         Measurement value and unit
                     </td>
+
 
                     <td>
                         <time
@@ -160,7 +241,9 @@
                         </time>
                     </td>
 
+
                     <td>
+
                         <a class="record-link"
                            data-th-if="${record.bloodPressure}"
                            data-th-href="@{/provider/patients/{patientId}/health-records/blood-pressure/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
@@ -172,17 +255,28 @@
                            data-th-href="@{/provider/patients/{patientId}/health-records/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
                             View record
                         </a>
+
                     </td>
+
                 </tr>
+
             </tbody>
+
         </table>
+
     </div>
+
 </main>
+
 
 <form action="/logout"
       data-th-action="@{/logout}"
       method="post">
-    <button type="submit">Logout</button>
+
+    <button type="submit">
+        Logout
+    </button>
+
 </form>
 
 </div>

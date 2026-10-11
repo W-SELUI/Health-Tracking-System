@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -38,7 +37,7 @@
         }
 
         .container {
-            max-width: 1450px;
+            max-width: 1550px;
             margin: 35px auto;
             padding: 0 25px;
         }
@@ -131,7 +130,7 @@
             color: #ffffff;
         }
 
-        .cancel-button:hover:not(:disabled) {
+        .cancel-button:hover {
             background: #293F59;
         }
 
@@ -142,13 +141,6 @@
 
         .danger:hover {
             background: #922626;
-        }
-
-        .button:disabled {
-            background: #aeb9c7;
-            color: #ffffff;
-            cursor: not-allowed;
-            opacity: 0.8;
         }
 
         .table-wrapper {
@@ -181,6 +173,13 @@
             font-weight: 700;
         }
 
+        .purpose-cell {
+            white-space: normal;
+            min-width: 200px;
+            max-width: 280px;
+            line-height: 1.4;
+        }
+
         tbody tr:last-child td {
             border-bottom: none;
         }
@@ -189,18 +188,44 @@
             background: #f6f9fd;
         }
 
-        /* Original blue status badges */
         .status {
             display: inline-block;
             padding: 6px 10px;
             border-radius: 20px;
-            background: #e8f0fe;
-            color: #1769aa;
             font-weight: 700;
             font-size: 13px;
         }
 
-        /* Smaller action buttons */
+        .requested {
+            background: #fff4cc;
+            color: #7d5d00;
+        }
+
+        .confirmed {
+            background: #d9f4e5;
+            color: #146c43;
+        }
+
+        .rejected {
+            background: #fde2e2;
+            color: #9b1c1c;
+        }
+
+        .cancelled {
+            background: #eeeeee;
+            color: #555555;
+        }
+
+        .completed {
+            background: #dcecf9;
+            color: #1769aa;
+        }
+
+        .missed {
+            background: #f4e0e0;
+            color: #8b2a2a;
+        }
+
         .actions {
             display: flex;
             align-items: center;
@@ -225,6 +250,11 @@
             text-align: center;
             color: #64748b;
             white-space: normal;
+        }
+
+        .no-actions {
+            color: #64748b;
+            font-size: 13px;
         }
 
         .footer {
@@ -294,25 +324,29 @@
         &larr; Back to Medication Dashboard
     </a>
 
-    <!-- 1. Upcoming Appointments -->
+    <!-- Upcoming Appointments -->
     <section class="card">
 
         <div class="card-heading">
             <div>
                 <h2>Upcoming Appointments</h2>
+
                 <p class="section-description">
-                    Scheduled appointments today and in the future.
+                    Pending requests and confirmed appointments today and in the future.
                 </p>
             </div>
         </div>
 
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Doctor Name</th>
                     <th>Location</th>
+                    <th>Purpose</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -320,49 +354,74 @@
                 </thead>
 
                 <tbody>
+
                 <tr th:each="appointment : ${upcomingAppointments}">
+
                     <td th:text="${appointment.id}"></td>
+
                     <td th:text="${appointment.doctorName}"></td>
+
                     <td th:text="${appointment.location != null
                         ? appointment.location : '-'}"></td>
-                    <td th:text="${appointment.appointmentDate}"></td>
-                    <td th:text="${appointment.appointmentTime}"></td>
-                    <td>
-                        <span class="status"
-                              th:text="${appointment.status}"></span>
+
+                    <td class="purpose-cell"
+                        th:text="${appointment.purpose != null
+                        ? appointment.purpose : '-'}">
                     </td>
+
+                    <td th:text="${appointment.appointmentDate}"></td>
+
+                    <td th:text="${appointment.appointmentTime}"></td>
+
+                    <td>
+                        <span
+                            class="status"
+                            th:classappend="${#strings.toLowerCase(appointment.status.name())}"
+                            th:text="${appointment.status}">
+                        </span>
+                    </td>
+
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(upcomingAppointments)}">
-                    <td colspan="6" class="empty">
+
+                    <td colspan="7" class="empty">
                         No upcoming appointments found.
                     </td>
+
                 </tr>
+
                 </tbody>
+
             </table>
+
         </div>
 
     </section>
 
-    <!-- 2. Appointment History -->
+    <!-- Appointment History -->
     <section class="card">
 
         <div class="card-heading">
             <div>
                 <h2>Appointment History</h2>
+
                 <p class="section-description">
-                    Past, completed, missed, and cancelled appointments.
+                    Past, rejected, completed, missed, and cancelled appointments.
                 </p>
             </div>
         </div>
 
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Doctor Name</th>
                     <th>Location</th>
+                    <th>Purpose</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -370,53 +429,81 @@
                 </thead>
 
                 <tbody>
+
                 <tr th:each="appointment : ${previousAppointments}">
+
                     <td th:text="${appointment.id}"></td>
+
                     <td th:text="${appointment.doctorName}"></td>
+
                     <td th:text="${appointment.location != null
                         ? appointment.location : '-'}"></td>
-                    <td th:text="${appointment.appointmentDate}"></td>
-                    <td th:text="${appointment.appointmentTime}"></td>
-                    <td>
-                        <span class="status"
-                              th:text="${appointment.status}"></span>
+
+                    <td class="purpose-cell"
+                        th:text="${appointment.purpose != null
+                        ? appointment.purpose : '-'}">
                     </td>
+
+                    <td th:text="${appointment.appointmentDate}"></td>
+
+                    <td th:text="${appointment.appointmentTime}"></td>
+
+                    <td>
+                        <span
+                            class="status"
+                            th:classappend="${#strings.toLowerCase(appointment.status.name())}"
+                            th:text="${appointment.status}">
+                        </span>
+                    </td>
+
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(previousAppointments)}">
-                    <td colspan="6" class="empty">
+
+                    <td colspan="7" class="empty">
                         No appointment history found.
                     </td>
+
                 </tr>
+
                 </tbody>
+
             </table>
+
         </div>
 
     </section>
 
-    <!-- 3. All Appointments -->
+    <!-- All Appointments -->
     <section class="card">
 
         <div class="card-heading">
+
             <div>
                 <h2>All Appointments</h2>
+
                 <p class="section-description">
-                    View, add, edit, cancel, or delete your appointments.
+                    View your appointment requests and confirmed appointments.
                 </p>
             </div>
 
-            <a class="button primary" th:href="@{/appointments/add}">
-                + Add Appointment
+            <a class="button primary"
+               th:href="@{/appointments/add}">
+                + Request Appointment
             </a>
+
         </div>
 
         <div class="table-wrapper">
+
             <table>
+
                 <thead>
                 <tr>
                     <th>ID</th>
                     <th>Doctor Name</th>
                     <th>Location</th>
+                    <th>Purpose</th>
                     <th>Date</th>
                     <th>Time</th>
                     <th>Status</th>
@@ -425,69 +512,103 @@
                 </thead>
 
                 <tbody>
+
                 <tr th:each="appointment : ${appointments}">
+
                     <td th:text="${appointment.id}"></td>
+
                     <td th:text="${appointment.doctorName}"></td>
+
                     <td th:text="${appointment.location != null
                         ? appointment.location : '-'}"></td>
+
+                    <td class="purpose-cell"
+                        th:text="${appointment.purpose != null
+                        ? appointment.purpose : '-'}">
+                    </td>
+
                     <td th:text="${appointment.appointmentDate}"></td>
+
                     <td th:text="${appointment.appointmentTime}"></td>
 
                     <td>
-                        <span class="status"
-                              th:text="${appointment.status}"></span>
+                        <span
+                            class="status"
+                            th:classappend="${#strings.toLowerCase(appointment.status.name())}"
+                            th:text="${appointment.status}">
+                        </span>
                     </td>
 
                     <td>
+
                         <div class="actions">
 
-                            <a class="button primary"
-                               th:href="@{/appointments/edit/{id}(id=${appointment.id})}">
+                            <a
+                                th:if="${appointment.status.name() == 'REQUESTED'}"
+                                class="button primary"
+                                th:href="@{/appointments/edit/{id}(id=${appointment.id})}">
                                 Edit
                             </a>
 
                             <form
+                                th:if="${appointment.status.name() == 'REQUESTED'
+                                    or appointment.status.name() == 'CONFIRMED'}"
                                 th:action="@{/appointments/cancel/{id}(id=${appointment.id})}"
                                 method="post"
                                 onsubmit="return confirm('Are you sure you want to cancel this appointment?');">
 
                                 <button
                                     class="button cancel-button"
-                                    type="submit"
-                                    th:disabled="${appointment.status != 'SCHEDULED'}">
+                                    type="submit">
                                     Cancel
                                 </button>
+
                             </form>
 
                             <form
+                                th:if="${appointment.status.name() != 'REQUESTED'
+                                    and appointment.status.name() != 'CONFIRMED'}"
                                 th:action="@{/appointments/delete/{id}(id=${appointment.id})}"
                                 method="post"
                                 onsubmit="return confirm('Permanently delete this appointment?');">
 
-                                <button class="button danger" type="submit">
+                                <button
+                                    class="button danger"
+                                    type="submit">
                                     Delete
                                 </button>
+
                             </form>
 
                         </div>
+
                     </td>
+
                 </tr>
 
                 <tr th:if="${#lists.isEmpty(appointments)}">
-                    <td colspan="7" class="empty">
-                        No appointments found. Click Add Appointment to create one.
+
+                    <td colspan="8" class="empty">
+                        No appointments found. Click Request Appointment to create one.
                     </td>
+
                 </tr>
+
                 </tbody>
+
             </table>
+
         </div>
 
     </section>
 
     <div class="footer">
-        <a class="button dark" th:href="@{/medication-dashboard}">
+
+        <a class="button dark"
+           th:href="@{/medication-dashboard}">
             &larr; Back to Medication Dashboard
         </a>
+
     </div>
 
 </main>

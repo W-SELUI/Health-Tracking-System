@@ -3,37 +3,78 @@ package com.group15.health_tracking_system.medication.entity;
 import com.group15.health_tracking_system.common.model.BaseEntity;
 import com.group15.health_tracking_system.user.entity.User;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Table(name = "medications")
 public class Medication extends BaseEntity {
 
-    @Column(nullable = false)
+    @Column(
+            name = "medication_name",
+            nullable = false,
+            length = 150
+    )
     private String medicationName;
 
-    @Column(nullable = false)
+    @Column(
+            nullable = false,
+            length = 100
+    )
     private String dosage;
 
+    @Column(
+            length = 500
+    )
     private String instructions;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = false)
+    /*
+     * The patient who owns this medication.
+     */
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(
+            name = "user_id",
+            nullable = false
+    )
     private User user;
 
-    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL)
-    private List<MedicationSchedule> schedules;
+    /*
+     * A medication can have multiple scheduled times.
+     *
+     * Example:
+     * Panadol
+     * 08:00
+     * 20:00
+     */
+    @OneToMany(
+            mappedBy = "medication",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<MedicationSchedule> schedules =
+            new ArrayList<>();
 
-    @OneToMany(mappedBy = "medication", cascade = CascadeType.ALL)
-    private List<DoseRecord> doseRecords;
+    /*
+     * Dose history belonging to this medication.
+     */
+    @OneToMany(
+            mappedBy = "medication",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private List<DoseRecord> doseRecords =
+            new ArrayList<>();
 
     public Medication() {
     }
 
-    public Medication(String medicationName,
-                      String dosage,
-                      String instructions,
-                      User user) {
+    public Medication(
+            String medicationName,
+            String dosage,
+            String instructions,
+            User user) {
+
         this.medicationName = medicationName;
         this.dosage = dosage;
         this.instructions = instructions;
@@ -44,7 +85,9 @@ public class Medication extends BaseEntity {
         return medicationName;
     }
 
-    public void setMedicationName(String medicationName) {
+    public void setMedicationName(
+            String medicationName) {
+
         this.medicationName = medicationName;
     }
 
@@ -52,7 +95,9 @@ public class Medication extends BaseEntity {
         return dosage;
     }
 
-    public void setDosage(String dosage) {
+    public void setDosage(
+            String dosage) {
+
         this.dosage = dosage;
     }
 
@@ -60,7 +105,9 @@ public class Medication extends BaseEntity {
         return instructions;
     }
 
-    public void setInstructions(String instructions) {
+    public void setInstructions(
+            String instructions) {
+
         this.instructions = instructions;
     }
 
@@ -68,7 +115,9 @@ public class Medication extends BaseEntity {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(
+            User user) {
+
         this.user = user;
     }
 
@@ -76,7 +125,9 @@ public class Medication extends BaseEntity {
         return schedules;
     }
 
-    public void setSchedules(List<MedicationSchedule> schedules) {
+    public void setSchedules(
+            List<MedicationSchedule> schedules) {
+
         this.schedules = schedules;
     }
 
@@ -84,7 +135,31 @@ public class Medication extends BaseEntity {
         return doseRecords;
     }
 
-    public void setDoseRecords(List<DoseRecord> doseRecords) {
+    public void setDoseRecords(
+            List<DoseRecord> doseRecords) {
+
         this.doseRecords = doseRecords;
+    }
+
+    /*
+     * Helper method for safely attaching a schedule
+     * to this medication.
+     */
+    public void addSchedule(
+            MedicationSchedule schedule) {
+
+        schedules.add(schedule);
+        schedule.setMedication(this);
+    }
+
+    /*
+     * Helper method for safely attaching a dose record
+     * to this medication.
+     */
+    public void addDoseRecord(
+            DoseRecord doseRecord) {
+
+        doseRecords.add(doseRecord);
+        doseRecord.setMedication(this);
     }
 }

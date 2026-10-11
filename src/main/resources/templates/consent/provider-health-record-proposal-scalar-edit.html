@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Propose Health Record Edit</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
+</head>
+
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('patients', 'Propose record change')}"></div>
+<div class="healthtrack-page-shell">
+
+<h1>Propose Health Record Edit</h1>
+
+<p>
+    Patient:
+    <strong data-th-text="${patient.fullName}">
+        Patient Name
+    </strong>
+</p>
+
+<p>
+    You are proposing a correction to an existing record.
+    The current record will remain unchanged until the patient approves.
+</p>
+
+<h2>Current Record</h2>
+
+<table>
+    <tbody>
+        <tr>
+            <th>Metric</th>
+            <td data-th-text="${record.metricType.displayName}">
+                Weight
+            </td>
+        </tr>
+
+        <tr>
+            <th>Current value</th>
+            <td>
+                <span data-th-text="${record.metricValue}">
+                    80
+                </span>
+                <span data-th-text="${record.unit}">
+                    kg
+                </span>
+            </td>
+        </tr>
+
+        <tr>
+            <th>Observed at</th>
+            <td data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
+                Date
+            </td>
+        </tr>
+
+        <tr>
+            <th>Source</th>
+            <td data-th-text="${record.source.displayName}">
+                Source
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+<h2>Proposed Replacement</h2>
+
+<form data-th-action="@{/provider/patients/{patientId}/health-record-proposals/scalar/{recordId}/edit(patientId=${patient.id}, recordId=${recordId})}"
+      data-th-object="${healthRecordRequest}"
+      method="post">
+
+    <div data-th-if="${#fields.hasGlobalErrors()}">
+        <p data-th-each="error : ${#fields.globalErrors()}"
+           data-th-text="${error}">
+            Proposal error
+        </p>
+    </div>
+
+    <div>
+        <label for="metricType">
+            Health Metric
+        </label>
+
+        <select id="metricType"
+                data-th-field="*{metricType}"
+                required>
+
+            <option value="">
+                Select a metric
+            </option>
+
+            <option data-th-each="metric : ${metricTypes}"
+                    data-th-value="${metric}"
+                    data-th-text="${metric.displayName + ' (' + metric.unit + ')'}">
+                Metric
+            </option>
+
+        </select>
+
+        <p data-th-if="${#fields.hasErrors('metricType')}"
+           data-th-errors="*{metricType}">
+            Metric error
+        </p>
+    </div>
+
+    <div>
+        <label for="metricValue">
+            Measurement Value
+        </label>
+
+        <input type="number"
+               id="metricValue"
+               data-th-field="*{metricValue}"
+               step="0.001"
+               required>
+
+        <p data-th-if="${#fields.hasErrors('metricValue')}"
+           data-th-errors="*{metricValue}">
+            Measurement error
+        </p>
+    </div>
+
+    <div>
+        <label for="observedAt">
+            Observation Date and Time
+        </label>
+
+        <input type="datetime-local"
+               id="observedAt"
+               data-th-field="*{observedAt}"
+               step="60"
+               required>
+
+        <p data-th-if="${#fields.hasErrors('observedAt')}"
+           data-th-errors="*{observedAt}">
+            Observation time error
+        </p>
+    </div>
+
+    <div>
+        <label for="notes">
+            Notes
+        </label>
+
+        <textarea id="notes"
+                  data-th-field="*{notes}"
+                  rows="4"
+                  maxlength="1000"></textarea>
+
+        <p data-th-if="${#fields.hasErrors('notes')}"
+           data-th-errors="*{notes}">
+            Notes error
+        </p>
+    </div>
+
+    <button type="submit">
+        Submit Proposed Edit
+    </button>
+
+</form>
+
+<p>
+    <a data-th-href="@{/provider/patients/{patientId}/health-records/{recordId}(patientId=${patient.id}, recordId=${recordId})}">
+        Cancel
+    </a>
+</p>
+
+</div>
+</body>
+</html>

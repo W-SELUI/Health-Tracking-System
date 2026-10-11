@@ -47,7 +47,6 @@
             box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
         }
 
-        /* Dashboard navigation buttons */
         .dashboard-link {
             margin-bottom: 25px;
         }
@@ -61,7 +60,6 @@
             text-decoration: none;
             font-size: 15px;
             font-weight: 600;
-            transition: background 0.3s ease;
         }
 
         .dashboard-link a:hover {
@@ -106,6 +104,13 @@
             border-color: #1565a9;
         }
 
+        .hint {
+            margin-top: 7px;
+            color: #6b7b8d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
         .buttons {
             display: flex;
             gap: 12px;
@@ -125,10 +130,8 @@
             text-decoration: none;
             text-align: center;
             cursor: pointer;
-            transition: background 0.3s ease;
         }
 
-        /* Update Schedule remains blue */
         button {
             background: #1565a9;
             color: white;
@@ -138,7 +141,6 @@
             background: #0f4d84;
         }
 
-        /* Cancel matches the dark blue-grey theme */
         .cancel {
             background: #344F6F;
             color: white;
@@ -152,10 +154,6 @@
             margin-top: 30px;
             padding-top: 20px;
             border-top: 1px solid #d9e3ec;
-        }
-
-        .bottom-link .dashboard-link {
-            margin-bottom: 0;
         }
 
         @media (max-width: 600px) {
@@ -199,84 +197,171 @@
 <div data-th-replace="~{fragments/navigation :: navigation('medication', 'Schedules')}"></div>
 <div class="healthtrack-page-shell">
 
-    <header>
-        <h1>Health Tracking System</h1>
-        <p>Medication Schedule Management</p>
-    </header>
+<header>
+    <h1>Health Tracking System</h1>
+    <p>Medication Schedule Management</p>
+</header>
 
-    <main>
+<main>
 
-        <!-- Top dashboard button -->
+    <div class="dashboard-link">
+        <a th:href="@{/medication-dashboard}">
+            &larr; Back to Medication Dashboard
+        </a>
+    </div>
+
+    <h2>Edit Medication Schedule</h2>
+
+    <p class="description">
+        Update the medication schedule, first dose time,
+        and how often the medication should repeat.
+    </p>
+
+    <form th:action="@{/schedules/update}" method="post">
+
+        <input
+            type="hidden"
+            name="id"
+            th:value="${schedule.id}">
+
+        <label for="medicationId">
+            Select Medication
+        </label>
+
+        <select
+            id="medicationId"
+            name="medicationId"
+            required>
+
+            <option value="">
+                -- Select a medication --
+            </option>
+
+            <option
+                th:each="med : ${medications}"
+                th:value="${med.id}"
+                th:text="${med.medicationName + ' - ' + med.dosage}"
+                th:selected="${schedule.medication != null
+                    and schedule.medication.id == med.id}">
+            </option>
+
+        </select>
+
+        <label for="startDate">
+            Start Date
+        </label>
+
+        <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            th:value="${schedule.startDate}"
+            required>
+
+        <p class="hint">
+            The first day this medication schedule begins.
+        </p>
+
+        <label for="endDate">
+            End Date
+        </label>
+
+        <input
+            type="date"
+            id="endDate"
+            name="endDate"
+            th:value="${schedule.endDate}">
+
+        <p class="hint">
+            Leave the end date blank if this schedule should continue indefinitely.
+        </p>
+
+        <label for="scheduledTime">
+            First Dose Time
+        </label>
+
+        <input
+            type="time"
+            id="scheduledTime"
+            name="scheduledTime"
+            th:value="${schedule.scheduledTime}"
+            required>
+
+        <p class="hint">
+            This is the first dose time for the repeating schedule.
+        </p>
+
+        <label for="intervalHours">
+            Repeat Every
+        </label>
+
+        <select
+            id="intervalHours"
+            name="intervalHours"
+            required>
+
+            <option value="">
+                -- Select interval --
+            </option>
+
+            <option value="4"
+                    th:selected="${schedule.intervalHours == 4}">
+                Every 4 Hours
+            </option>
+
+            <option value="6"
+                    th:selected="${schedule.intervalHours == 6}">
+                Every 6 Hours
+            </option>
+
+            <option value="8"
+                    th:selected="${schedule.intervalHours == 8}">
+                Every 8 Hours
+            </option>
+
+            <option value="12"
+                    th:selected="${schedule.intervalHours == 12}">
+                Every 12 Hours
+            </option>
+
+            <option value="24"
+                    th:selected="${schedule.intervalHours == 24}">
+                Once Daily
+            </option>
+
+        </select>
+
+        <p class="hint">
+            Example: 6:00 AM every 6 hours produces
+            6:00 AM, 12:00 PM, 6:00 PM and 12:00 AM.
+        </p>
+
+        <div class="buttons">
+
+            <button type="submit">
+                Update Schedule
+            </button>
+
+            <a class="cancel"
+               th:href="@{/schedules}">
+                Cancel
+            </a>
+
+        </div>
+
+    </form>
+
+    <div class="bottom-link">
+
         <div class="dashboard-link">
             <a th:href="@{/medication-dashboard}">
                 &larr; Back to Medication Dashboard
             </a>
         </div>
 
-        <h2>Edit Medication Schedule</h2>
+    </div>
 
-        <p class="description">
-            Update the medication and the time it is scheduled to be taken.
-        </p>
-
-        <form th:action="@{/schedules/update}" method="post">
-
-            <!-- Keep the ID of the existing schedule -->
-            <input type="hidden"
-                   name="id"
-                   th:value="${schedule.id}">
-
-            <!-- Medication dropdown -->
-            <label for="medicationId">Select Medication</label>
-
-            <select id="medicationId"
-                    name="medicationId"
-                    required>
-
-                <option value="">-- Select a medication --</option>
-
-                <option th:each="med : ${medications}"
-                        th:value="${med.id}"
-                        th:text="${med.medicationName}"
-                        th:selected="${schedule.medication != null and schedule.medication.id == med.id}">
-                </option>
-
-            </select>
-
-            <!-- Scheduled time -->
-            <label for="scheduledTime">Scheduled Time</label>
-
-            <input type="time"
-                   id="scheduledTime"
-                   name="scheduledTime"
-                   th:value="${schedule.scheduledTime}"
-                   required>
-
-            <!-- Form actions -->
-            <div class="buttons">
-
-                <button type="submit">
-                    Update Schedule
-                </button>
-
-                <a class="cancel" th:href="@{/schedules}">
-                    Cancel
-                </a>
-
-            </div>
-
-        </form>
-
-        <!-- Bottom dashboard button -->
-        <div class="bottom-link">
-            <div class="dashboard-link">
-                <a th:href="@{/medication-dashboard}">
-                    &larr; Back to Medication Dashboard
-                </a>
-            </div>
-        </div>
-
-    </main>
+</main>
 
 </div>
 </body>

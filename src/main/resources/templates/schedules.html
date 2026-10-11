@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Medication Schedules</title>
 
     <style>
@@ -38,8 +39,8 @@
         }
 
         .container {
-            width: 88%;
-            max-width: 1400px;
+            width: 92%;
+            max-width: 1450px;
             margin: 40px auto;
             background: white;
             padding: 40px;
@@ -60,7 +61,6 @@
             border-radius: 8px;
             font-size: 15px;
             font-weight: 600;
-            transition: background 0.3s;
         }
 
         .dashboard-link a:hover {
@@ -120,7 +120,6 @@
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
-            transition: background 0.3s;
         }
 
         .add-btn:hover {
@@ -136,7 +135,7 @@
 
         table {
             width: 100%;
-            min-width: 600px;
+            min-width: 1050px;
             border-collapse: collapse;
         }
 
@@ -159,6 +158,12 @@
             background: #f7fbff;
         }
 
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+        }
+
         .edit-btn,
         .delete-btn {
             display: inline-block;
@@ -168,7 +173,6 @@
             border-radius: 8px;
             font-weight: 600;
             font-size: 14px;
-            transition: background 0.3s;
         }
 
         .edit-btn {
@@ -202,6 +206,26 @@
             text-align: center;
         }
 
+        .ongoing {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #d9f4e5;
+            color: #146c43;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .repeat-badge {
+            display: inline-block;
+            padding: 6px 10px;
+            background: #e8f1fb;
+            color: #155a91;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
         .footer {
             text-align: center;
             margin-top: 35px;
@@ -216,7 +240,6 @@
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
-            transition: background 0.3s;
         }
 
         .back-btn:hover {
@@ -224,6 +247,7 @@
         }
 
         @media (max-width: 768px) {
+
             .header {
                 padding: 30px 6%;
             }
@@ -259,31 +283,6 @@
                 text-align: center;
             }
         }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 16px;
-            }
-
-            .page-title h2 {
-                font-size: 22px;
-            }
-
-            .schedule-icon {
-                font-size: 28px;
-            }
-
-            .dashboard-link a,
-            .back-btn {
-                text-align: center;
-                width: 100%;
-            }
-
-            th,
-            td {
-                padding: 12px;
-            }
-        }
     </style>
     <link rel="stylesheet"
           href="/css/healthtrack-ui.css"
@@ -308,67 +307,154 @@
     </div>
 
     <div class="page-title">
-        <span class="schedule-icon">⏰</span>
-        <h2>Medication Schedules</h2>
+
+        <span class="schedule-icon">
+            ⏰
+        </span>
+
+        <h2>
+            Medication Schedules
+        </h2>
+
     </div>
 
     <div class="top-section">
 
         <div class="stats-card">
-            <h3>Total Schedules</h3>
-            <div class="number" th:text="${schedules.size()}">0</div>
+
+            <h3>
+                Total Schedules
+            </h3>
+
+            <div
+                class="number"
+                th:text="${schedules.size()}">
+                0
+            </div>
+
         </div>
 
-        <a th:href="@{/schedules/add}" class="add-btn">
+        <a
+            th:href="@{/schedules/add}"
+            class="add-btn">
             + Add Schedule
         </a>
 
     </div>
 
     <div class="table-container">
+
         <table>
 
             <thead>
+
             <tr>
                 <th>ID</th>
-                <th>Scheduled Time</th>
-                <th>Edit</th>
-                <th>Delete</th>
+                <th>Medication</th>
+                <th>Dosage</th>
+                <th>Start Date</th>
+                <th>End Date</th>
+                <th>First Dose Time</th>
+                <th>Repeat Interval</th>
+                <th>Actions</th>
             </tr>
+
             </thead>
 
             <tbody>
 
-            <tr th:if="${#lists.isEmpty(schedules)}" class="empty-row">
-                <td colspan="4">
-                    No schedules found. Click "Add Schedule" to create your first schedule.
+            <tr
+                th:if="${#lists.isEmpty(schedules)}"
+                class="empty-row">
+
+                <td colspan="8">
+                    No medication schedules found.
+                    Click "Add Schedule" to create your first schedule.
                 </td>
+
             </tr>
 
             <tr th:each="schedule : ${schedules}">
 
-                <td th:text="${schedule.id}"></td>
+                <td th:text="${schedule.id}">
+                </td>
 
-                <td th:text="${schedule.scheduledTime}"></td>
+                <td th:text="${schedule.medication.medicationName}">
+                </td>
 
-                <td>
-                    <a th:href="@{'/schedules/edit/' + ${schedule.id}}"
-                       class="edit-btn">
-                        Edit
-                    </a>
+                <td th:text="${schedule.medication.dosage}">
+                </td>
+
+                <td th:text="${schedule.startDate}">
                 </td>
 
                 <td>
-                    <form th:action="@{'/schedules/delete/' + ${schedule.id}}"
-                          method="post"
-                          class="delete-form"
-                          onsubmit="return confirm('Delete this schedule?');">
 
-                        <button type="submit" class="delete-btn">
-                            Delete
-                        </button>
+                    <span
+                        th:if="${schedule.endDate != null}"
+                        th:text="${schedule.endDate}">
+                    </span>
 
-                    </form>
+                    <span
+                        th:if="${schedule.endDate == null}"
+                        class="ongoing">
+                        Ongoing
+                    </span>
+
+                </td>
+
+                <td th:text="${schedule.scheduledTime}">
+                </td>
+
+                <td>
+
+                    <span
+                        class="repeat-badge"
+                        th:if="${schedule.intervalHours == 24}">
+                        Once Daily
+                    </span>
+
+                    <span
+                        class="repeat-badge"
+                        th:if="${schedule.intervalHours != null
+                            and schedule.intervalHours != 24}"
+                        th:text="${'Every ' + schedule.intervalHours + ' Hours'}">
+                    </span>
+
+                    <span
+                        class="repeat-badge"
+                        th:if="${schedule.intervalHours == null}">
+                        Not Set
+                    </span>
+
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <a
+                            th:href="@{/schedules/edit/{id}(id=${schedule.id})}"
+                            class="edit-btn">
+                            Edit
+                        </a>
+
+                        <form
+                            th:action="@{/schedules/delete/{id}(id=${schedule.id})}"
+                            method="post"
+                            class="delete-form"
+                            onsubmit="return confirm('Delete this medication schedule?');">
+
+                            <button
+                                type="submit"
+                                class="delete-btn">
+                                Delete
+                            </button>
+
+                        </form>
+
+                    </div>
+
                 </td>
 
             </tr>
@@ -376,12 +462,17 @@
             </tbody>
 
         </table>
+
     </div>
 
     <div class="footer">
-        <a th:href="@{/medication-dashboard}" class="back-btn">
+
+        <a
+            th:href="@{/medication-dashboard}"
+            class="back-btn">
             ← Back to Medication Dashboard
         </a>
+
     </div>
 
 </div>

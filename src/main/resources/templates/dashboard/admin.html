@@ -14,19 +14,44 @@
 
 <h1>Administrator Dashboard</h1>
 
-<p>
-    Welcome,
-    <span th:text="${currentUser.fullName}">Administrator</span>
+<p class="ht-page-intro">
+    Welcome, <strong th:text="${currentUser.fullName}">Administrator</strong>.
+    Review accounts and provider verification requests from one place.
 </p>
 
-<p>
-    Role:
-    <span th:text="${currentUser.role.displayName}">Administrator</span>
-</p>
+<section class="ht-admin-stats" aria-label="Account statistics">
+    <article class="ht-admin-stat">
+        <span>Total users</span>
+        <strong th:text="${totalUsers}">0</strong>
+    </article>
+    <article class="ht-admin-stat">
+        <span>Patients</span>
+        <strong th:text="${totalPatients}">0</strong>
+    </article>
+    <article class="ht-admin-stat">
+        <span>Providers</span>
+        <strong th:text="${totalProviders}">0</strong>
+    </article>
+    <article class="ht-admin-stat">
+        <span>Enabled users</span>
+        <strong th:text="${enabledUsers}">0</strong>
+    </article>
+    <article class="ht-admin-stat">
+        <span>Disabled users</span>
+        <strong th:text="${disabledUsers}">0</strong>
+    </article>
+    <article class="ht-admin-stat">
+        <span>Pending verifications</span>
+        <strong th:text="${pendingVerifications}">0</strong>
+    </article>
+</section>
 
-<p>
-    <a th:href="@{/profile}">My Profile</a>
-</p>
+<nav class="ht-admin-menu" aria-label="Administration tools">
+    <a th:href="@{/admin/users}">Manage users</a>
+    <a th:href="@{/admin/providers}">Manage providers</a>
+    <a th:href="@{/admin/provider-verifications}">Provider licence verifications</a>
+    <a th:href="@{/profile}">My profile</a>
+</nav>
 
 <form th:action="@{/logout}" method="post">
     <button type="submit">Logout</button>

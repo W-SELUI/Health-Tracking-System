@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Provider Appointments | Health Tracking System</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: "Segoe UI", Arial, sans-serif;
+            background: #edf2f8;
+            color: #12345a;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: #dcecf9;
+            padding: 35px 5.5%;
+            border-bottom: 1px solid #d1e2f1;
+        }
+
+        .header h1 {
+            font-size: 38px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #31577e;
+            font-size: 17px;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: 35px auto;
+            padding: 0 22px;
+        }
+
+        .message {
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            background: #d9f4e5;
+            color: #146c43;
+        }
+
+        .error-message {
+            background: #fde2e2;
+            color: #9b1c1c;
+        }
+
+        .section-card {
+            background: #ffffff;
+            border-radius: 18px;
+            padding: 30px;
+            margin-bottom: 28px;
+            box-shadow: 0 5px 20px rgba(28, 55, 85, 0.10);
+        }
+
+        .section-card h2 {
+            margin-bottom: 8px;
+            font-size: 27px;
+        }
+
+        .section-card p {
+            margin-bottom: 22px;
+            color: #56708d;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            overflow: hidden;
+            border-radius: 10px;
+        }
+
+        th {
+            background: #dcecf9;
+            color: #12345a;
+            text-align: left;
+            padding: 14px;
+        }
+
+        td {
+            padding: 14px;
+            border-bottom: 1px solid #dde5ee;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 6px 10px;
+            border-radius: 14px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .requested {
+            background: #fff4cc;
+            color: #7d5d00;
+        }
+
+        .confirmed {
+            background: #d9f4e5;
+            color: #146c43;
+        }
+
+        .rejected {
+            background: #fde2e2;
+            color: #9b1c1c;
+        }
+
+        .cancelled {
+            background: #eeeeee;
+            color: #555555;
+        }
+
+        .completed {
+            background: #dcecf9;
+            color: #1769aa;
+        }
+
+        .missed {
+            background: #f4e0e0;
+            color: #8b2a2a;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            border: none;
+            border-radius: 7px;
+            padding: 9px 13px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .accept {
+            background: #198754;
+            color: white;
+        }
+
+        .accept:hover {
+            background: #146c43;
+        }
+
+        .reject {
+            background: #dc3545;
+            color: white;
+        }
+
+        .reject:hover {
+            background: #b02a37;
+        }
+
+        .complete {
+            background: #1769aa;
+            color: white;
+        }
+
+        .complete:hover {
+            background: #12558b;
+        }
+
+        .missed-btn {
+            background: #8b2a2a;
+            color: white;
+        }
+
+        .missed-btn:hover {
+            background: #6f2020;
+        }
+
+        .empty-message {
+            padding: 18px;
+            background: #f7f9fc;
+            border-radius: 9px;
+            color: #56708d;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-bottom: 24px;
+            padding: 11px 16px;
+            background: #344F6F;
+            color: white;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 650;
+        }
+
+        .back-link:hover {
+            background: #293F59;
+        }
+
+        .no-actions {
+            color: #7a8ca0;
+            font-size: 13px;
+        }
+
+        @media (max-width: 800px) {
+            table,
+            thead,
+            tbody,
+            th,
+            td,
+            tr {
+                display: block;
+            }
+
+            thead {
+                display: none;
+            }
+
+            tr {
+                margin-bottom: 15px;
+                border: 1px solid #dde5ee;
+                border-radius: 10px;
+                padding: 10px;
+            }
+
+            td {
+                border: none;
+                padding: 8px;
+            }
+        }
+    </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
+</head>
+
+<body class="healthtrack-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('appointments', 'Appointments')}"></div>
+<div class="healthtrack-page-shell">
+
+<header class="header">
+    <h1>Health Tracking System</h1>
+    <p>Provider Appointment Management</p>
+</header>
+
+<main class="container">
+
+    <div
+        th:if="${successMessage}"
+        class="message success-message"
+        th:text="${successMessage}">
+    </div>
+
+    <div
+        th:if="${errorMessage}"
+        class="message error-message"
+        th:text="${errorMessage}">
+    </div>
+
+    <a class="back-link"
+       th:href="@{/provider/dashboard}">
+        ← Back to Provider Dashboard
+    </a>
+
+    <section class="section-card">
+
+        <h2>Pending Appointment Requests</h2>
+
+        <p>
+            Review appointment requests sent by patients.
+        </p>
+
+        <div th:if="${#lists.isEmpty(requestedAppointments)}"
+             class="empty-message">
+            No pending appointment requests.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(requestedAppointments)}">
+
+            <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="appointment : ${requestedAppointments}">
+
+                <td th:text="${appointment.patient.fullName}">
+                    Patient Name
+                </td>
+
+                <td th:text="${appointment.appointmentDate}">
+                    Date
+                </td>
+
+                <td th:text="${appointment.appointmentTime}">
+                    Time
+                </td>
+
+                <td th:text="${appointment.location}">
+                    Location
+                </td>
+
+                <td>
+                    <span class="status requested"
+                          th:text="${appointment.status}">
+                        REQUESTED
+                    </span>
+                </td>
+
+                <td>
+                    <div class="actions">
+
+                        <form
+                            th:action="@{/provider/appointments/accept/{id}(id=${appointment.id})}"
+                            method="post">
+
+                            <button
+                                type="submit"
+                                class="btn accept">
+                                Accept
+                            </button>
+
+                        </form>
+
+                        <form
+                            th:action="@{/provider/appointments/reject/{id}(id=${appointment.id})}"
+                            method="post">
+
+                            <button
+                                type="submit"
+                                class="btn reject">
+                                Reject
+                            </button>
+
+                        </form>
+
+                    </div>
+                </td>
+
+            </tr>
+
+            </tbody>
+        </table>
+
+    </section>
+
+    <section class="section-card">
+
+        <h2>All Appointments</h2>
+
+        <p>
+            View all appointment records assigned to you.
+        </p>
+
+        <div th:if="${#lists.isEmpty(allAppointments)}"
+             class="empty-message">
+            No appointments found.
+        </div>
+
+        <table th:if="${!#lists.isEmpty(allAppointments)}">
+
+            <thead>
+            <tr>
+                <th>Patient</th>
+                <th>Date</th>
+                <th>Time</th>
+                <th>Location</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+
+            <tbody>
+
+            <tr th:each="appointment : ${allAppointments}">
+
+                <td th:text="${appointment.patient.fullName}">
+                    Patient Name
+                </td>
+
+                <td th:text="${appointment.appointmentDate}">
+                    Date
+                </td>
+
+                <td th:text="${appointment.appointmentTime}">
+                    Time
+                </td>
+
+                <td th:text="${appointment.location}">
+                    Location
+                </td>
+
+                <td>
+                    <span
+                        class="status"
+                        th:classappend="${#strings.toLowerCase(appointment.status.name())}"
+                        th:text="${appointment.status}">
+                        STATUS
+                    </span>
+                </td>
+
+                <td>
+
+                    <div class="actions">
+
+                        <form
+                            th:if="${appointment.status.name() == 'CONFIRMED'}"
+                            th:action="@{/provider/appointments/complete/{id}(id=${appointment.id})}"
+                            method="post"
+                            onsubmit="return confirm('Mark this appointment as completed?');">
+
+                            <button
+                                type="submit"
+                                class="btn complete">
+                                Complete
+                            </button>
+
+                        </form>
+
+                        <form
+                            th:if="${appointment.status.name() == 'CONFIRMED'}"
+                            th:action="@{/provider/appointments/missed/{id}(id=${appointment.id})}"
+                            method="post"
+                            onsubmit="return confirm('Mark this appointment as missed?');">
+
+                            <button
+                                type="submit"
+                                class="btn missed-btn">
+                                Mark Missed
+                            </button>
+
+                        </form>
+
+                        <span
+                            th:if="${appointment.status.name() != 'CONFIRMED'}"
+                            class="no-actions">
+                            -
+                        </span>
+
+                    </div>
+
+                </td>
+
+            </tr>
+
+            </tbody>
+
+        </table>
+
+    </section>
+
+</main>
+
+</div>
+</body>
+</html>

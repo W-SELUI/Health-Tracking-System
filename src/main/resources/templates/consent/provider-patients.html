@@ -332,6 +332,12 @@
             background: var(--teal-dark);
         }
 
+        .record-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
         .action-button.secondary {
             border-color: #b9cccc;
             background: var(--surface);
@@ -729,10 +735,16 @@
                         </td>
 
                         <td data-th-if="${authorizedPatientIds.contains(patient.id)}">
-                            <a class="record-link"
-                               data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
-                                View health records
-                            </a>
+                            <div class="record-actions">
+                                <a class="record-link"
+                                   data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                                    View health records
+                                </a>
+                                <a class="record-link"
+                                   data-th-href="@{/provider/patients/{patientId}/analytics(patientId=${patient.id})}">
+                                    View analytics
+                                </a>
+                            </div>
                         </td>
 
                         <td data-th-if="${!authorizedPatientIds.contains(patient.id)
@@ -814,7 +826,7 @@
                         <th scope="col">Patient</th>
                         <th scope="col">Email</th>
                         <th scope="col">Status</th>
-                        <th scope="col">Health records</th>
+                        <th scope="col">Patient tools</th>
                     </tr>
                     </thead>
 
@@ -838,10 +850,16 @@
                         </td>
 
                         <td>
-                            <a class="record-link"
-                               data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
-                                View records
-                            </a>
+                            <div class="record-actions">
+                                <a class="record-link"
+                                   data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                                    View records
+                                </a>
+                                <a class="record-link"
+                                   data-th-href="@{/provider/patients/{patientId}/analytics(patientId=${patient.id})}">
+                                    View analytics
+                                </a>
+                            </div>
                         </td>
                     </tr>
                     </tbody>

@@ -56,6 +56,34 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
+
+        .proposal-action {
+            margin: 24px 0;
+            padding: 20px;
+            border: 1px solid #d5e3e3;
+            border-radius: 12px;
+            background: #edf6f5;
+        }
+
+        .proposal-action a {
+            display: inline-block;
+            padding: 10px 16px;
+            border-radius: 8px;
+            background: #0b6b6d;
+            color: white;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .proposal-action a:hover {
+            background: #075456;
+        }
+
+        .proposal-explanation {
+            margin: 10px 0 0;
+            color: #526174;
+            font-size: 0.95rem;
+        }
     </style>
     <link rel="stylesheet"
           href="/css/healthtrack-ui.css"
@@ -134,6 +162,15 @@
                 Record notes
             </p>
         </section>
+
+        <div class="proposal-action">
+            <a data-th-href="@{/provider/patients/{patientId}/health-record-proposals/scalar/{recordId}/edit(patientId=${patient.id}, recordId=${record.id})}">
+                Propose edit to this record
+            </a>
+            <p class="proposal-explanation">
+                The record changes only after the patient reviews and approves your proposal.
+            </p>
+        </div>
 
         <p class="muted">
             You can view this patient's health records while their consent is active.
