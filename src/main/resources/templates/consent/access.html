@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#0b6b6d">
+
+    <title>Provider Access | Health Track</title>
+
+    <link rel="stylesheet"
+          href="/provider-access/css/styles.css"
+          data-th-href="@{/provider-access/css/styles.css}">
+
+    <style>
+        form {
+            margin: 0;
+        }
+
+        .provider-row > form {
+            justify-self: end;
+        }
+
+        .access-button {
+            cursor: pointer;
+        }
+
+        .access-button:hover {
+            background: var(--teal-soft);
+        }
+
+        button:focus-visible {
+            outline: 3px solid var(--teal);
+            outline-offset: 4px;
+        }
+
+        .provider-details h3,
+        .provider-details p,
+        .account-name {
+            overflow-wrap: anywhere;
+        }
+
+        .feedback-message {
+            padding: 16px;
+            border: 1px solid #b5dcc7;
+            border-radius: 12px;
+            background: #e4f4ec;
+            color: #19734c;
+            line-height: 1.5;
+        }
+
+        .empty-state {
+            padding: 24px;
+            border-radius: 12px;
+            background: var(--surface);
+        }
+
+        .empty-state p {
+            margin-top: 8px;
+            color: var(--secondary);
+            line-height: 1.5;
+        }
+
+        @media (max-width: 359px) {
+            .provider-row > form {
+                justify-self: stretch;
+            }
+
+            .provider-row > form > button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+
+    <!-- Desktop navigation -->
+    <aside class="sidebar">
+        <div class="navigation-group">
+            <div class="brand">
+                <span class="brand-mark">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="" width="22" height="22">
+                </span>
+                <div>
+                    <p class="brand-name">HealthTrack</p>
+                    <p class="brand-tagline">Your health, clearly</p>
+                </div>
+            </div>
+
+            <nav aria-label="Main navigation">
+                <ul class="side-links">
+                    <li>
+                        <a class="nav-item"
+                           href="/patient/dashboard"
+                           data-th-href="@{/patient/dashboard}">
+                            <img src="/provider-access/assets/layout-dashboard.svg"
+                                 data-th-src="@{/provider-access/assets/layout-dashboard.svg}"
+                                 alt="" width="20" height="20">
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <button class="nav-item" type="button" disabled>
+                            <img src="/provider-access/assets/file-heart.svg"
+                                 data-th-src="@{/provider-access/assets/file-heart.svg}"
+                                 alt="" width="20" height="20">
+                            Health Records
+                        </button>
+                    </li>
+                    <li>
+                        <button class="nav-item" type="button" disabled>
+                            <img src="/provider-access/assets/message-circle.svg"
+                                 data-th-src="@{/provider-access/assets/message-circle.svg}"
+                                 alt="" width="20" height="20">
+                            Messages
+                        </button>
+                    </li>
+                    <li>
+                        <a class="nav-item active"
+                           href="/patient/consents"
+                           data-th-href="@{/patient/consents}"
+                           aria-current="page">
+                            <img src="/provider-access/assets/users-round.svg"
+                                 data-th-src="@{/provider-access/assets/users-round.svg}"
+                                 alt="" width="20" height="20">
+                            Provider Access
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+
+        <div class="account">
+            <img src="/provider-access/assets/avatar.svg"
+                 data-th-src="@{/provider-access/assets/avatar.svg}"
+                 alt="" width="38" height="38">
+            <div class="account-details">
+                <p class="account-name"
+                   data-th-text="${currentUser.fullName}">Patient</p>
+                <p class="account-type">Patient account</p>
+            </div>
+        </div>
+    </aside>
+
+    <div class="application">
+        <!-- Desktop header -->
+        <header class="topbar">
+            <div class="breadcrumb" aria-label="Current location">
+                <span>Account settings</span>
+                <img src="/provider-access/assets/chevron-right.svg"
+                     data-th-src="@{/provider-access/assets/chevron-right.svg}"
+                     alt="" width="15" height="15">
+                <span class="breadcrumb-current">Provider Access</span>
+            </div>
+
+            <div class="header-actions">
+                <img src="/provider-access/assets/profile-avatar.svg"
+                     data-th-src="@{/provider-access/assets/profile-avatar.svg}"
+                     alt="" width="40" height="40">
+
+                <form action="/logout"
+                      data-th-action="@{/logout}"
+                      method="post">
+                    <button class="access-button" type="submit">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </header>
+
+        <!-- Mobile header -->
+        <header class="mobile-header">
+            <div class="brand">
+                <span class="brand-mark">
+                    <img src="/provider-access/assets/heart-pulse.svg"
+                         data-th-src="@{/provider-access/assets/heart-pulse.svg}"
+                         alt="" width="22" height="22">
+                </span>
+                <div>
+                    <p class="brand-name">HealthTrack</p>
+                    <p class="brand-tagline">Your health, clearly</p>
+                </div>
+            </div>
+
+            <form action="/logout"
+                  data-th-action="@{/logout}"
+                  method="post">
+                <button class="access-button" type="submit">
+                    Logout
+                </button>
+            </form>
+        </header>
+
+        <main class="page-content" id="main-content">
+            <div class="introduction">
+                <h1>Manage Provider Access</h1>
+                <p>
+                    Manage which providers you grant permission to view
+                    your health records.
+                </p>
+            </div>
+
+            <div class="feedback-message"
+                 data-th-if="${successMessage != null}"
+                 data-th-text="${successMessage}"
+                 role="status">
+                Permission updated.
+            </div>
+
+            <section class="providers-panel"
+                     aria-labelledby="providers-title">
+                <div class="panel-heading">
+                    <div>
+                        <h2 id="providers-title">Available providers</h2>
+                        <p data-th-text="|Providers available: ${#lists.size(providers)}|">
+                            Provider directory
+                        </p>
+                    </div>
+
+                    <span class="security-label">
+                        <img src="/provider-access/assets/lock-keyhole.svg"
+                             data-th-src="@{/provider-access/assets/lock-keyhole.svg}"
+                             alt="" width="16" height="16">
+                        Manage permissions
+                    </span>
+                </div>
+
+                <div class="empty-state"
+                     data-th-if="${#lists.isEmpty(providers)}">
+                    <h3>No providers available yet</h3>
+                    <p>
+                        Providers will appear here when their accounts
+                        are available.
+                    </p>
+                </div>
+
+                <div class="column-headings"
+                     data-th-unless="${#lists.isEmpty(providers)}"
+                     aria-hidden="true">
+                    <span>Provider</span>
+                    <span>Access status</span>
+                    <span>Action</span>
+                </div>
+
+                <ul class="provider-list"
+                    data-th-unless="${#lists.isEmpty(providers)}">
+                    <li class="provider-row"
+                        data-th-each="provider : ${providers}"
+                        data-th-with="status=${consentStatuses[provider.id]}">
+
+                        <div class="provider">
+                            <span class="provider-avatar" aria-hidden="true">
+                                <img src="/provider-access/assets/users-round.svg"
+                                     data-th-src="@{/provider-access/assets/users-round.svg}"
+                                     alt="" width="22" height="22">
+                            </span>
+
+                            <div class="provider-details">
+                                <h3 data-th-text="${provider.fullName}">
+                                    Provider name
+                                </h3>
+                                <p data-th-text="${provider.email}">
+                                    Provider email
+                                </p>
+                            </div>
+                        </div>
+
+                        <span class="access-status granted"
+                              data-th-if="${status == 'ACTIVE'}">
+                            <img src="/provider-access/assets/circle-check.svg"
+                                 data-th-src="@{/provider-access/assets/circle-check.svg}"
+                                 alt="" width="15" height="15">
+                            Access granted
+                        </span>
+
+                        <span class="access-status revoked"
+                              data-th-if="${status == 'REVOKED'}">
+                            <img src="/provider-access/assets/circle-minus.svg"
+                                 data-th-src="@{/provider-access/assets/circle-minus.svg}"
+                                 alt="" width="15" height="15">
+                            Access revoked
+                        </span>
+
+                        <span class="access-status no-access"
+                              data-th-if="${status == null}">
+                            <img src="/provider-access/assets/circle-slash.svg"
+                                 data-th-src="@{/provider-access/assets/circle-slash.svg}"
+                                 alt="" width="15" height="15">
+                            No access
+                        </span>
+
+                        <form data-th-if="${status == 'ACTIVE'}"
+                              data-th-action="@{/patient/consents/{providerId}/revoke(providerId=${provider.id})}"
+                              method="post">
+                            <button class="access-button revoke"
+                                    type="submit">
+                                Revoke access
+                                <span class="sr-only"
+                                      data-th-text="| for ${provider.fullName}|">
+                                    for this provider
+                                </span>
+                            </button>
+                        </form>
+
+                        <form data-th-unless="${status == 'ACTIVE'}"
+                              data-th-action="@{/patient/consents/{providerId}/grant(providerId=${provider.id})}"
+                              method="post">
+                            <button class="access-button" type="submit">
+                                Grant access
+                                <span class="sr-only"
+                                      data-th-text="| for ${provider.fullName}|">
+                                    for this provider
+                                </span>
+                            </button>
+                        </form>
+                    </li>
+                </ul>
+            </section>
+
+            <aside class="privacy-note" aria-label="About provider access">
+                <img src="/provider-access/assets/shield-check.svg"
+                     data-th-src="@{/provider-access/assets/shield-check.svg}"
+                     alt="" width="20" height="20">
+                <p>
+                    You can grant or revoke a provider's permission
+                    at any time.
+                </p>
+            </aside>
+        </main>
+
+        <!-- Mobile navigation -->
+        <nav class="mobile-navigation" aria-label="Main navigation">
+            <ul>
+                <li>
+                    <a class="mobile-nav-item"
+                       href="/patient/dashboard"
+                       data-th-href="@{/patient/dashboard}">
+                        <span class="mobile-nav-icon">
+                            <img src="/provider-access/assets/mobile-layout-dashboard.svg"
+                                 data-th-src="@{/provider-access/assets/mobile-layout-dashboard.svg}"
+                                 alt="" width="18" height="18">
+                        </span>
+                        Dashboard
+                    </a>
+                </li>
+                <li>
+                    <button class="mobile-nav-item" type="button" disabled>
+                        <span class="mobile-nav-icon">
+                            <img src="/provider-access/assets/mobile-file-heart.svg"
+                                 data-th-src="@{/provider-access/assets/mobile-file-heart.svg}"
+                                 alt="" width="18" height="18">
+                        </span>
+                        Records
+                    </button>
+                </li>
+                <li>
+                    <button class="mobile-nav-item" type="button" disabled>
+                        <span class="mobile-nav-icon">
+                            <img src="/provider-access/assets/mobile-message-circle.svg"
+                                 data-th-src="@{/provider-access/assets/mobile-message-circle.svg}"
+                                 alt="" width="18" height="18">
+                        </span>
+                        Messages
+                    </button>
+                </li>
+                <li>
+                    <a class="mobile-nav-item active"
+                       href="/patient/consents"
+                       data-th-href="@{/patient/consents}"
+                       aria-current="page">
+                        <span class="mobile-nav-icon">
+                            <img src="/provider-access/assets/mobile-users-round.svg"
+                                 data-th-src="@{/provider-access/assets/mobile-users-round.svg}"
+                                 alt="" width="18" height="18">
+                        </span>
+                        Access
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</body>
+</html>
