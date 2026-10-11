@@ -57,20 +57,52 @@
             white-space: pre-wrap;
             overflow-wrap: anywhere;
         }
+
+        .proposal-action {
+            margin: 24px 0;
+        }
+
+        .proposal-action a {
+            display: inline-block;
+            padding: 10px 16px;
+            background: #2563eb;
+            color: white;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .proposal-action a:hover {
+            background: #1d4ed8;
+            text-decoration: none;
+        }
+
+        .proposal-explanation {
+            margin-top: 10px;
+            color: #526174;
+            font-size: 0.95rem;
+        }
     </style>
 </head>
 
 <body>
 
 <nav class="record-navigation">
+
     <a href="/provider/patients"
        data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
         Back to patient history
     </a>
+
 </nav>
 
+
 <main>
-    <h1>Blood Pressure Record Details</h1>
+
+    <h1>
+        Blood Pressure Record Details
+    </h1>
+
 
     <p>
         Patient:
@@ -79,6 +111,7 @@
         </strong>
     </p>
 
+
     <p class="muted">
         Signed in as
         <strong data-th-text="${currentUser.fullName}">
@@ -86,22 +119,47 @@
         </strong>
     </p>
 
+
     <article class="record-card">
-        <h2>Blood Pressure</h2>
+
+        <h2>
+            Blood Pressure
+        </h2>
+
 
         <p class="measurement-value">
-            <span data-th-text="${record.systolic}">120</span>
+
+            <span data-th-text="${record.systolic}">
+                120
+            </span>
+
             /
-            <span data-th-text="${record.diastolic}">80</span>
+
+            <span data-th-text="${record.diastolic}">
+                80
+            </span>
+
             <span class="measurement-unit"
-                  data-th-text="${record.unit}">mmHg</span>
+                  data-th-text="${record.unit}">
+                mmHg
+            </span>
+
         </p>
 
-        <p class="muted">Systolic / Diastolic</p>
+
+        <p class="muted">
+            Systolic / Diastolic
+        </p>
+
 
         <dl class="record-details">
+
             <div>
-                <dt>Observed at</dt>
+
+                <dt>
+                    Observed at
+                </dt>
+
                 <dd>
                     <time
                         data-th-datetime="${record.observedAt}"
@@ -109,17 +167,29 @@
                         Observation date
                     </time>
                 </dd>
+
             </div>
 
+
             <div>
-                <dt>Record source</dt>
+
+                <dt>
+                    Record source
+                </dt>
+
                 <dd data-th-text="${record.source.displayName}">
                     Source
                 </dd>
+
             </div>
 
+
             <div>
-                <dt>Added to system</dt>
+
+                <dt>
+                    Added to system
+                </dt>
+
                 <dd>
                     <time
                         data-th-datetime="${record.createdAt}"
@@ -127,28 +197,64 @@
                         Creation date
                     </time>
                 </dd>
+
             </div>
+
         </dl>
+
     </article>
 
+
     <section class="record-card">
-        <h2>Notes</h2>
+
+        <h2>
+            Notes
+        </h2>
 
         <p class="record-notes"
            data-th-text="${#strings.isEmpty(record.notes) ? 'No notes were added for this record.' : record.notes}">
             Record notes
         </p>
+
     </section>
 
+
+    <!--
+        Providers cannot directly edit permanent patient Health Records.
+
+        This starts a PENDING change proposal. The record displayed above
+        remains unchanged until the Patient approves the proposal.
+    -->
+    <div class="proposal-action">
+
+        <a data-th-href="@{/provider/patients/{patientId}/health-record-proposals/blood-pressure/{recordId}/edit(patientId=${patient.id}, recordId=${record.id})}">
+            Propose edit to this record
+        </a>
+
+        <p class="proposal-explanation">
+            The proposed change will require patient approval before
+            this Blood Pressure record is updated.
+        </p>
+
+    </div>
+
+
     <p class="muted">
-        You can view this patient's health records while their consent is active.
+        You can view and propose changes to this patient's health records
+        while their consent is active.
     </p>
+
 </main>
+
 
 <form action="/logout"
       data-th-action="@{/logout}"
       method="post">
-    <button type="submit">Logout</button>
+
+    <button type="submit">
+        Logout
+    </button>
+
 </form>
 
 </body>
