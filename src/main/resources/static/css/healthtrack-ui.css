@@ -23,6 +23,8 @@
 }
 
 :root {
+    --ht-nav-width: 258px;
+    --ht-topbar-height: 62px;
     --ht-background: #f3f8f8;
     --ht-surface: #ffffff;
     --ht-surface-soft: #edf6f5;
@@ -40,6 +42,365 @@
     --ht-danger: #a33a32;
     --ht-danger-bg: #ffebe9;
     --ht-shadow: 0 16px 45px rgba(22, 48, 51, 0.08);
+}
+
+/* Shared signed-in navigation shell */
+.ht-app-sidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: var(--ht-nav-width);
+    padding: 22px 18px 16px;
+    border-right: 1px solid var(--ht-border);
+    background: rgba(255, 255, 255, 0.98);
+    box-shadow: 8px 0 28px rgba(22, 48, 51, 0.035);
+}
+
+.ht-app-brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 46px;
+    padding: 0 4px;
+    color: var(--ht-text) !important;
+}
+
+.ht-app-brand-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 42px;
+    width: 42px;
+    height: 42px;
+    border-radius: 12px;
+    background: var(--ht-teal);
+}
+
+.ht-app-brand-mark img {
+    width: 22px;
+    height: 22px;
+}
+
+.ht-app-brand-name,
+.ht-app-brand-tagline {
+    display: block;
+}
+
+.ht-app-brand-name {
+    color: var(--ht-text);
+    font-size: 17px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.ht-app-brand-tagline {
+    margin-top: 2px;
+    color: var(--ht-muted);
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.ht-app-nav {
+    display: grid;
+    gap: 5px;
+    margin-top: 31px;
+}
+
+.ht-app-nav a {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 45px;
+    padding: 0 13px;
+    border-radius: 10px;
+    color: var(--ht-secondary) !important;
+    font-size: 13px;
+    font-weight: 600;
+    transition: color 200ms ease, background-color 200ms ease, box-shadow 200ms ease;
+}
+
+.ht-app-nav a::before {
+    position: absolute;
+    inset: 8px auto 8px 0;
+    width: 3px;
+    border-radius: 99px;
+    background: transparent;
+    content: "";
+    transition: background-color 200ms ease;
+}
+
+.ht-app-nav a:hover,
+.ht-app-nav a.is-active {
+    background: var(--ht-teal-light);
+    color: var(--ht-teal-dark) !important;
+}
+
+.ht-app-nav a.is-active::before {
+    background: var(--ht-teal);
+}
+
+.ht-app-nav img {
+    width: 19px;
+    height: 19px;
+    opacity: 0.82;
+}
+
+.ht-app-account {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    min-height: 62px;
+    padding: 11px;
+    border-top: 1px solid var(--ht-border);
+    border-radius: 10px;
+    color: var(--ht-text) !important;
+    transition: background-color 200ms ease;
+}
+
+.ht-app-account:hover,
+.ht-app-account.is-active {
+    background: var(--ht-surface-soft);
+}
+
+.ht-app-account > img {
+    flex: 0 0 38px;
+    width: 38px;
+    height: 38px;
+}
+
+.ht-app-account-copy,
+.ht-app-account-name,
+.ht-app-account-role {
+    display: block;
+    min-width: 0;
+}
+
+.ht-app-account-copy {
+    overflow: hidden;
+}
+
+.ht-app-account-name {
+    overflow: hidden;
+    color: var(--ht-text);
+    font-size: 12px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ht-app-account-role {
+    margin-top: 2px;
+    color: var(--ht-muted);
+    font-size: 10px;
+    font-weight: 500;
+}
+
+.ht-app-topbar {
+    position: fixed;
+    inset: 0 0 auto var(--ht-nav-width);
+    z-index: 45;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--ht-topbar-height);
+    padding: 0 28px;
+    border-bottom: 1px solid var(--ht-border);
+    background: rgba(255, 255, 255, 0.94);
+    backdrop-filter: blur(16px);
+}
+
+.ht-app-page-title {
+    color: var(--ht-text);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.ht-app-logout {
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+}
+
+.ht-app-logout button {
+    min-height: 38px !important;
+    padding: 0 15px !important;
+    border: 1px solid #bed0d0 !important;
+    border-radius: 9px !important;
+    background: #ffffff !important;
+    color: var(--ht-teal-dark) !important;
+    box-shadow: none !important;
+}
+
+.ht-app-logout button:hover {
+    background: var(--ht-surface-soft) !important;
+}
+
+.healthtrack-app-layout form[action$="/logout"]:not(.ht-app-logout) {
+    display: none !important;
+}
+
+.ht-app-mobile-nav {
+    display: none;
+}
+
+.healthtrack-app-layout > .healthtrack-global-header,
+.healthtrack-app-layout > .sidebar,
+.healthtrack-app-layout > .mobile-navigation,
+.healthtrack-app-layout > .application > .topbar,
+.healthtrack-app-layout > .application > .mobile-header {
+    display: none !important;
+}
+
+.healthtrack-app-layout > .healthtrack-page-shell {
+    width: min(1120px, calc(100% - var(--ht-nav-width) - 64px));
+    margin: 0 32px 0 calc(var(--ht-nav-width) + 32px);
+    padding-top: calc(var(--ht-topbar-height) + 34px);
+}
+
+.healthtrack-app-layout > .application {
+    width: auto !important;
+    min-height: 100vh;
+    margin-left: var(--ht-nav-width) !important;
+    padding-top: var(--ht-topbar-height);
+}
+
+.healthtrack-app-layout > .application > .page-content {
+    min-height: calc(100vh - var(--ht-topbar-height));
+}
+
+@keyframes ht-page-enter {
+    from {
+        opacity: 0;
+        transform: translateY(6px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.healthtrack-app-layout > .healthtrack-page-shell,
+.healthtrack-app-layout > .application > .page-content {
+    animation: ht-page-enter 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.healthtrack-app-layout input,
+.healthtrack-app-layout select,
+.healthtrack-app-layout textarea {
+    transform: none !important;
+    transition:
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        background-color 220ms ease !important;
+}
+
+.healthtrack-app-layout input:focus,
+.healthtrack-app-layout select:focus,
+.healthtrack-app-layout textarea:focus {
+    transform: none !important;
+    box-shadow: 0 0 0 4px rgba(11, 107, 109, 0.09) !important;
+}
+
+.healthtrack-app-layout button,
+.healthtrack-app-layout .button,
+.healthtrack-app-layout .btn,
+.healthtrack-app-layout .feature-card,
+.healthtrack-app-layout .card {
+    transform: none !important;
+    transition:
+        color 200ms ease,
+        background-color 200ms ease,
+        border-color 200ms ease,
+        box-shadow 220ms ease !important;
+}
+
+.healthtrack-app-layout button:hover,
+.healthtrack-app-layout button:active,
+.healthtrack-app-layout .button:hover,
+.healthtrack-app-layout .button:active,
+.healthtrack-app-layout .btn:hover,
+.healthtrack-app-layout .btn:active,
+.healthtrack-app-layout .feature-card:hover,
+.healthtrack-app-layout .card:hover {
+    transform: none !important;
+}
+
+@media (max-width: 860px) {
+    .ht-app-sidebar {
+        display: none;
+    }
+
+    .ht-app-topbar {
+        left: 0;
+        min-height: 58px;
+        padding: 0 16px;
+    }
+
+    .healthtrack-app-layout > .healthtrack-page-shell {
+        width: min(100% - 28px, 1180px);
+        margin: 0 auto;
+        padding-top: 84px;
+        padding-bottom: 92px;
+    }
+
+    .healthtrack-app-layout > .application {
+        margin-left: 0 !important;
+        padding-top: 58px;
+        padding-bottom: 72px;
+    }
+
+    .ht-app-mobile-nav {
+        position: fixed;
+        inset: auto 0 0;
+        z-index: 60;
+        display: flex;
+        align-items: stretch;
+        justify-content: space-around;
+        min-height: 62px;
+        padding: 6px max(8px, env(safe-area-inset-right)) calc(6px + env(safe-area-inset-bottom)) max(8px, env(safe-area-inset-left));
+        border-top: 1px solid var(--ht-border);
+        background: rgba(255, 255, 255, 0.97);
+        box-shadow: 0 -8px 28px rgba(22, 48, 51, 0.08);
+        backdrop-filter: blur(16px);
+    }
+
+    .ht-app-mobile-nav a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex: 1;
+        min-width: 0;
+        padding: 7px 6px;
+        border-radius: 9px;
+        color: var(--ht-muted) !important;
+        font-size: 10px;
+        font-weight: 700;
+        text-align: center;
+        transition: color 200ms ease, background-color 200ms ease;
+    }
+
+    .ht-app-mobile-nav a.is-active {
+        background: var(--ht-teal-light);
+        color: var(--ht-teal-dark) !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .healthtrack-app-layout *,
+    .healthtrack-app-layout *::before,
+    .healthtrack-app-layout *::after {
+        scroll-behavior: auto !important;
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
 }
 
 * {

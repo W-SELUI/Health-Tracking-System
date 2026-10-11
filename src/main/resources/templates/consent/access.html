@@ -257,9 +257,11 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body>
+<body class="healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('access', 'Provider access')}"></div>
 
 <a class="skip-link"
    href="#main-content">

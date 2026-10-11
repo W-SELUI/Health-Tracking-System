@@ -1,25 +1,8 @@
 <!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Activity tracking</title><link rel="stylesheet" th:href="@{/css/activity.css}">    <link rel="stylesheet"
           href="/css/healthtrack-ui.css"
           data-th-href="@{/css/healthtrack-ui.css}">
-</head><body class="healthtrack-ui activity-ui">
-<header class="healthtrack-global-header">
-    <div class="healthtrack-global-inner">
-        <a class="healthtrack-global-brand"
-           href="/dashboard"
-           data-th-href="@{/dashboard}">
-            <span class="healthtrack-global-mark">
-                <img src="/images/heart-pulse.svg"
-                     data-th-src="@{/images/heart-pulse.svg}"
-                     alt="">
-            </span>
-            <span>
-                <span class="healthtrack-global-name">HealthTrack</span>
-                <span class="healthtrack-global-tagline">Your health, clearly</span>
-            </span>
-        </a>
-        <span class="healthtrack-global-section">Activity tracking</span>
-    </div>
-</header>
+</head><body class="healthtrack-ui activity-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('activity', 'Activity')}"></div>
 <div class="healthtrack-page-shell"><header><h1>Health Tracking System</h1><p>My activity records</p></header><main><h2>Add or edit activity</h2><form method="post" th:action="${action}" th:object="${form}">
 <div class="errors" th:if="${#fields.hasAnyErrors()}"><p>Please correct these fields:</p><ul><li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li></ul></div>
 <label>Date<input type="date" th:field="*{activityDate}" required></label>

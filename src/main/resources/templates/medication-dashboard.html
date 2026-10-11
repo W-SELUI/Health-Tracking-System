@@ -210,25 +210,8 @@
           data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body class="healthtrack-ui medication-ui">
-<header class="healthtrack-global-header">
-    <div class="healthtrack-global-inner">
-        <a class="healthtrack-global-brand"
-           href="/dashboard"
-           data-th-href="@{/dashboard}">
-            <span class="healthtrack-global-mark">
-                <img src="/images/heart-pulse.svg"
-                     data-th-src="@{/images/heart-pulse.svg}"
-                     alt="">
-            </span>
-            <span>
-                <span class="healthtrack-global-name">HealthTrack</span>
-                <span class="healthtrack-global-tagline">Your health, clearly</span>
-            </span>
-        </a>
-        <span class="healthtrack-global-section">Medication management</span>
-    </div>
-</header>
+<body class="healthtrack-ui medication-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('medication', 'Medication')}"></div>
 <div class="healthtrack-page-shell">
 
     <div class="header">

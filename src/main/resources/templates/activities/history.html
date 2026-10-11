@@ -1,25 +1,8 @@
 <!DOCTYPE html><html lang="en" xmlns:th="http://www.thymeleaf.org"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Activity tracking</title><link rel="stylesheet" th:href="@{/css/activity.css}">    <link rel="stylesheet"
           href="/css/healthtrack-ui.css"
           data-th-href="@{/css/healthtrack-ui.css}">
-</head><body class="healthtrack-ui activity-ui">
-<header class="healthtrack-global-header">
-    <div class="healthtrack-global-inner">
-        <a class="healthtrack-global-brand"
-           href="/dashboard"
-           data-th-href="@{/dashboard}">
-            <span class="healthtrack-global-mark">
-                <img src="/images/heart-pulse.svg"
-                     data-th-src="@{/images/heart-pulse.svg}"
-                     alt="">
-            </span>
-            <span>
-                <span class="healthtrack-global-name">HealthTrack</span>
-                <span class="healthtrack-global-tagline">Your health, clearly</span>
-            </span>
-        </a>
-        <span class="healthtrack-global-section">Activity tracking</span>
-    </div>
-</header>
+</head><body class="healthtrack-ui activity-ui healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('activity', 'Activity')}"></div>
 <div class="healthtrack-page-shell"><header><h1>Health Tracking System</h1><p>My activity records</p></header><main><a th:href="@{/patient/dashboard}">Patient dashboard</a><h2>Activity history</h2><a class="button" th:href="@{/activities/new}">Add activity</a>
 <form method="get" th:action="@{/activities}" class="filters"><label>From<input type="date" name="start" th:value="${start}" required></label><label>To<input type="date" name="end" th:value="${end}" required></label><button>Filter</button></form>
 <p th:if="${#lists.isEmpty(activities)}">No activity records in this period. Add a record or choose different dates.</p>

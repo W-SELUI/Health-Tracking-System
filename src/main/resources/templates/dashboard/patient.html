@@ -335,9 +335,11 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body class="dashboard-page">
+<body class="dashboard-page healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('dashboard', 'Dashboard')}"></div>
 <a class="skip-link" href="#main-content">Skip to main content</a>
 
 <aside class="sidebar">

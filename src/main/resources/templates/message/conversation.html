@@ -340,9 +340,11 @@
             }
         }
     </style>
+    <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body class="conversation-page">
+<body class="conversation-page healthtrack-app-layout">
+<div data-th-replace="~{fragments/navigation :: navigation('messages', 'Messages')}"></div>
     <a class="skip-link" href="#main-content">Skip to content</a>
 
     <aside class="sidebar">
