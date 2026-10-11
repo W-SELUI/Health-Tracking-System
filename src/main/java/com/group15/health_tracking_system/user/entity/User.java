@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     private boolean enabled = true;
 
     @Lob
-    @Column(name = "cover_photo_data")
+    @Column(name = "cover_photo_data", columnDefinition = "LONGBLOB")
     private byte[] coverPhotoData;
 
     @Column(name = "cover_photo_content_type", length = 50)
