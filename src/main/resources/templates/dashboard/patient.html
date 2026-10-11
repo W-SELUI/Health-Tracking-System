@@ -1,8 +1,11 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
     <title>Patient Dashboard</title>
 
     <link rel="stylesheet"
@@ -16,12 +19,16 @@
 
 <p>
     Welcome,
-    <span data-th-text="${currentUser.fullName}">Patient</span>
+    <span data-th-text="${currentUser.fullName}">
+        Patient
+    </span>
 </p>
 
 <p>
     Role:
-    <span data-th-text="${currentUser.role.displayName}">Patient</span>
+    <span data-th-text="${currentUser.role.displayName}">
+        Patient
+    </span>
 </p>
 
 <p>
@@ -35,6 +42,13 @@
     <a href="/patient/health-records"
        data-th-href="@{/patient/health-records}">
         Health Records
+    </a>
+</p>
+
+<p>
+    <a href="/patient/analytics"
+       data-th-href="@{/patient/analytics}">
+        Health &amp; Activity Analytics
     </a>
 </p>
 
@@ -69,7 +83,11 @@
 <form action="/logout"
       data-th-action="@{/logout}"
       method="post">
-    <button type="submit">Logout</button>
+
+    <button type="submit">
+        Logout
+    </button>
+
 </form>
 
 </body>
