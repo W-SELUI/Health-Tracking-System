@@ -19,20 +19,20 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Calculates descriptive activity analytics for the authenticated patient.
+ * Calculates descriptive activity analytics for a patient.
  *
- * 
- * This service builds on the existing ActivityService instead of accessing
- * the ActivityLogRepository directly. The existing activity module therefore
- * remains responsible for determining the current patient and enforcing
- * patient ownership.
- * 
+ * The normal patient-facing method derives ownership from the authenticated
+ * patient through ActivityService. An explicit patient-ID overload is also
+ * available for higher-level, consent-protected workflows such as Provider
+ * Analytics.
  *
- * 
+ * This service does not itself authorize Providers. Provider authorization
+ * must be performed by the calling Provider service before the explicit
+ * patient-ID overload is invoked.
+ *
  * Analytics are calculated on demand and are not persisted in the database.
  * The results are descriptive only and do not provide medical or fitness
  * recommendations.
- * 
  */
 @Service
 public class ActivityAnalyticsService {
@@ -57,6 +57,9 @@ public class ActivityAnalyticsService {
      * Generates activity analytics for the authenticated patient during
      * the selected reporting period.
      *
+     * Existing Patient functionality continues to use this method.
+     * Ownership is resolved through ActivityService and CurrentPatient.
+     *
      * @param startDate first date in the reporting period
      * @param endDate last date in the reporting period
      * @return complete activity analytics summary
@@ -71,26 +74,95 @@ public class ActivityAnalyticsService {
                 endDate
         );
 
-        /*
-         * Reuse the calculations already defined by Shaniza's Activity
-         * module wherever possible.
-         */
         ActivitySummary baseSummary =
                 activityService.summary(
                         startDate,
                         endDate
                 );
 
-        /*
-         * Individual logs are required for analytics that do not already
-         * exist in ActivitySummary, such as daily aggregation and
-         * exercise-type breakdown.
-         */
         List<ActivityLog> logs =
                 activityService.history(
                         startDate,
                         endDate
                 );
+
+        return buildAnalytics(
+                baseSummary,
+                logs,
+                startDate,
+                endDate
+        );
+    }
+
+    /**
+     * Generates activity analytics for an explicitly selected patient.
+     *
+     * This method is intended for higher-level workflows in which
+     * authorization has already been established, such as a healthcare
+     * Provider viewing analytics for a patient who has granted active
+     * Consent.
+     *
+     * No Provider authorization is performed here. The calling service must
+     * first verify that the authenticated Provider is allowed to access the
+     * specified patient.
+     *
+     * @param patientId target patient's identifier
+     * @param startDate first date in the reporting period
+     * @param endDate last date in the reporting period
+     * @return complete activity analytics summary
+     */
+    @Transactional(readOnly = true)
+    public ActivityAnalyticsSummary getPatientAnalytics(
+            Long patientId,
+            LocalDate startDate,
+            LocalDate endDate) {
+
+        if (patientId == null) {
+
+            throw new IllegalArgumentException(
+                    "Patient is required"
+            );
+        }
+
+        validateReportingPeriod(
+                startDate,
+                endDate
+        );
+
+        ActivitySummary baseSummary =
+                activityService.summaryForPatient(
+                        patientId,
+                        startDate,
+                        endDate
+                );
+
+        List<ActivityLog> logs =
+                activityService.historyForPatient(
+                        patientId,
+                        startDate,
+                        endDate
+                );
+
+        return buildAnalytics(
+                baseSummary,
+                logs,
+                startDate,
+                endDate
+        );
+    }
+
+    /**
+     * Builds the shared analytics result from the Activity module's
+     * patient-scoped data.
+     *
+     * Both Patient and Provider views therefore use exactly the same
+     * aggregation, averages, coverage calculations and chart data.
+     */
+    private ActivityAnalyticsSummary buildAnalytics(
+            ActivitySummary baseSummary,
+            List<ActivityLog> logs,
+            LocalDate startDate,
+            LocalDate endDate) {
 
         List<DailyActivityDataPoint> dailyDataPoints =
                 buildDailyDataPoints(
@@ -100,7 +172,9 @@ public class ActivityAnalyticsService {
                 );
 
         List<ExerciseTypeAnalytics> exerciseTypeAnalytics =
-                buildExerciseTypeAnalytics(logs);
+                buildExerciseTypeAnalytics(
+                        logs
+                );
 
         BigDecimal trackingCoveragePercentage =
                 calculateTrackingCoverage(
@@ -168,17 +242,13 @@ public class ActivityAnalyticsService {
      * Builds one aggregated activity point for every calendar date in the
      * selected reporting period.
      *
-     * 
      * When multiple activity logs occur on the same date, their steps,
      * exercise duration and calories are added together.
-     * 
-     *
      *
      * Dates without activity logs are still represented. Their numerical
      * totals are zero and their log count is zero, allowing the presentation
      * layer to distinguish missing activity data from an explicitly recorded
      * zero-value activity log.
-     *
      */
     private List<DailyActivityDataPoint> buildDailyDataPoints(
             List<ActivityLog> logs,
@@ -196,7 +266,8 @@ public class ActivityAnalyticsService {
         List<DailyActivityDataPoint> dataPoints =
                 new ArrayList<>();
 
-        LocalDate currentDate = startDate;
+        LocalDate currentDate =
+                startDate;
 
         while (!currentDate.isAfter(endDate)) {
 
@@ -252,20 +323,26 @@ public class ActivityAnalyticsService {
     /**
      * Builds aggregated analytics for each exercise category represented
      * during the reporting period.
-     * 
+     *
+     * @param logs patient activity logs
+     * @return exercise-type analytics
      */
     private List<ExerciseTypeAnalytics> buildExerciseTypeAnalytics(
             List<ActivityLog> logs) {
 
         Map<ExerciseType, List<ActivityLog>> logsByExerciseType =
-                new EnumMap<>(ExerciseType.class);
+                new EnumMap<>(
+                        ExerciseType.class
+                );
 
         for (ActivityLog log : logs) {
 
             ExerciseType exerciseType =
                     log.getExerciseType();
 
-            if (exerciseType == ExerciseType.NONE) {
+            if (exerciseType
+                    == ExerciseType.NONE) {
+
                 continue;
             }
 
@@ -287,7 +364,9 @@ public class ActivityAnalyticsService {
         for (ExerciseType exerciseType
                 : ExerciseType.values()) {
 
-            if (exerciseType == ExerciseType.NONE) {
+            if (exerciseType
+                    == ExerciseType.NONE) {
+
                 continue;
             }
 
@@ -298,6 +377,7 @@ public class ActivityAnalyticsService {
 
             if (typeLogs == null
                     || typeLogs.isEmpty()) {
+
                 continue;
             }
 
@@ -325,22 +405,22 @@ public class ActivityAnalyticsService {
     /**
      * Finds the date with the highest aggregated daily step total.
      *
-     * 
-     * Only dates that contain at least one activity log are considered.
-     * Because the daily points are chronological and an existing maximum is
-     * replaced only by a strictly greater value, the earliest date is kept
-     * when multiple dates have the same highest step total.
-     *
+     * Only dates containing at least one Activity Log are considered.
+     * Because daily points are chronological and a maximum is replaced only
+     * by a strictly greater value, the earliest date is retained when
+     * multiple dates share the highest step total.
      */
     private DailyActivityDataPoint findHighestStepDay(
             List<DailyActivityDataPoint> dailyDataPoints) {
 
-        DailyActivityDataPoint highest = null;
+        DailyActivityDataPoint highest =
+                null;
 
         for (DailyActivityDataPoint point
                 : dailyDataPoints) {
 
             if (!point.hasEntries()) {
+
                 continue;
             }
 
@@ -348,7 +428,8 @@ public class ActivityAnalyticsService {
                     || point.getSteps()
                     > highest.getSteps()) {
 
-                highest = point;
+                highest =
+                        point;
             }
         }
 
@@ -356,18 +437,24 @@ public class ActivityAnalyticsService {
     }
 
     /**
-     * Calculates the percentage of calendar days in the selected reporting
-     * period for which at least one activity log exists.
+     * Calculates the percentage of calendar days in the reporting period
+     * for which at least one Activity Log exists.
      */
     private BigDecimal calculateTrackingCoverage(
             long daysWithEntries,
             long calendarDays) {
 
         return BigDecimal
-                .valueOf(daysWithEntries)
-                .multiply(ONE_HUNDRED)
+                .valueOf(
+                        daysWithEntries
+                )
+                .multiply(
+                        ONE_HUNDRED
+                )
                 .divide(
-                        BigDecimal.valueOf(calendarDays),
+                        BigDecimal.valueOf(
+                                calendarDays
+                        ),
                         DECIMAL_SCALE,
                         ROUNDING_MODE
                 );
@@ -381,14 +468,16 @@ public class ActivityAnalyticsService {
             long calendarDays) {
 
         return total.divide(
-                BigDecimal.valueOf(calendarDays),
+                BigDecimal.valueOf(
+                        calendarDays
+                ),
                 DECIMAL_SCALE,
                 ROUNDING_MODE
         );
     }
 
     /**
-     * Validates the analytics reporting period before querying activity data.
+     * Validates the analytics reporting period before querying Activity data.
      */
     private void validateReportingPeriod(
             LocalDate startDate,
@@ -402,14 +491,18 @@ public class ActivityAnalyticsService {
             );
         }
 
-        if (startDate.isAfter(endDate)) {
+        if (startDate.isAfter(
+                endDate
+        )) {
 
             throw new IllegalArgumentException(
                     "Start date must not be after end date"
             );
         }
 
-        if (endDate.isAfter(LocalDate.now())) {
+        if (endDate.isAfter(
+                LocalDate.now()
+        )) {
 
             throw new IllegalArgumentException(
                     "End date must not be in the future"

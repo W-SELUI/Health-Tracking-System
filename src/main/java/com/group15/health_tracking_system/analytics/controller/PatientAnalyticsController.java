@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 /**
  * Handles the patient-facing analytics dashboard.
  *
- * A single reporting period is used to generate both health-measurement
- * analytics and activity analytics. The controller coordinates the existing
- * analytics services but does not perform statistical calculations itself.
+ * A single reporting period is used to generate both Health and Activity
+ * analytics. The same Thymeleaf dashboard is also reused by the authorized
+ * Provider analytics workflow.
  */
 @Controller
 @RequestMapping("/patient/analytics")
@@ -34,18 +34,18 @@ public class PatientAnalyticsController {
             ActivityAnalyticsService activityAnalyticsService,
             CurrentUserService currentUserService) {
 
-        this.healthAnalyticsService = healthAnalyticsService;
-        this.activityAnalyticsService = activityAnalyticsService;
-        this.currentUserService = currentUserService;
+        this.healthAnalyticsService =
+                healthAnalyticsService;
+
+        this.activityAnalyticsService =
+                activityAnalyticsService;
+
+        this.currentUserService =
+                currentUserService;
     }
 
     /**
-     * Displays the analytics dashboard and, when a complete reporting period
-     * is supplied, generates health and activity analytics for that period.
-     *
-     * @param period reporting period supplied through query parameters
-     * @param model Thymeleaf model
-     * @return patient analytics template
+     * Displays the patient's analytics dashboard.
      */
     @GetMapping
     public String showAnalytics(
@@ -53,21 +53,17 @@ public class PatientAnalyticsController {
             AnalyticsPeriodRequest period,
             Model model) {
 
-        /*
-         * Used by the date inputs so the browser can prevent selection
-         * of future dates.
-         */
+        configurePatientView(
+                model
+        );
+
         model.addAttribute(
                 "today",
                 LocalDate.now()
         );
 
         /*
-         * Initial visit:
-         *
-         * /patient/analytics
-         *
-         * Neither date is present, so simply show the reporting-period form.
+         * Initial page visit.
          */
         if (period.isEmpty()) {
 
@@ -80,7 +76,7 @@ public class PatientAnalyticsController {
         }
 
         /*
-         * One date was supplied but the other was not.
+         * Only one date supplied.
          */
         if (!period.isComplete()) {
 
@@ -99,23 +95,28 @@ public class PatientAnalyticsController {
 
         try {
 
-            validateReportingPeriod(period);
+            validateReportingPeriod(
+                    period
+            );
 
             User currentUser =
-                    currentUserService.getCurrentUser();
+                    currentUserService
+                            .getCurrentUser();
 
             HealthAnalyticsSummary healthAnalytics =
-                    healthAnalyticsService.getPatientAnalytics(
-                            currentUser,
-                            period.getStartDate(),
-                            period.getEndDate()
-                    );
+                    healthAnalyticsService
+                            .getPatientAnalytics(
+                                    currentUser,
+                                    period.getStartDate(),
+                                    period.getEndDate()
+                            );
 
             ActivityAnalyticsSummary activityAnalytics =
-                    activityAnalyticsService.getPatientAnalytics(
-                            period.getStartDate(),
-                            period.getEndDate()
-                    );
+                    activityAnalyticsService
+                            .getPatientAnalytics(
+                                    period.getStartDate(),
+                                    period.getEndDate()
+                            );
 
             boolean hasAnyData =
                     healthAnalytics.isHasData()
@@ -143,11 +144,6 @@ public class PatientAnalyticsController {
 
         } catch (IllegalArgumentException exception) {
 
-            /*
-             * Expected reporting-period validation problems should return the
-             * patient to the same dashboard with a useful message rather than
-             * displaying a generic application error page.
-             */
             model.addAttribute(
                     "generated",
                     false
@@ -163,12 +159,51 @@ public class PatientAnalyticsController {
     }
 
     /**
-     * Performs presentation-level validation before either analytics service
-     * is called.
-     *
-     * The analytics services perform their own validation as well. Keeping
-     * those service checks is important because business logic must remain
-     * safe even when called from somewhere other than this controller.
+     * Supplies presentation settings for the Patient version of the shared
+     * analytics dashboard.
+     */
+    private void configurePatientView(
+            Model model) {
+
+        model.addAttribute(
+                "pageTitle",
+                "Health Analytics"
+        );
+
+        model.addAttribute(
+                "pageHeading",
+                "Health & Activity Analytics"
+        );
+
+        model.addAttribute(
+                "pageDescription",
+                "Review your recorded health measurements and activity "
+                + "for a selected reporting period."
+        );
+
+        model.addAttribute(
+                "analyticsAction",
+                "/patient/analytics"
+        );
+
+        model.addAttribute(
+                "backUrl",
+                "/patient/dashboard"
+        );
+
+        model.addAttribute(
+                "backLabel",
+                "Back to Dashboard"
+        );
+
+        model.addAttribute(
+                "providerView",
+                false
+        );
+    }
+
+    /**
+     * Performs presentation-level reporting-period validation.
      */
     private void validateReportingPeriod(
             AnalyticsPeriodRequest period) {
@@ -179,14 +214,18 @@ public class PatientAnalyticsController {
         LocalDate endDate =
                 period.getEndDate();
 
-        if (startDate.isAfter(endDate)) {
+        if (startDate.isAfter(
+                endDate
+        )) {
 
             throw new IllegalArgumentException(
                     "Start date must not be after end date."
             );
         }
 
-        if (endDate.isAfter(LocalDate.now())) {
+        if (endDate.isAfter(
+                LocalDate.now()
+        )) {
 
             throw new IllegalArgumentException(
                     "End date must not be in the future."
