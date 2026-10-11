@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Record Details</title>
+
+    <link rel="stylesheet" href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+
+    <style>
+        .record-navigation {
+            margin-bottom: 24px;
+        }
+
+        .record-card {
+            background: white;
+            border: 1px solid #dbe3ec;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+
+        .muted {
+            color: #526174;
+        }
+
+        .measurement-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin: 16px 0 24px;
+        }
+
+        .measurement-unit {
+            font-size: 1rem;
+            color: #526174;
+        }
+
+        .record-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 20px;
+        }
+
+        .record-details dt {
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        .record-details dd {
+            margin: 0;
+            color: #526174;
+        }
+
+        .record-notes {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="record-navigation">
+        <a href="/provider/patients"
+           data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+            Back to patient history
+        </a>
+    </nav>
+
+    <main>
+        <h1>Health Record Details</h1>
+
+        <p>
+            Patient:
+            <strong data-th-text="${patient.fullName}">Patient name</strong>
+        </p>
+
+        <p class="muted">
+            Signed in as
+            <strong data-th-text="${currentUser.fullName}">Provider name</strong>
+        </p>
+
+        <article class="record-card">
+            <h2 data-th-text="${record.metricType.displayName}">
+                Measurement
+            </h2>
+
+            <p class="measurement-value">
+                <span data-th-text="${record.metricValue}">0</span>
+                <span class="measurement-unit"
+                      data-th-text="${record.unit}">unit</span>
+            </p>
+
+            <dl class="record-details">
+                <div>
+                    <dt>Observed at</dt>
+                    <dd>
+                        <time data-th-datetime="${record.observedAt}"
+                              data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
+                            Observation date
+                        </time>
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Record source</dt>
+                    <dd data-th-text="${record.source.displayName}">
+                        Source
+                    </dd>
+                </div>
+
+                <div>
+                    <dt>Added to system</dt>
+                    <dd>
+                        <time data-th-datetime="${record.createdAt}"
+                              data-th-text="${#temporals.format(record.createdAt, 'dd MMM yyyy, HH:mm')}">
+                            Creation date
+                        </time>
+                    </dd>
+                </div>
+            </dl>
+        </article>
+
+        <section class="record-card">
+            <h2>Notes</h2>
+
+            <p class="record-notes"
+               data-th-text="${#strings.isEmpty(record.notes) ? 'No notes were added for this record.' : record.notes}">
+                Record notes
+            </p>
+        </section>
+
+        <p class="muted">
+            You can view this patient's health records while their consent is active.
+        </p>
+    </main>
+
+    <form action="/logout" data-th-action="@{/logout}" method="post">
+        <button type="submit">Logout</button>
+    </form>
+</body>
+</html>

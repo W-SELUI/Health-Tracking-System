@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Patient Access</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+
+    <style>
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header p {
+            color: #475467;
+        }
+
+        .section-card {
+            margin-top: 24px;
+            padding: 22px;
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+        }
+
+        .section-card h2 {
+            margin-top: 0;
+        }
+
+        .section-description {
+            color: #667085;
+        }
+
+        .message-success {
+            margin: 16px 0;
+            padding: 12px 14px;
+            border: 1px solid #abefc6;
+            border-radius: 6px;
+            background: #ecfdf3;
+            color: #067647;
+        }
+
+        .message-error {
+            margin: 16px 0;
+            padding: 12px 14px;
+            border: 1px solid #fecdca;
+            border-radius: 6px;
+            background: #fef3f2;
+            color: #b42318;
+        }
+
+        .empty-state {
+            padding: 18px;
+            border: 1px solid #d9dee5;
+            border-radius: 6px;
+            background: #f8fafc;
+            color: #667085;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 16px;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+        }
+
+        .access-table {
+            width: 100%;
+            min-width: 680px;
+            margin: 0;
+            border-collapse: collapse;
+            table-layout: auto;
+            background: white;
+        }
+
+        .access-table th,
+        .access-table td {
+            padding: 13px 14px;
+            vertical-align: middle;
+            text-align: left;
+        }
+
+        .access-table th {
+            background: #e9eef5;
+        }
+
+        .access-table tbody tr + tr {
+            border-top: 1px solid #d9dee5;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 9px;
+            border-radius: 999px;
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .status-active {
+            background: #dcfae6;
+            color: #067647;
+        }
+
+        .status-pending {
+            background: #fef0c7;
+            color: #b54708;
+        }
+
+        .status-approved {
+            background: #dcfae6;
+            color: #067647;
+        }
+
+        .status-rejected {
+            background: #fee4e2;
+            color: #b42318;
+        }
+
+        .status-cancelled {
+            background: #eaecf0;
+            color: #475467;
+        }
+
+        .table-actions {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        /*
+         * app.css gives normal forms large card styling.
+         * Forms inside tables must remain compact.
+         */
+        .compact-form {
+            display: inline;
+            margin: 0;
+            padding: 0;
+            border: none;
+            border-radius: 0;
+            background: transparent;
+        }
+
+        .compact-form button {
+            width: auto;
+            margin: 0;
+        }
+
+        .secondary-button {
+            background: #667085;
+        }
+
+        .secondary-button:hover {
+            background: #475467;
+        }
+
+        .record-link {
+            font-weight: 700;
+        }
+
+        .request-summary {
+            display: flex;
+            gap: 18px;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        .summary-item {
+            padding: 10px 14px;
+            background: #f8fafc;
+            border: 1px solid #d9dee5;
+            border-radius: 6px;
+        }
+
+        .summary-item strong {
+            display: block;
+            font-size: 20px;
+        }
+
+        @media (max-width: 700px) {
+            .section-card {
+                padding: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<nav aria-label="Dashboard navigation">
+    <a href="/provider/dashboard"
+       data-th-href="@{/provider/dashboard}">
+        Back to dashboard
+    </a>
+</nav>
+
+<main>
+
+    <header class="page-header">
+
+        <h1>Patient Access</h1>
+
+        <p>
+            Provider:
+            <strong data-th-text="${currentUser.fullName}">
+                Provider name
+            </strong>
+        </p>
+
+        <p>
+            Request permission to access a patient's health records.
+            Access is granted only after that patient approves your request.
+        </p>
+
+    </header>
+
+
+    <!-- =====================================================
+         FLASH MESSAGES
+         ===================================================== -->
+
+    <p class="message-success"
+       data-th-if="${successMessage != null}"
+       data-th-text="${successMessage}">
+        Operation completed successfully.
+    </p>
+
+    <p class="message-error"
+       data-th-if="${errorMessage != null}"
+       data-th-text="${errorMessage}">
+        An error occurred.
+    </p>
+
+
+    <!-- =====================================================
+         OVERVIEW
+         ===================================================== -->
+
+    <section class="section-card">
+
+        <h2>Access Overview</h2>
+
+        <div class="request-summary">
+
+            <div class="summary-item">
+                <span>Authorized patients</span>
+
+                <strong data-th-text="${#lists.size(authorizedPatients)}">
+                    0
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Pending requests</span>
+
+                <strong data-th-text="${#lists.size(pendingRequests)}">
+                    0
+                </strong>
+            </div>
+
+            <div class="summary-item">
+                <span>Request history</span>
+
+                <strong data-th-text="${#lists.size(requestHistory)}">
+                    0
+                </strong>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         AVAILABLE PATIENTS / REQUEST ACCESS
+         ===================================================== -->
+
+    <section class="section-card">
+
+        <h2>Request Patient Access</h2>
+
+        <p class="section-description">
+            Select a registered patient and submit an access request.
+            Sending a request does not give you access until the patient
+            approves it.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(availablePatients)}">
+            There are currently no enabled patient accounts available.
+        </p>
+
+
+        <div class="table-container"
+             data-th-unless="${#lists.isEmpty(availablePatients)}">
+
+            <table class="access-table"
+                   aria-label="Registered patients">
+
+                <thead>
+                <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Access status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr data-th-each="patient : ${availablePatients}">
+
+                    <td data-th-text="${patient.fullName}">
+                        Patient name
+                    </td>
+
+                    <td data-th-text="${patient.email}">
+                        patient@example.com
+                    </td>
+
+
+                    <!-- =====================================
+                         ACTIVE CONSENT
+                         ===================================== -->
+
+                    <td data-th-if="${authorizedPatientIds.contains(patient.id)}">
+
+                        <span class="status-badge status-active">
+                            Access Active
+                        </span>
+
+                    </td>
+
+                    <td data-th-if="${authorizedPatientIds.contains(patient.id)}">
+
+                        <div class="table-actions">
+
+                            <a class="record-link"
+                               data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                                View health records
+                            </a>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- =====================================
+                         PENDING REQUEST
+                         ===================================== -->
+
+                    <td data-th-if="${!authorizedPatientIds.contains(patient.id)
+                                     and pendingRequestByPatientId.containsKey(patient.id)}">
+
+                        <span class="status-badge status-pending">
+                            Request Pending
+                        </span>
+
+                    </td>
+
+                    <td data-th-if="${!authorizedPatientIds.contains(patient.id)
+                                     and pendingRequestByPatientId.containsKey(patient.id)}">
+
+                        <form class="compact-form"
+                              method="post"
+                              data-th-action="@{/provider/patients/access-requests/{requestId}/cancel(
+                                  requestId=${pendingRequestByPatientId.get(patient.id).id}
+                              )}">
+
+                            <button type="submit"
+                                    class="secondary-button">
+                                Cancel Request
+                            </button>
+
+                        </form>
+
+                    </td>
+
+
+                    <!-- =====================================
+                         NO CURRENT ACCESS OR PENDING REQUEST
+                         ===================================== -->
+
+                    <td data-th-if="${!authorizedPatientIds.contains(patient.id)
+                                     and !pendingRequestByPatientId.containsKey(patient.id)}">
+
+                        <span>No active access</span>
+
+                    </td>
+
+                    <td data-th-if="${!authorizedPatientIds.contains(patient.id)
+                                     and !pendingRequestByPatientId.containsKey(patient.id)}">
+
+                        <form class="compact-form"
+                              method="post"
+                              data-th-action="@{/provider/patients/{patientId}/request-access(
+                                  patientId=${patient.id}
+                              )}">
+
+                            <button type="submit">
+                                Request Access
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         AUTHORIZED PATIENTS
+         ===================================================== -->
+
+    <section class="section-card">
+
+        <h2>Authorized Patients</h2>
+
+        <p class="section-description">
+            These patients have approved access and currently have active
+            consent for your provider account.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(authorizedPatients)}">
+            No patients currently have active consent for your account.
+        </p>
+
+
+        <div class="table-container"
+             data-th-unless="${#lists.isEmpty(authorizedPatients)}">
+
+            <table class="access-table"
+                   aria-label="Patients with active consent">
+
+                <thead>
+                <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Health records</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr data-th-each="patient : ${authorizedPatients}">
+
+                    <td data-th-text="${patient.fullName}">
+                        Patient name
+                    </td>
+
+                    <td data-th-text="${patient.email}">
+                        patient@example.com
+                    </td>
+
+                    <td>
+
+                        <a class="record-link"
+                           data-th-href="@{/provider/patients/{patientId}/health-records(patientId=${patient.id})}">
+                            View health records
+                        </a>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         PENDING REQUESTS
+         ===================================================== -->
+
+    <section class="section-card">
+
+        <h2>Pending Requests</h2>
+
+        <p class="section-description">
+            These requests are waiting for the affected patient to approve
+            or reject them.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(pendingRequests)}">
+            You currently have no pending access requests.
+        </p>
+
+
+        <div class="table-container"
+             data-th-unless="${#lists.isEmpty(pendingRequests)}">
+
+            <table class="access-table"
+                   aria-label="Pending patient access requests">
+
+                <thead>
+                <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Requested</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Action</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr data-th-each="request : ${pendingRequests}">
+
+                    <td>
+                        <strong data-th-text="${request.patient.fullName}">
+                            Patient name
+                        </strong>
+
+                        <br>
+
+                        <span data-th-text="${request.patient.email}">
+                            patient@example.com
+                        </span>
+                    </td>
+
+                    <td data-th-text="${#temporals.format(
+                            request.requestedAt,
+                            'dd MMM yyyy HH:mm'
+                        )}">
+                        11 Oct 2026 14:00
+                    </td>
+
+                    <td>
+
+                        <span class="status-badge status-pending"
+                              data-th-text="${request.status.displayName}">
+                            Pending
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <form class="compact-form"
+                              method="post"
+                              data-th-action="@{/provider/patients/access-requests/{requestId}/cancel(
+                                  requestId=${request.id}
+                              )}">
+
+                            <button type="submit"
+                                    class="secondary-button">
+                                Cancel Request
+                            </button>
+
+                        </form>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+
+    <!-- =====================================================
+         REQUEST HISTORY
+         ===================================================== -->
+
+    <section class="section-card">
+
+        <h2>Access Request History</h2>
+
+        <p class="section-description">
+            Previous access requests are retained so that the request
+            history remains auditable.
+        </p>
+
+        <p class="empty-state"
+           data-th-if="${#lists.isEmpty(requestHistory)}">
+            You have not submitted any patient access requests yet.
+        </p>
+
+
+        <div class="table-container"
+             data-th-unless="${#lists.isEmpty(requestHistory)}">
+
+            <table class="access-table"
+                   aria-label="Provider access request history">
+
+                <thead>
+                <tr>
+                    <th scope="col">Patient</th>
+                    <th scope="col">Requested</th>
+                    <th scope="col">Status</th>
+                    <th scope="col">Responded</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr data-th-each="request : ${requestHistory}">
+
+                    <td>
+                        <strong data-th-text="${request.patient.fullName}">
+                            Patient name
+                        </strong>
+
+                        <br>
+
+                        <span data-th-text="${request.patient.email}">
+                            patient@example.com
+                        </span>
+                    </td>
+
+                    <td data-th-text="${#temporals.format(
+                            request.requestedAt,
+                            'dd MMM yyyy HH:mm'
+                        )}">
+                        11 Oct 2026 14:00
+                    </td>
+
+
+                    <!-- PENDING -->
+
+                    <td data-th-if="${request.status.name() == 'PENDING'}">
+
+                        <span class="status-badge status-pending"
+                              data-th-text="${request.status.displayName}">
+                            Pending
+                        </span>
+
+                    </td>
+
+
+                    <!-- APPROVED -->
+
+                    <td data-th-if="${request.status.name() == 'APPROVED'}">
+
+                        <span class="status-badge status-approved"
+                              data-th-text="${request.status.displayName}">
+                            Approved
+                        </span>
+
+                    </td>
+
+
+                    <!-- REJECTED -->
+
+                    <td data-th-if="${request.status.name() == 'REJECTED'}">
+
+                        <span class="status-badge status-rejected"
+                              data-th-text="${request.status.displayName}">
+                            Rejected
+                        </span>
+
+                    </td>
+
+
+                    <!-- CANCELLED -->
+
+                    <td data-th-if="${request.status.name() == 'CANCELLED'}">
+
+                        <span class="status-badge status-cancelled"
+                              data-th-text="${request.status.displayName}">
+                            Cancelled
+                        </span>
+
+                    </td>
+
+
+                    <td>
+
+                        <span data-th-if="${request.respondedAt != null}"
+                              data-th-text="${#temporals.format(
+                                  request.respondedAt,
+                                  'dd MMM yyyy HH:mm'
+                              )}">
+                            11 Oct 2026 15:00
+                        </span>
+
+                        <span data-th-if="${request.respondedAt == null}">
+                            —
+                        </span>
+
+                    </td>
+
+                </tr>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </section>
+
+</main>
+
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
+
+    <button type="submit">
+        Logout
+    </button>
+
+</form>
+
+</body>
+</html>

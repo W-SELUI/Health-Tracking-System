@@ -1,44 +1,93 @@
-
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
     <title>Patient Dashboard</title>
+
     <link rel="stylesheet"
           href="/css/app.css"
           data-th-href="@{/css/app.css}">
 </head>
+
 <body>
 
 <h1>Patient Dashboard</h1>
 
 <p>
     Welcome,
-    <span th:text="${currentUser.fullName}">Patient</span>
+    <span data-th-text="${currentUser.fullName}">
+        Patient
+    </span>
 </p>
 
 <p>
     Role:
-    <span th:text="${currentUser.role.displayName}">Patient</span>
+    <span data-th-text="${currentUser.role.displayName}">
+        Patient
+    </span>
 </p>
 
 <p>
-    <a th:href="@{/activities}">My activity records</a>
-</p>
-<p>
-    <a th:href="@{/profile}">My Profile</a>
-</p>
-
-<p>
-    <a th:href="@{/patient/health-records}">Health Records</a>
+    <a href="/profile"
+       data-th-href="@{/profile}">
+        My Profile
+    </a>
 </p>
 
 <p>
-    <a th:href="@{/medication-dashboard}">Medication Management</a>
+    <a href="/patient/health-records"
+       data-th-href="@{/patient/health-records}">
+        Health Records
+    </a>
 </p>
 
-<form th:action="@{/logout}" method="post">
-    <button type="submit">Logout</button>
+<p>
+    <a href="/patient/analytics"
+       data-th-href="@{/patient/analytics}">
+        Health &amp; Activity Analytics
+    </a>
+</p>
+
+<p>
+    <a href="/activities"
+       data-th-href="@{/activities}">
+        My activity records
+    </a>
+</p>
+
+<p>
+    <a href="/medication-dashboard"
+       data-th-href="@{/medication-dashboard}">
+        Medication Management
+    </a>
+</p>
+
+<p>
+    <a href="/patient/consents"
+       data-th-href="@{/patient/consents}">
+        Manage Provider Access
+    </a>
+</p>
+
+<p>
+    <a href="/messages"
+       data-th-href="@{/messages}">
+        Messages
+    </a>
+</p>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
+
+    <button type="submit">
+        Logout
+    </button>
+
 </form>
 
 </body>

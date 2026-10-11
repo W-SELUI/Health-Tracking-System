@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Patient Health Records</title>
+
+    <link rel="stylesheet"
+          href="/css/app.css"
+          data-th-href="@{/css/app.css}">
+
+    <style>
+        nav {
+            margin-bottom: 24px;
+        }
+
+        .patient-summary {
+            padding: 20px;
+            margin: 20px 0;
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+            overflow-wrap: anywhere;
+        }
+
+        .patient-summary p {
+            margin: 6px 0;
+        }
+
+        .muted {
+            color: #526071;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+            margin-top: 20px;
+            background: white;
+        }
+
+        .records-table {
+            width: 100%;
+            min-width: 600px;
+            border-collapse: collapse;
+        }
+
+        .records-table th,
+        .records-table td {
+            padding: 14px;
+            text-align: left;
+            vertical-align: top;
+        }
+
+        .records-table th {
+            background: #e9eef5;
+        }
+
+        .records-table tbody tr + tr {
+            border-top: 1px solid #d9dee5;
+        }
+
+        .record-link {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .empty-state {
+            padding: 20px;
+            background: white;
+            border: 1px solid #d9dee5;
+            border-radius: 8px;
+            color: #526071;
+        }
+    </style>
+</head>
+
+<body>
+
+<nav aria-label="Patient navigation">
+    <a href="/provider/patients"
+       data-th-href="@{/provider/patients}">
+        Back to patients
+    </a>
+</nav>
+
+<main>
+    <h1>Patient Health Records</h1>
+
+    <section class="patient-summary"
+             aria-label="Patient and provider details">
+        <p>
+            Patient:
+            <strong data-th-text="${patient.fullName}">
+                Patient name
+            </strong>
+        </p>
+
+        <p class="muted" data-th-text="${patient.email}">
+            Patient email
+        </p>
+
+        <p>
+            Viewing as:
+            <strong data-th-text="${currentUser.fullName}">
+                Provider name
+            </strong>
+        </p>
+    </section>
+
+    <h2 id="history-heading">Health-record history</h2>
+
+    <p class="muted">
+        Newest measurements appear first.
+    </p>
+
+    <p>
+        Records:
+        <strong data-th-text="${#lists.size(records)}">0</strong>
+    </p>
+
+    <p class="empty-state"
+       data-th-if="${#lists.isEmpty(records)}">
+        No health records have been added for this patient yet.
+    </p>
+
+    <div class="table-container"
+         data-th-unless="${#lists.isEmpty(records)}">
+        <table class="records-table"
+               aria-labelledby="history-heading">
+            <thead>
+                <tr>
+                    <th scope="col">Measurement</th>
+                    <th scope="col">Value</th>
+                    <th scope="col">Observed at</th>
+                    <th scope="col">Details</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                <tr data-th-each="record : ${records}">
+                    <td data-th-text="${record.metricName}">
+                        Measurement name
+                    </td>
+
+                    <td data-th-text="${record.displayValue}">
+                        Measurement value and unit
+                    </td>
+
+                    <td>
+                        <time
+                            data-th-datetime="${record.observedAt}"
+                            data-th-text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
+                            Observation time
+                        </time>
+                    </td>
+
+                    <td>
+                        <a class="record-link"
+                           data-th-if="${record.bloodPressure}"
+                           data-th-href="@{/provider/patients/{patientId}/health-records/blood-pressure/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
+                            View record
+                        </a>
+
+                        <a class="record-link"
+                           data-th-unless="${record.bloodPressure}"
+                           data-th-href="@{/provider/patients/{patientId}/health-records/{recordId}(patientId=${patient.id}, recordId=${record.id})}">
+                            View record
+                        </a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<form action="/logout"
+      data-th-action="@{/logout}"
+      method="post">
+    <button type="submit">Logout</button>
+</form>
+
+</body>
+</html>
