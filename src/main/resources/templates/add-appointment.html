@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Add Appointment | Health Tracking System</title>
+    <title>Request Appointment | Health Tracking System</title>
 
     <style>
         * {
@@ -92,7 +92,8 @@
         }
 
         input,
-        select {
+        select,
+        textarea {
             display: block;
             width: 100%;
             min-height: 52px;
@@ -106,12 +107,18 @@
             outline: none;
         }
 
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
         input[type="datetime-local"] {
             background: #ffffff;
         }
 
         input:focus,
-        select:focus {
+        select:focus,
+        textarea:focus {
             border-color: #1769aa;
             box-shadow: 0 0 0 3px rgba(23, 105, 170, 0.12);
         }
@@ -193,14 +200,13 @@
 
 <main class="main">
 
-    <!-- Top navigation -->
     <a class="back-link" th:href="@{/medication-dashboard}">
         ← Back to Medication Dashboard
     </a>
 
     <section class="form-card">
 
-        <h2>📅 Add Appointment</h2>
+        <h2>📅 Request Appointment</h2>
 
         <form th:action="@{/appointments/save}" method="post">
 
@@ -227,6 +233,7 @@
 
             <div class="form-group">
                 <label for="location">Location</label>
+
                 <input
                     type="text"
                     id="location"
@@ -237,7 +244,19 @@
             </div>
 
             <div class="form-group">
+                <label for="purpose">Purpose</label>
+
+                <textarea
+                    id="purpose"
+                    name="purpose"
+                    placeholder="Briefly describe the reason for the appointment"
+                    maxlength="500"
+                    required></textarea>
+            </div>
+
+            <div class="form-group">
                 <label for="appointmentDateTime">Date &amp; Time</label>
+
                 <input
                     type="datetime-local"
                     id="appointmentDateTime"
@@ -245,36 +264,10 @@
                     required>
             </div>
 
-            <div class="form-group">
-                <label for="status">Status</label>
-                <select
-                    id="status"
-                    name="status"
-                    required>
-
-                    <option value="">
-                        -- Select Status --
-                    </option>
-
-                    <option value="SCHEDULED">
-                        Scheduled
-                    </option>
-
-                    <option value="COMPLETED">
-                        Completed
-                    </option>
-
-                    <option value="CANCELLED">
-                        Cancelled
-                    </option>
-
-                </select>
-            </div>
-
             <button
                 type="submit"
                 class="button save-button">
-                Save Appointment
+                Request Appointment
             </button>
 
             <a
@@ -287,7 +280,6 @@
 
     </section>
 
-    <!-- Bottom navigation -->
     <div class="footer">
         <a
             class="button cancel-button"

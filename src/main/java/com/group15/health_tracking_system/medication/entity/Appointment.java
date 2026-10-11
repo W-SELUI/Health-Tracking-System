@@ -3,6 +3,7 @@ package com.group15.health_tracking_system.medication.entity;
 import com.group15.health_tracking_system.common.model.BaseEntity;
 import com.group15.health_tracking_system.user.entity.User;
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 import java.time.LocalTime;
 
@@ -16,21 +17,35 @@ public class Appointment extends BaseEntity {
     @Column(name = "appointment_time", nullable = false)
     private LocalTime appointmentTime;
 
+    /*
+     * Kept for now so existing appointment records
+     * can still display the doctor's name.
+     */
     @Column(name = "doctor_name", nullable = false)
     private String doctorName;
+
+    /*
+     * Links the appointment to an actual
+     * registered healthcare provider.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "provider_id")
+    private User provider;
 
     private String location;
 
     private String purpose;
 
-    @Column(nullable = false)
-    private String status = "SCHEDULED";
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private AppointmentStatus status = AppointmentStatus.REQUESTED;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "patient_id", nullable = false)
     private User patient;
 
-    public Appointment() {}
+    public Appointment() {
+    }
 
     public LocalDate getAppointmentDate() {
         return appointmentDate;
@@ -56,6 +71,14 @@ public class Appointment extends BaseEntity {
         this.doctorName = doctorName;
     }
 
+    public User getProvider() {
+        return provider;
+    }
+
+    public void setProvider(User provider) {
+        this.provider = provider;
+    }
+
     public String getLocation() {
         return location;
     }
@@ -72,11 +95,11 @@ public class Appointment extends BaseEntity {
         this.purpose = purpose;
     }
 
-    public String getStatus() {
+    public AppointmentStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(AppointmentStatus status) {
         this.status = status;
     }
 

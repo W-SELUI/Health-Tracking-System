@@ -1,12 +1,12 @@
 package com.group15.health_tracking_system.medication.controller;
 
 import com.group15.health_tracking_system.medication.entity.Appointment;
+import com.group15.health_tracking_system.medication.entity.AppointmentStatus;
 import com.group15.health_tracking_system.medication.service.AppointmentService;
 import com.group15.health_tracking_system.user.entity.Role;
 import com.group15.health_tracking_system.user.entity.User;
 import com.group15.health_tracking_system.user.repository.UserRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -22,19 +22,19 @@ public class AppointmentController {
     private final AppointmentService appointmentService;
     private final UserRepository userRepository;
 
-    private final List<String> statuses =
-            List.of("SCHEDULED", "COMPLETED", "CANCELLED", "MISSED");
-
     public AppointmentController(
             AppointmentService appointmentService,
             UserRepository userRepository) {
+
         this.appointmentService = appointmentService;
         this.userRepository = userRepository;
     }
 
     private User getLoggedInUser(Authentication authentication) {
+
         if (authentication == null
                 || !authentication.isAuthenticated()) {
+
             throw new IllegalStateException(
                     "User is not authenticated.");
         }
@@ -51,36 +51,52 @@ public class AppointmentController {
             Model model,
             Authentication authentication) {
 
-        User user = getLoggedInUser(authentication);
-        LocalDate today = LocalDate.now();
+        User user =
+                getLoggedInUser(authentication);
+
+        LocalDateTime now =
+                LocalDateTime.now();
 
         List<Appointment> allAppointments =
-                appointmentService.getByPatientId(user.getId());
-
-        for (Appointment appointment : allAppointments) {
-            if (appointment.getAppointmentDate().isBefore(today)
-                    && "SCHEDULED".equals(appointment.getStatus())) {
-
-                appointment.setStatus("MISSED");
-                appointmentService.save(appointment);
-            }
-        }
+                appointmentService
+                        .getByPatientId(user.getId());
 
         List<Appointment> upcomingAppointments =
                 allAppointments.stream()
-                        .filter(a ->
-                                !a.getAppointmentDate().isBefore(today))
-                        .filter(a ->
-                                "SCHEDULED".equals(a.getStatus()))
+                        .filter(appointment -> {
+
+                            LocalDateTime appointmentDateTime =
+                                    LocalDateTime.of(
+                                            appointment.getAppointmentDate(),
+                                            appointment.getAppointmentTime());
+
+                            return !appointmentDateTime.isBefore(now)
+                                    && (appointment.getStatus()
+                                            == AppointmentStatus.REQUESTED
+                                    || appointment.getStatus()
+                                            == AppointmentStatus.CONFIRMED);
+                        })
                         .toList();
 
         List<Appointment> previousAppointments =
                 allAppointments.stream()
-                        .filter(a ->
-                                a.getAppointmentDate().isBefore(today)
-                                || "COMPLETED".equals(a.getStatus())
-                                || "MISSED".equals(a.getStatus())
-                                || "CANCELLED".equals(a.getStatus()))
+                        .filter(appointment -> {
+
+                            LocalDateTime appointmentDateTime =
+                                    LocalDateTime.of(
+                                            appointment.getAppointmentDate(),
+                                            appointment.getAppointmentTime());
+
+                            return appointmentDateTime.isBefore(now)
+                                    || appointment.getStatus()
+                                            == AppointmentStatus.COMPLETED
+                                    || appointment.getStatus()
+                                            == AppointmentStatus.MISSED
+                                    || appointment.getStatus()
+                                            == AppointmentStatus.CANCELLED
+                                    || appointment.getStatus()
+                                            == AppointmentStatus.REJECTED;
+                        })
                         .toList();
 
         model.addAttribute(
@@ -94,10 +110,6 @@ public class AppointmentController {
         model.addAttribute(
                 "previousAppointments",
                 previousAppointments);
-
-        model.addAttribute(
-                "statuses",
-                statuses);
 
         return "appointments";
     }
@@ -118,10 +130,6 @@ public class AppointmentController {
                 getRegisteredProviders());
 
         model.addAttribute(
-                "statuses",
-                statuses);
-
-        model.addAttribute(
                 "appointmentDateTime",
                 "");
 
@@ -132,24 +140,36 @@ public class AppointmentController {
     public String saveAppointment(
             @RequestParam Long providerId,
             @RequestParam String location,
+            @RequestParam String purpose,
             @RequestParam String appointmentDateTime,
-            @RequestParam String status,
             Authentication authentication) {
 
-        User user =
+        User patient =
                 getLoggedInUser(authentication);
 
         User provider =
                 getRegisteredProvider(providerId);
 
-        LocalDateTime dateTime =
-                LocalDateTime.parse(
+        LocalDateTime requestedDateTime =
+                parseAndValidateFutureDateTime(
                         appointmentDateTime);
+
+        validateTextField(
+                location,
+                "Location");
+
+        validateTextField(
+                purpose,
+                "Purpose");
 
         Appointment appointment =
                 new Appointment();
 
-        appointment.setPatient(user);
+        appointment.setPatient(
+                patient);
+
+        appointment.setProvider(
+                provider);
 
         appointment.setDoctorName(
                 provider.getFullName());
@@ -157,14 +177,17 @@ public class AppointmentController {
         appointment.setLocation(
                 location.trim());
 
+        appointment.setPurpose(
+                purpose.trim());
+
         appointment.setAppointmentDate(
-                dateTime.toLocalDate());
+                requestedDateTime.toLocalDate());
 
         appointment.setAppointmentTime(
-                dateTime.toLocalTime());
+                requestedDateTime.toLocalTime());
 
         appointment.setStatus(
-                validateStatus(status));
+                AppointmentStatus.REQUESTED);
 
         appointmentService.save(
                 appointment);
@@ -178,17 +201,24 @@ public class AppointmentController {
             Model model,
             Authentication authentication) {
 
-        User user =
+        User patient =
                 getLoggedInUser(authentication);
 
         Appointment appointment =
                 appointmentService
                         .getByIdAndPatientId(
                                 id,
-                                user.getId())
+                                patient.getId())
                         .orElseThrow(() ->
                                 new IllegalArgumentException(
                                         "Appointment not found for this patient."));
+
+        if (appointment.getStatus()
+                != AppointmentStatus.REQUESTED) {
+
+            throw new IllegalStateException(
+                    "Only requested appointments can be edited.");
+        }
 
         model.addAttribute(
                 "appointment",
@@ -199,14 +229,10 @@ public class AppointmentController {
                 getRegisteredProviders());
 
         model.addAttribute(
-                "statuses",
-                statuses);
-
-        model.addAttribute(
                 "appointmentDateTime",
                 LocalDateTime.of(
-                        appointment.getAppointmentDate(),
-                        appointment.getAppointmentTime())
+                                appointment.getAppointmentDate(),
+                                appointment.getAppointmentTime())
                         .toString());
 
         return "edit-appointment";
@@ -217,28 +243,46 @@ public class AppointmentController {
             @PathVariable Long id,
             @RequestParam Long providerId,
             @RequestParam String location,
+            @RequestParam String purpose,
             @RequestParam String appointmentDateTime,
-            @RequestParam String status,
             Authentication authentication) {
 
-        User user =
+        User patient =
                 getLoggedInUser(authentication);
-
-        User provider =
-                getRegisteredProvider(providerId);
 
         Appointment appointment =
                 appointmentService
                         .getByIdAndPatientId(
                                 id,
-                                user.getId())
+                                patient.getId())
                         .orElseThrow(() ->
                                 new IllegalArgumentException(
                                         "Appointment not found for this patient."));
 
-        LocalDateTime dateTime =
-                LocalDateTime.parse(
+        if (appointment.getStatus()
+                != AppointmentStatus.REQUESTED) {
+
+            throw new IllegalStateException(
+                    "Only requested appointments can be edited.");
+        }
+
+        User provider =
+                getRegisteredProvider(providerId);
+
+        LocalDateTime requestedDateTime =
+                parseAndValidateFutureDateTime(
                         appointmentDateTime);
+
+        validateTextField(
+                location,
+                "Location");
+
+        validateTextField(
+                purpose,
+                "Purpose");
+
+        appointment.setProvider(
+                provider);
 
         appointment.setDoctorName(
                 provider.getFullName());
@@ -246,14 +290,17 @@ public class AppointmentController {
         appointment.setLocation(
                 location.trim());
 
+        appointment.setPurpose(
+                purpose.trim());
+
         appointment.setAppointmentDate(
-                dateTime.toLocalDate());
+                requestedDateTime.toLocalDate());
 
         appointment.setAppointmentTime(
-                dateTime.toLocalTime());
+                requestedDateTime.toLocalTime());
 
         appointment.setStatus(
-                validateStatus(status));
+                AppointmentStatus.REQUESTED);
 
         appointmentService.save(
                 appointment);
@@ -266,27 +313,29 @@ public class AppointmentController {
             @PathVariable Long id,
             Authentication authentication) {
 
-        User user =
+        User patient =
                 getLoggedInUser(authentication);
 
         Appointment appointment =
                 appointmentService
                         .getByIdAndPatientId(
                                 id,
-                                user.getId())
+                                patient.getId())
                         .orElseThrow(() ->
                                 new IllegalArgumentException(
                                         "Appointment not found for this patient."));
 
-        if (!"SCHEDULED".equals(
-                appointment.getStatus())) {
+        if (appointment.getStatus()
+                != AppointmentStatus.REQUESTED
+                && appointment.getStatus()
+                != AppointmentStatus.CONFIRMED) {
 
             throw new IllegalArgumentException(
-                    "Only scheduled appointments can be cancelled.");
+                    "Only requested or confirmed appointments can be cancelled.");
         }
 
         appointment.setStatus(
-                "CANCELLED");
+                AppointmentStatus.CANCELLED);
 
         appointmentService.save(
                 appointment);
@@ -299,12 +348,30 @@ public class AppointmentController {
             @PathVariable Long id,
             Authentication authentication) {
 
-        User user =
+        User patient =
                 getLoggedInUser(authentication);
+
+        Appointment appointment =
+                appointmentService
+                        .getByIdAndPatientId(
+                                id,
+                                patient.getId())
+                        .orElseThrow(() ->
+                                new IllegalArgumentException(
+                                        "Appointment not found for this patient."));
+
+        if (appointment.getStatus()
+                == AppointmentStatus.REQUESTED
+                || appointment.getStatus()
+                == AppointmentStatus.CONFIRMED) {
+
+            throw new IllegalStateException(
+                    "Active appointments must be cancelled before deletion.");
+        }
 
         appointmentService.delete(
                 id,
-                user.getId());
+                patient.getId());
 
         return "redirect:/appointments";
     }
@@ -326,7 +393,8 @@ public class AppointmentController {
                                 new IllegalArgumentException(
                                         "Selected doctor was not found."));
 
-        if (provider.getRole() != Role.PROVIDER
+        if (provider.getRole()
+                != Role.PROVIDER
                 || !provider.isEnabled()) {
 
             throw new IllegalArgumentException(
@@ -336,16 +404,49 @@ public class AppointmentController {
         return provider;
     }
 
-    private String validateStatus(
-            String status) {
+    private LocalDateTime parseAndValidateFutureDateTime(
+            String appointmentDateTime) {
 
-        if (status == null
-                || !statuses.contains(status)) {
+        if (appointmentDateTime == null
+                || appointmentDateTime.isBlank()) {
 
             throw new IllegalArgumentException(
-                    "Invalid appointment status");
+                    "Appointment date and time are required.");
         }
 
-        return status;
+        LocalDateTime requestedDateTime;
+
+        try {
+
+            requestedDateTime =
+                    LocalDateTime.parse(
+                            appointmentDateTime);
+
+        } catch (Exception exception) {
+
+            throw new IllegalArgumentException(
+                    "Invalid appointment date or time.");
+        }
+
+        if (!requestedDateTime.isAfter(
+                LocalDateTime.now())) {
+
+            throw new IllegalArgumentException(
+                    "Appointment date and time must be in the future.");
+        }
+
+        return requestedDateTime;
+    }
+
+    private void validateTextField(
+            String value,
+            String fieldName) {
+
+        if (value == null
+                || value.trim().isEmpty()) {
+
+            throw new IllegalArgumentException(
+                    fieldName + " is required.");
+        }
     }
 }

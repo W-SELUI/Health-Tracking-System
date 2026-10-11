@@ -22,6 +22,7 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(auth -> auth
+
                         .requestMatchers(
                                 "/",
                                 "/login",
@@ -31,21 +32,50 @@ public class SecurityConfig {
                                 "/js/**",
                                 "/images/**"
                         ).permitAll()
-                        .requestMatchers("/activities", "/activities/**").hasRole("PATIENT")
-                        .requestMatchers("/patient/**").hasRole("PATIENT")
-                        .requestMatchers("/provider/**").hasRole("PROVIDER")
-                        .requestMatchers("/admin/**").hasRole("ADMIN")
-                        .anyRequest().authenticated()
+
+                        // Patient-only features
+                        .requestMatchers(
+                                "/activities",
+                                "/activities/**",
+                                "/patient/**",
+                                "/appointments",
+                                "/appointments/**",
+                                "/medications",
+                                "/medications/**",
+                                "/schedules",
+                                "/schedules/**",
+                                "/dose-records",
+                                "/dose-records/**",
+                                "/adherence",
+                                "/adherence/**",
+                                "/medication-dashboard",
+                                "/medication-dashboard/**"
+                        ).hasRole("PATIENT")
+
+                        // Provider-only features
+                        .requestMatchers("/provider/**")
+                        .hasRole("PROVIDER")
+
+                        // Admin-only features
+                        .requestMatchers("/admin/**")
+                        .hasRole("ADMIN")
+
+                        // Any other page requires login
+                        .anyRequest()
+                        .authenticated()
                 )
+
                 .formLogin(form -> form
                         .loginPage("/login")
                         .defaultSuccessUrl("/dashboard", true)
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutSuccessUrl("/login?logout")
                         .permitAll()
                 )
+
                 .exceptionHandling(exception -> exception
                         .accessDeniedPage("/access-denied")
                 );
