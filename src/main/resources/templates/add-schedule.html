@@ -103,6 +103,13 @@
             border-color: #1565a9;
         }
 
+        .hint {
+            margin-top: 7px;
+            color: #6b7b8d;
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
         button,
         .cancel {
             display: inline-block;
@@ -194,49 +201,131 @@
     <h2>Add Medication Schedule</h2>
 
     <p class="description">
-        Select a medication and set its scheduled time.
+        Select a medication, choose the first dose time,
+        and set how often the medication should repeat.
     </p>
 
     <form th:action="@{/schedules/save}" method="post">
 
-        <label for="medicationId">Select Medication</label>
+        <label for="medicationId">
+            Select Medication
+        </label>
 
-        <select id="medicationId"
-                name="medicationId"
-                required>
+        <select
+            id="medicationId"
+            name="medicationId"
+            required>
 
-            <option value="">-- Select a medication --</option>
+            <option value="">
+                -- Select a medication --
+            </option>
 
-            <option th:each="med : ${medications}"
-                    th:value="${med.id}"
-                    th:text="${med.medicationName}">
+            <option
+                th:each="med : ${medications}"
+                th:value="${med.id}"
+                th:text="${med.medicationName + ' - ' + med.dosage}">
             </option>
 
         </select>
 
-        <label for="scheduledTime">Scheduled Time</label>
+        <label for="startDate">
+            Start Date
+        </label>
 
-        <input type="time"
-               id="scheduledTime"
-               name="scheduledTime"
-               required>
+        <input
+            type="date"
+            id="startDate"
+            name="startDate"
+            required>
+
+        <p class="hint">
+            The first day this medication schedule begins.
+        </p>
+
+        <label for="endDate">
+            End Date
+        </label>
+
+        <input
+            type="date"
+            id="endDate"
+            name="endDate">
+
+        <p class="hint">
+            Leave this blank if the medication should continue indefinitely.
+        </p>
+
+        <label for="scheduledTime">
+            First Dose Time
+        </label>
+
+        <input
+            type="time"
+            id="scheduledTime"
+            name="scheduledTime"
+            required>
+
+        <p class="hint">
+            This is the first dose time. The next doses will be calculated automatically.
+        </p>
+
+        <label for="intervalHours">
+            Repeat Every
+        </label>
+
+        <select
+            id="intervalHours"
+            name="intervalHours"
+            required>
+
+            <option value="">
+                -- Select interval --
+            </option>
+
+            <option value="4">
+                Every 4 Hours
+            </option>
+
+            <option value="6">
+                Every 6 Hours
+            </option>
+
+            <option value="8">
+                Every 8 Hours
+            </option>
+
+            <option value="12">
+                Every 12 Hours
+            </option>
+
+            <option value="24">
+                Once Daily
+            </option>
+
+        </select>
 
         <button type="submit">
             Save Schedule
         </button>
 
-        <a class="cancel" th:href="@{/schedules}">
+        <a class="cancel"
+           th:href="@{/schedules}">
             Cancel
         </a>
 
     </form>
 
     <div class="bottom-link">
-        <div class="dashboard-link" style="margin-bottom: 0;">
+
+        <div class="dashboard-link"
+             style="margin-bottom: 0;">
+
             <a th:href="@{/medication-dashboard}">
                 &larr; Back to Medication Dashboard
             </a>
+
         </div>
+
     </div>
 
 </main>

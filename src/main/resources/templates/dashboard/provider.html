@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +17,9 @@
 
 <p>
     Welcome,
-    <span data-th-text="${currentUser.fullName}">Provider</span>
+    <span data-th-text="${currentUser.fullName}">
+        Provider
+    </span>
 </p>
 
 <p>
@@ -24,6 +27,17 @@
     <span data-th-text="${currentUser.role.displayName}">
         Healthcare Provider
     </span>
+</p>
+
+<hr>
+
+<h2>Provider Menu</h2>
+
+<p>
+    <a href="/provider/appointments"
+       data-th-href="@{/provider/appointments}">
+        Appointment Requests
+    </a>
 </p>
 
 <p>
@@ -54,4 +68,5 @@
 </form>
 
 </body>
+
 </html>

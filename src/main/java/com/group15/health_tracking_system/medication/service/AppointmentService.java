@@ -1,6 +1,7 @@
 package com.group15.health_tracking_system.medication.service;
 
 import com.group15.health_tracking_system.medication.entity.Appointment;
+import com.group15.health_tracking_system.medication.entity.AppointmentStatus;
 import com.group15.health_tracking_system.medication.repository.AppointmentRepository;
 import org.springframework.stereotype.Service;
 
@@ -29,6 +30,26 @@ public class AppointmentService {
     public Optional<Appointment> getByIdAndPatientId(
             Long id, Long patientId) {
         return repository.findByIdAndPatient_Id(id, patientId);
+    }
+
+    // Get one appointment by ID
+    public Optional<Appointment> getById(Long id) {
+        return repository.findById(id);
+    }
+
+    // Get all appointments belonging to one provider
+    public List<Appointment> getByProviderId(Long providerId) {
+        return repository
+                .findByProvider_IdOrderByAppointmentDateAscAppointmentTimeAsc(
+                        providerId);
+    }
+
+    // Get only requested appointments for one provider
+    public List<Appointment> getRequestedByProviderId(Long providerId) {
+        return repository
+                .findByProvider_IdAndStatusOrderByAppointmentDateAscAppointmentTimeAsc(
+                        providerId,
+                        AppointmentStatus.REQUESTED);
     }
 
     // Delete an appointment only if it belongs to the patient

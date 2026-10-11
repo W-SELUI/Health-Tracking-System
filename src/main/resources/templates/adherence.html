@@ -37,8 +37,8 @@
         }
 
         .container {
-            width: 90%;
-            max-width: 1000px;
+            width: 92%;
+            max-width: 1150px;
             margin: 40px auto;
             background: white;
             padding: 40px;
@@ -153,7 +153,7 @@
 
         .stat-card h3 {
             color: #0d2d52;
-            font-size: 18px;
+            font-size: 17px;
             margin-bottom: 10px;
         }
 
@@ -161,7 +161,6 @@
             font-size: 36px;
             font-weight: bold;
             color: #1565a9;
-            overflow-wrap: anywhere;
         }
 
         .adherence-card {
@@ -182,7 +181,12 @@
             font-size: 60px;
             font-weight: bold;
             color: #1565a9;
-            overflow-wrap: anywhere;
+        }
+
+        .formula {
+            margin-top: 12px;
+            color: #526477;
+            line-height: 1.6;
         }
 
         .footer {
@@ -198,14 +202,20 @@
             padding: 14px 25px;
             border-radius: 8px;
             font-weight: 600;
-            transition: background 0.3s ease;
         }
 
         .back-btn:hover {
             background: #293f59;
         }
 
+        @media (max-width: 900px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
         @media (max-width: 700px) {
+
             .header {
                 padding: 30px 6%;
             }
@@ -238,95 +248,145 @@
 
 <body>
 
-    <div class="header">
-        <h1>Health Tracking System</h1>
-        <p>Medication Adherence Monitoring</p>
+<div class="header">
+    <h1>Health Tracking System</h1>
+    <p>Medication Adherence Monitoring</p>
+</div>
+
+<div class="container">
+
+    <div class="page-title">
+        <h2>📊 Medication Adherence Statistics</h2>
     </div>
 
-    <div class="container">
+    <div class="filter-card">
 
-        <div class="page-title">
-            <h2>📊 Medication Adherence Statistics</h2>
-        </div>
+        <h3>Filter Adherence by Date</h3>
 
-        <div class="filter-card">
-            <h3>Filter Adherence by Date</h3>
+        <form th:action="@{/adherence}"
+              method="get"
+              class="filter-form">
 
-            <form th:action="@{/adherence}" method="get"
-                  class="filter-form">
+            <div class="form-group">
 
-                <div class="form-group">
-                    <label for="startDate">Start Date</label>
-                    <input type="date"
-                           id="startDate"
-                           name="startDate"
-                           th:value="${startDate}"
-                           required>
-                </div>
+                <label for="startDate">
+                    Start Date
+                </label>
 
-                <div class="form-group">
-                    <label for="endDate">End Date</label>
-                    <input type="date"
-                           id="endDate"
-                           name="endDate"
-                           th:value="${endDate}"
-                           required>
-                </div>
-
-                <div class="filter-actions">
-                    <button type="submit" class="filter-btn">
-                        Apply Filter
-                    </button>
-
-                    <a th:href="@{/adherence}" class="reset-btn">
-                        Show All Records
-                    </a>
-                </div>
-            </form>
-
-            <div th:if="${filterError != null}"
-                 class="filter-error"
-                 th:text="${filterError}">
-                Please check your selected dates.
-            </div>
-        </div>
-
-        <div class="stats-grid">
-
-            <div class="stat-card">
-                <h3>Taken Doses</h3>
-                <div class="value" th:text="${taken}">0</div>
+                <input type="date"
+                       id="startDate"
+                       name="startDate"
+                       th:value="${startDate}"
+                       th:max="${today}">
             </div>
 
-            <div class="stat-card">
-                <h3>Missed Doses</h3>
-                <div class="value" th:text="${missed}">0</div>
+            <div class="form-group">
+
+                <label for="endDate">
+                    End Date
+                </label>
+
+                <input type="date"
+                       id="endDate"
+                       name="endDate"
+                       th:value="${endDate}"
+                       th:max="${today}">
             </div>
 
-            <div class="stat-card">
-                <h3>Skipped Doses</h3>
-                <div class="value" th:text="${skipped}">0</div>
+            <div class="filter-actions">
+
+                <button type="submit"
+                        class="filter-btn">
+                    Apply Filter
+                </button>
+
+                <a th:href="@{/adherence}"
+                   class="reset-btn">
+                    Show Overall Adherence
+                </a>
+
             </div>
 
-        </div>
+        </form>
 
-        <div class="adherence-card">
-            <h3>Adherence Rate</h3>
-            <div class="rate" th:text="${adherenceRate} + '%'">
-                0.0%
-            </div>
-            <p style="margin-top: 12px;">
-                Calculated from the recorded taken, missed and skipped doses.
-            </p>
-        </div>
-
-        <div class="footer">
-            <a th:href="@{/medication-dashboard}" class="back-btn">
-                &larr; Back to Medication Dashboard
-            </a>
+        <div th:if="${filterError != null}"
+             class="filter-error"
+             th:text="${filterError}">
+            Please check your selected dates.
         </div>
 
     </div>
+
+    <div class="stats-grid">
+
+        <div class="stat-card">
+            <h3>Expected Doses</h3>
+            <div class="value"
+                 th:text="${expected}">
+                0
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Taken Doses</h3>
+            <div class="value"
+                 th:text="${taken}">
+                0
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Missed Doses</h3>
+            <div class="value"
+                 th:text="${missed}">
+                0
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Skipped Doses</h3>
+            <div class="value"
+                 th:text="${skipped}">
+                0
+            </div>
+        </div>
+
+        <div class="stat-card">
+            <h3>Unrecorded Expected Doses</h3>
+            <div class="value"
+                 th:text="${unrecorded}">
+                0
+            </div>
+        </div>
+
+    </div>
+
+    <div class="adherence-card">
+
+        <h3>Adherence Rate</h3>
+
+        <div class="rate"
+             th:text="${adherenceRate} + '%'">
+            0.0%
+        </div>
+
+        <p class="formula">
+            Adherence =
+            Taken ÷ (Taken + Missed + Skipped) × 100
+        </p>
+
+    </div>
+
+    <div class="footer">
+
+        <a th:href="@{/medication-dashboard}"
+           class="back-btn">
+            &larr; Back to Medication Dashboard
+        </a>
+
+    </div>
+
+</div>
 
 </body>
 </html>
