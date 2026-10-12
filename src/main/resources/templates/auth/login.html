@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>Login</title>
+    <title>Sign in | HealthTrack</title>
     <link rel="stylesheet" th:href="@{/css/app.css}">
     <link rel="stylesheet"
           href="/css/healthtrack-ui.css"
@@ -24,29 +24,33 @@
                 <span class="healthtrack-global-tagline">Your health, clearly</span>
             </span>
         </a>
-        <span class="healthtrack-global-section">Secure access</span>
+        <span class="healthtrack-global-section">Welcome back</span>
     </div>
 </header>
 <div class="healthtrack-page-shell">
 
-<h1>Login</h1>
+<div class="auth-heading">
+    <span class="auth-eyebrow">Your health, clearly</span>
+    <h1>Welcome back</h1>
+    <p>Sign in to manage your health records, messages and care connections.</p>
+</div>
 
 <p th:if="${param.registered}">
-    Registration successful. You can now log in.
+    Your account is ready. Sign in to continue.
 </p>
 
 <p th:if="${param.error}">
-    Invalid email or password.
+    We couldn’t sign you in with those details. Check your email and password and try again.
 </p>
 
 <p th:if="${param.logout}">
-    You have been logged out.
+    You have been signed out safely.
 </p>
 
 <form th:action="@{/login}" method="post">
 
     <div>
-        <label for="username">Email</label>
+        <label for="username">Email address</label>
         <input
                 type="email"
                 id="username"
@@ -63,13 +67,13 @@
                 required>
     </div>
 
-    <button type="submit">Login</button>
+    <button type="submit">Sign in</button>
 
 </form>
 
 <p>
-    Don't have an account?
-    <a th:href="@{/register}">Register</a>
+    New to HealthTrack?
+    <a th:href="@{/register}">Create an account</a>
 </p>
 
 </div>

@@ -55,7 +55,7 @@
     width: var(--ht-nav-width);
     padding: 22px 18px 16px;
     border-right: 1px solid var(--ht-border);
-    background: rgba(255, 255, 255, 0.98);
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(244, 250, 249, 0.98));
     box-shadow: 8px 0 28px rgba(22, 48, 51, 0.035);
 }
 
@@ -211,7 +211,7 @@
     min-height: var(--ht-topbar-height);
     padding: 0 28px;
     border-bottom: 1px solid var(--ht-border);
-    background: rgba(255, 255, 255, 0.94);
+    background: linear-gradient(90deg, rgba(255, 255, 255, 0.96), rgba(241, 249, 248, 0.94));
     backdrop-filter: blur(16px);
 }
 
@@ -425,8 +425,11 @@ body.healthtrack-ui {
     overflow-x: hidden;
     color: var(--ht-text);
     background:
-        radial-gradient(circle at 92% 6%, rgba(11, 107, 109, 0.10), transparent 24rem),
+        radial-gradient(circle at 8% 10%, rgba(117, 187, 183, 0.14), transparent 25rem),
+        radial-gradient(circle at 92% 6%, rgba(11, 107, 109, 0.12), transparent 24rem),
+        radial-gradient(circle at 75% 92%, rgba(126, 164, 202, 0.08), transparent 28rem),
         linear-gradient(180deg, #f8fbfb 0%, var(--ht-background) 54%, #eff6f5 100%);
+    background-attachment: fixed;
     font-family: "Inter", "Segoe UI", Arial, sans-serif !important;
     line-height: 1.55;
     -webkit-font-smoothing: antialiased;
@@ -458,17 +461,31 @@ body.healthtrack-ui::before {
     font-size: clamp(2rem, 4vw, 2.8rem);
     line-height: 1.12;
     letter-spacing: -0.035em;
+    background: linear-gradient(120deg, var(--ht-text) 12%, var(--ht-teal) 88%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
 }
 
 .healthtrack-ui h2 {
     margin: 0 0 12px;
     font-size: clamp(1.25rem, 2vw, 1.55rem);
     line-height: 1.3;
+    letter-spacing: -0.02em;
 }
 
 .healthtrack-ui h3 {
     margin-top: 0;
     color: var(--ht-text);
+    letter-spacing: -0.01em;
+}
+
+.healthtrack-ui .page-intro,
+.healthtrack-ui .section-intro {
+    max-width: 720px;
+    color: var(--ht-secondary);
+    font-size: 15px;
+    line-height: 1.7;
 }
 
 .healthtrack-ui p {
@@ -638,7 +655,7 @@ body.healthtrack-ui::before {
     padding: clamp(20px, 4vw, 28px);
     border: 1px solid var(--ht-border);
     border-radius: 16px;
-    background: rgba(255, 255, 255, 0.96);
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(247, 252, 251, 0.96));
     box-shadow: 0 10px 32px rgba(22, 48, 51, 0.045);
 }
 
@@ -697,7 +714,7 @@ body.healthtrack-ui::before {
     padding: 0 16px;
     border: 1px solid var(--ht-teal);
     border-radius: 9px;
-    background: var(--ht-teal);
+    background: linear-gradient(135deg, var(--ht-teal), #168b88);
     color: #ffffff;
     font: inherit;
     font-size: 13px;
@@ -928,6 +945,31 @@ body.healthtrack-ui::before {
 
 .auth-ui .healthtrack-page-shell > * {
     grid-column: 1;
+}
+
+.auth-ui .auth-heading {
+    margin-bottom: 4px;
+}
+
+.auth-ui .auth-eyebrow {
+    display: inline-block;
+    margin-bottom: 10px;
+    color: var(--ht-teal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.auth-ui .auth-heading h1 {
+    margin-bottom: 10px;
+}
+
+.auth-ui .auth-heading p {
+    max-width: 430px;
+    margin: 0;
+    color: var(--ht-secondary);
+    line-height: 1.65;
 }
 
 .auth-ui .healthtrack-page-shell::after {
