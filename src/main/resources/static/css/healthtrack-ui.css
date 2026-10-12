@@ -980,7 +980,7 @@ body.healthtrack-ui::before {
     border: 1px solid var(--ht-border);
     border-radius: 28px;
     background:
-        url("../images/healthtrack-dashboard-hero.png") center bottom 35px / 95% auto no-repeat,
+        url("../images/login-healthcare.jpg") center / cover no-repeat,
         radial-gradient(circle at 50% 25%, rgba(11, 107, 109, 0.18), transparent 44%),
         linear-gradient(145deg, #ffffff, #dcefee);
     box-shadow: var(--ht-shadow);
@@ -1033,6 +1033,9 @@ body.healthtrack-ui::before {
     width: 100%;
     max-width: 220px;
     max-height: 150px;
+    border: 1px solid rgba(11, 107, 109, 0.14);
+    border-radius: 18px;
+    box-shadow: 0 14px 28px rgba(15, 58, 65, 0.14);
     object-fit: contain;
 }
 
@@ -1667,7 +1670,7 @@ body.healthtrack-ui::before {
         display: block;
         min-height: 320px;
         margin-top: 28px;
-        background-size: min(520px, 95%) auto, auto, auto;
+        background-size: cover, auto, auto;
     }
 
     .healthtrack-ui .analytics-summary-grid,
