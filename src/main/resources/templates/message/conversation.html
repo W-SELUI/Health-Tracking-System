@@ -408,8 +408,9 @@
         </div>
 
         <div class="account">
-            <img src="/provider-access/assets/avatar.svg"
-                 data-th-src="@{/provider-access/assets/avatar.svg}"
+            <img src="/profile/cover-photo"
+                 data-th-src="@{/profile/cover-photo}"
+                 onerror="this.onerror=null; this.src='/provider-access/assets/avatar.svg';"
                  alt="" width="38" height="38">
 
             <div class="account-details">

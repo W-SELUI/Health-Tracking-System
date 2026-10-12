@@ -25,6 +25,8 @@
         .account-avatar {
             width: 42px;
             height: 42px;
+            border-radius: 50%;
+            object-fit: cover;
         }
 
         .logout-button {
@@ -405,8 +407,9 @@
        href="/profile"
        data-th-href="@{/profile}">
         <img class="account-avatar"
-             src="/provider-access/assets/profile-avatar.svg"
-             data-th-src="@{/provider-access/assets/profile-avatar.svg}"
+             src="/profile/cover-photo"
+             data-th-src="@{/profile/cover-photo}"
+             onerror="this.onerror=null; this.src='/provider-access/assets/profile-avatar.svg';"
              alt="">
 
         <span class="account-details">
