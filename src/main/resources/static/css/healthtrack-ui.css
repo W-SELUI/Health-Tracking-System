@@ -55,8 +55,8 @@
     width: var(--ht-nav-width);
     padding: 22px 18px 16px;
     border-right: 1px solid var(--ht-border);
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.99), rgba(244, 250, 249, 0.98));
-    box-shadow: 8px 0 28px rgba(22, 48, 51, 0.035);
+    background: linear-gradient(180deg, #edf9fc 0%, #e4f4f8 52%, #eaf7f5 100%);
+    box-shadow: 8px 0 28px rgba(31, 88, 101, 0.08);
 }
 
 .ht-app-brand {
@@ -425,10 +425,10 @@ body.healthtrack-ui {
     overflow-x: hidden;
     color: var(--ht-text);
     background:
-        radial-gradient(circle at 8% 10%, rgba(117, 187, 183, 0.14), transparent 25rem),
-        radial-gradient(circle at 92% 6%, rgba(11, 107, 109, 0.12), transparent 24rem),
-        radial-gradient(circle at 75% 92%, rgba(126, 164, 202, 0.08), transparent 28rem),
-        linear-gradient(180deg, #f8fbfb 0%, var(--ht-background) 54%, #eff6f5 100%);
+        radial-gradient(circle at 8% 10%, rgba(94, 190, 207, 0.2), transparent 25rem),
+        radial-gradient(circle at 92% 6%, rgba(61, 157, 190, 0.16), transparent 24rem),
+        radial-gradient(circle at 75% 92%, rgba(93, 181, 175, 0.13), transparent 28rem),
+        linear-gradient(135deg, #f8fcff 0%, #eef8fb 48%, #e9f6f3 100%);
     background-attachment: fixed;
     font-family: "Inter", "Segoe UI", Arial, sans-serif !important;
     line-height: 1.55;
@@ -1033,9 +1033,6 @@ body.healthtrack-ui::before {
     width: 100%;
     max-width: 220px;
     max-height: 150px;
-    border: 1px solid rgba(11, 107, 109, 0.14);
-    border-radius: 18px;
-    box-shadow: 0 14px 28px rgba(15, 58, 65, 0.14);
     object-fit: contain;
 }
 
@@ -1114,13 +1111,21 @@ body.healthtrack-ui::before {
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 150px;
+    width: min(100%, 250px);
+    height: 180px;
+    justify-self: end;
+    min-height: 0;
+    overflow: hidden;
+    border-radius: 18px;
+    border: 1px solid rgba(11, 107, 109, 0.16);
+    box-shadow: 0 14px 28px rgba(15, 58, 65, 0.13);
 }
 
 .records-ui .records-hero-image img {
-    width: min(100%, 280px);
-    max-height: 185px;
-    object-fit: contain;
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .healthtrack-ui .ht-primary-action {
