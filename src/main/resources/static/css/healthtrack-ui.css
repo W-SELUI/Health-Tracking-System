@@ -1209,6 +1209,182 @@ body.healthtrack-ui::before {
     font-weight: 600;
 }
 
+/* Change requests */
+.change-requests-ui main {
+    max-width: 940px;
+    margin: 0 auto;
+}
+
+.change-requests-ui .change-requests-hero {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 28px;
+    padding: clamp(26px, 5vw, 44px);
+    border: 1px solid var(--ht-border);
+    border-radius: 22px;
+    background:
+        radial-gradient(circle at 91% 18%, rgba(11, 107, 109, 0.19), transparent 17rem),
+        linear-gradient(135deg, #ffffff 0%, #e5f4f2 100%);
+    box-shadow: 0 14px 35px rgba(22, 48, 51, 0.07);
+}
+
+.change-requests-ui .change-requests-hero::after {
+    position: absolute;
+    right: 40px;
+    bottom: 28px;
+    width: 88px;
+    height: 88px;
+    background: url("../provider-access/assets/shield-check.svg") center / contain no-repeat;
+    content: "";
+    opacity: 0.18;
+}
+
+.change-requests-ui .change-requests-eyebrow {
+    display: inline-block;
+    margin-bottom: 12px;
+    color: var(--ht-teal);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+}
+
+.change-requests-ui .change-requests-hero h1 {
+    position: relative;
+    z-index: 1;
+    margin-bottom: 10px;
+}
+
+.change-requests-ui .change-requests-hero p {
+    position: relative;
+    z-index: 1;
+    max-width: 650px;
+    margin: 0;
+    color: var(--ht-secondary);
+    line-height: 1.7;
+}
+
+.change-requests-ui .message {
+    padding: 14px 16px;
+    margin: 16px 0;
+    border-radius: 12px;
+    box-shadow: 0 6px 18px rgba(22, 48, 51, 0.04);
+}
+
+.change-requests-ui .message-success {
+    background: linear-gradient(135deg, #f0fbf5, #e2f4eb);
+}
+
+.change-requests-ui .message-warning {
+    background: linear-gradient(135deg, #fffaf0, #fff1d9);
+}
+
+.change-requests-ui .message-info {
+    background: linear-gradient(135deg, #f2f8ff, #e7f1ff);
+}
+
+.change-requests-ui .request-card {
+    margin: 22px 0;
+    padding: clamp(20px, 4vw, 30px);
+    border: 1px solid var(--ht-border);
+    border-radius: 18px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.98), rgba(246, 252, 251, 0.96));
+    box-shadow: 0 12px 30px rgba(22, 48, 51, 0.06);
+}
+
+.change-requests-ui .request-card h3 {
+    margin: 0 0 5px;
+    color: var(--ht-text);
+    letter-spacing: -0.015em;
+}
+
+.change-requests-ui .request-meta {
+    color: var(--ht-secondary);
+}
+
+.change-requests-ui .comparison-grid {
+    gap: 16px;
+    margin: 22px 0;
+}
+
+.change-requests-ui .comparison-card {
+    padding: 20px;
+    border: 1px solid var(--ht-border);
+    border-radius: 14px;
+    background: rgba(249, 253, 252, 0.86);
+}
+
+.change-requests-ui .comparison-card:last-child {
+    border-color: #b8d9d6;
+    background: linear-gradient(145deg, #f2fbfa, #e5f5f2);
+}
+
+.change-requests-ui .comparison-card h4 {
+    margin-top: 0;
+    color: var(--ht-teal-dark);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.change-requests-ui .comparison-value {
+    color: var(--ht-text);
+    font-size: 1.35rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+}
+
+.change-requests-ui .proposal-decision-heading {
+    margin: 22px 0 10px;
+    color: var(--ht-secondary);
+    font-size: 12px;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+}
+
+.change-requests-ui .proposal-actions {
+    gap: 10px;
+    margin-top: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--ht-border);
+}
+
+.change-requests-ui .proposal-actions form {
+    margin: 0;
+}
+
+.change-requests-ui .reject-button {
+    border-color: #d9908a;
+    background: linear-gradient(135deg, #b94b43, #9f3832);
+}
+
+.change-requests-ui .empty-state {
+    padding: 22px;
+    border: 1px dashed #bad1d0;
+    border-radius: 14px;
+    background: rgba(244, 250, 249, 0.85);
+    color: var(--ht-secondary);
+}
+
+.change-requests-ui .empty-state::before {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ht-teal);
+    font-size: 20px;
+    content: "✓";
+}
+
+.change-requests-ui .history-table-container {
+    border: 1px solid var(--ht-border);
+    border-radius: 16px;
+    box-shadow: 0 10px 26px rgba(22, 48, 51, 0.05);
+}
+
+.change-requests-ui .history-table {
+    margin: 0;
+    background: rgba(255, 255, 255, 0.92);
+}
+
 /* Profile */
 .profile-ui .healthtrack-page-shell {
     max-width: 860px;
@@ -1566,6 +1742,13 @@ body.healthtrack-ui::before {
 
     .records-ui .records-filter-card .records-filter-form {
         grid-template-columns: 1fr;
+    }
+
+    .change-requests-ui .change-requests-hero::after {
+        right: 18px;
+        bottom: 18px;
+        width: 58px;
+        height: 58px;
     }
 
     .profile-ui .profile-cover {
