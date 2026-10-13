@@ -315,12 +315,12 @@
 .healthtrack-app-layout .btn,
 .healthtrack-app-layout .feature-card,
 .healthtrack-app-layout .card {
-    transform: none !important;
     transition:
         color 200ms ease,
         background-color 200ms ease,
         border-color 200ms ease,
-        box-shadow 220ms ease !important;
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1) !important;
 }
 
 .healthtrack-app-layout button:hover,
@@ -331,7 +331,13 @@
 .healthtrack-app-layout .btn:active,
 .healthtrack-app-layout .feature-card:hover,
 .healthtrack-app-layout .card:hover {
-    transform: none !important;
+    transform: translateY(-2px) !important;
+}
+
+.healthtrack-app-layout button:active,
+.healthtrack-app-layout .button:active,
+.healthtrack-app-layout .btn:active {
+    transform: translateY(0) !important;
 }
 
 @media (max-width: 860px) {
@@ -1783,5 +1789,215 @@ body.healthtrack-ui::before {
 
     .profile-ui .profile-actions .compact-form {
         margin-left: 0;
+    }
+}
+
+/* Shared interaction polish
+   Keeps cards, navigation and controls feeling responsive without changing
+   the page structure or any form behaviour. */
+.healthtrack-app-layout .feature-card,
+.healthtrack-app-layout .card,
+.healthtrack-app-layout .form-card,
+.healthtrack-app-layout .filter-card,
+.healthtrack-app-layout .stat-card,
+.healthtrack-app-layout .stats-card,
+.healthtrack-app-layout .record-card,
+.healthtrack-app-layout .patient-summary,
+.healthtrack-app-layout .analytics-section,
+.healthtrack-app-layout .analytics-message,
+.healthtrack-app-layout .metric-panel,
+.healthtrack-app-layout .adherence-card,
+.healthtrack-app-layout .ht-admin-stat,
+.healthtrack-app-layout .analytics-summary-card,
+.healthtrack-app-layout .metric-stat,
+.healthtrack-app-layout .blood-pressure-latest {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    transition:
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1) !important;
+}
+
+.healthtrack-app-layout .feature-card::before,
+.healthtrack-app-layout .card::before,
+.healthtrack-app-layout .stat-card::before,
+.healthtrack-app-layout .stats-card::before {
+    position: absolute;
+    inset: 0 0 auto;
+    height: 3px;
+    background: linear-gradient(90deg, var(--ht-teal), #54b9b2, transparent);
+    content: "";
+    opacity: 0;
+    transform: translateX(-18%);
+    transition: opacity 220ms ease, transform 260ms ease;
+    pointer-events: none;
+}
+
+.healthtrack-app-layout .feature-card:hover,
+.healthtrack-app-layout .feature-card:focus-visible,
+.healthtrack-app-layout .card:hover,
+.healthtrack-app-layout .card:focus-within,
+.healthtrack-app-layout .form-card:hover,
+.healthtrack-app-layout .filter-card:hover,
+.healthtrack-app-layout .stat-card:hover,
+.healthtrack-app-layout .stats-card:hover,
+.healthtrack-app-layout .record-card:hover,
+.healthtrack-app-layout .patient-summary:hover,
+.healthtrack-app-layout .analytics-section:hover,
+.healthtrack-app-layout .metric-panel:hover,
+.healthtrack-app-layout .adherence-card:hover,
+.healthtrack-app-layout .ht-admin-stat:hover {
+    border-color: #abd1cf !important;
+    box-shadow: 0 18px 42px rgba(22, 48, 51, 0.12) !important;
+    transform: translateY(-4px) !important;
+}
+
+.healthtrack-app-layout .feature-card:hover::before,
+.healthtrack-app-layout .feature-card:focus-visible::before,
+.healthtrack-app-layout .card:hover::before,
+.healthtrack-app-layout .card:focus-within::before,
+.healthtrack-app-layout .stat-card:hover::before,
+.healthtrack-app-layout .stats-card:hover::before {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.healthtrack-app-layout .feature-card .feature-icon,
+.healthtrack-app-layout .feature-card .icon,
+.healthtrack-app-layout .card .feature-icon {
+    transition: background-color 220ms ease, transform 220ms ease, box-shadow 220ms ease;
+}
+
+.healthtrack-app-layout .feature-card:hover .feature-icon,
+.healthtrack-app-layout .feature-card:focus-visible .feature-icon,
+.healthtrack-app-layout .card:hover .feature-icon {
+    background: #d8f2ef;
+    box-shadow: 0 7px 15px rgba(11, 107, 109, 0.12);
+    transform: scale(1.05);
+}
+
+.healthtrack-app-layout .feature-card:focus-visible,
+.healthtrack-app-layout .card:focus-within {
+    outline: 3px solid rgba(11, 107, 109, 0.18);
+    outline-offset: 3px;
+}
+
+.ht-app-nav a {
+    transition:
+        color 200ms ease,
+        background-color 200ms ease,
+        box-shadow 200ms ease,
+        transform 200ms ease !important;
+}
+
+.ht-app-nav a:hover {
+    box-shadow: 0 7px 16px rgba(11, 107, 109, 0.08);
+    transform: translateX(3px);
+}
+
+.ht-app-nav a.is-active {
+    box-shadow: inset 0 0 0 1px rgba(11, 107, 109, 0.05), 0 6px 16px rgba(11, 107, 109, 0.07);
+}
+
+.ht-app-nav img,
+.ht-app-mobile-nav img {
+    transition: opacity 200ms ease, transform 200ms ease;
+}
+
+.ht-app-nav a:hover img,
+.ht-app-nav a.is-active img,
+.ht-app-mobile-nav a:hover img,
+.ht-app-mobile-nav a.is-active img {
+    opacity: 1;
+    transform: scale(1.08);
+}
+
+.healthtrack-ui .ht-primary-action,
+.healthtrack-ui .healthtrack-page-shell > nav a,
+.healthtrack-ui .healthtrack-page-shell > .dashboard-link,
+.healthtrack-ui .healthtrack-page-shell > .back-link,
+.healthtrack-ui .healthtrack-page-shell > .bottom-link,
+.healthtrack-ui .healthtrack-page-shell > .bottom-dashboard-link {
+    transition:
+        color 200ms ease,
+        background-color 200ms ease,
+        border-color 200ms ease,
+        box-shadow 220ms ease,
+        transform 200ms ease;
+}
+
+.healthtrack-ui .ht-primary-action:hover,
+.healthtrack-ui .healthtrack-page-shell > nav a:hover,
+.healthtrack-ui .healthtrack-page-shell > .dashboard-link:hover,
+.healthtrack-ui .healthtrack-page-shell > .back-link:hover,
+.healthtrack-ui .healthtrack-page-shell > .bottom-link:hover,
+.healthtrack-ui .healthtrack-page-shell > .bottom-dashboard-link:hover {
+    box-shadow: 0 8px 20px rgba(11, 107, 109, 0.13);
+    transform: translateY(-2px);
+}
+
+.healthtrack-ui .healthtrack-page-shell > nav a:active,
+.healthtrack-ui .healthtrack-page-shell > .dashboard-link:active,
+.healthtrack-ui .healthtrack-page-shell > .back-link:active,
+.healthtrack-ui .healthtrack-page-shell > .bottom-link:active,
+.healthtrack-ui .healthtrack-page-shell > .bottom-dashboard-link:active {
+    transform: translateY(0);
+}
+
+.healthtrack-ui tbody tr {
+    transition: background-color 180ms ease;
+}
+
+.healthtrack-ui tbody tr:hover {
+    background: #f5fbfa;
+}
+
+.healthtrack-ui .status,
+.healthtrack-ui .count,
+.healthtrack-ui .rate {
+    border: 1px solid rgba(11, 107, 109, 0.09);
+    box-shadow: 0 4px 12px rgba(11, 107, 109, 0.06);
+}
+
+.healthtrack-ui .empty,
+.healthtrack-ui .empty-state,
+.healthtrack-ui .empty-row,
+.healthtrack-ui .chart-empty-message {
+    border: 1px dashed #b9d2d0;
+    border-radius: 14px;
+}
+
+.healthtrack-ui .success-message,
+.healthtrack-ui .success,
+.healthtrack-ui .alert-success,
+.healthtrack-ui .error-message,
+.healthtrack-ui .error,
+.healthtrack-ui .alert-error,
+.healthtrack-ui .warning-message,
+.healthtrack-ui .warning {
+    border-radius: 12px;
+    box-shadow: 0 7px 18px rgba(22, 48, 51, 0.06);
+}
+
+@media (max-width: 860px) {
+    .ht-app-nav a:hover {
+        transform: none;
+    }
+
+    .healthtrack-app-layout .feature-card:hover,
+    .healthtrack-app-layout .card:hover,
+    .healthtrack-app-layout .form-card:hover,
+    .healthtrack-app-layout .filter-card:hover,
+    .healthtrack-app-layout .stat-card:hover,
+    .healthtrack-app-layout .stats-card:hover,
+    .healthtrack-app-layout .record-card:hover,
+    .healthtrack-app-layout .patient-summary:hover,
+    .healthtrack-app-layout .analytics-section:hover,
+    .healthtrack-app-layout .metric-panel:hover,
+    .healthtrack-app-layout .adherence-card:hover,
+    .healthtrack-app-layout .ht-admin-stat:hover {
+        transform: translateY(-2px) !important;
     }
 }
