@@ -400,6 +400,127 @@
     }
 }
 
+/* Messaging colour system
+   The messaging templates have their own legacy styles, so keep their
+   actions and conversation bubbles aligned with the shared HealthTrack palette. */
+.inbox-page .primary-link,
+.inbox-page .primary-link:visited,
+.conversation-page .send-button,
+.inbox-page .send-button,
+.inbox-page .ht-primary-action,
+.conversation-page .ht-primary-action {
+    border: 1px solid var(--ht-teal) !important;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 18px rgba(7, 84, 86, 0.14);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+    transition: background 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.inbox-page .primary-link:hover,
+.conversation-page .send-button:hover,
+.inbox-page .send-button:hover,
+.inbox-page .ht-primary-action:hover,
+.conversation-page .ht-primary-action:hover {
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 24px rgba(7, 84, 86, 0.22);
+    transform: translateY(-2px);
+}
+
+.inbox-page .access-button,
+.conversation-page .access-button,
+.inbox-page .contact-link,
+.conversation-page .refresh-link {
+    border: 1px solid #b6cece !important;
+    background: #ffffff !important;
+    color: var(--ht-teal-dark) !important;
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.inbox-page .access-button:hover,
+.conversation-page .access-button:hover,
+.inbox-page .contact-link:hover,
+.conversation-page .refresh-link:hover {
+    border-color: var(--ht-teal) !important;
+    background: #e8f6f5 !important;
+    color: var(--ht-teal-dark) !important;
+    box-shadow: 0 7px 16px rgba(11, 107, 109, 0.11);
+    transform: translateY(-1px);
+}
+
+.inbox-page .inbox-panel,
+.conversation-page .conversation-panel {
+    border-color: #cddfdf;
+    box-shadow: 0 12px 30px rgba(22, 48, 51, 0.07);
+}
+
+.inbox-page .inbox-panel-header,
+.conversation-page .history-heading {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9f8 100%);
+}
+
+.inbox-page .contact-row {
+    transition: background-color 180ms ease, padding-left 180ms ease;
+}
+
+.inbox-page .contact-row:hover {
+    background: #f4fbfa;
+    padding-left: 28px;
+}
+
+.inbox-page .count-badge,
+.conversation-page .history-order {
+    border: 1px solid rgba(11, 107, 109, 0.11);
+    background: #e3f3f1;
+    color: var(--ht-teal-dark);
+}
+
+.conversation-page .message-list,
+.conversation-page .conversation-empty {
+    background:
+        radial-gradient(circle at 12% 15%, rgba(93, 181, 175, 0.09), transparent 18rem),
+        #f4faf9;
+}
+
+.conversation-page .message-item {
+    border-color: #cfe0e0;
+    box-shadow: 0 7px 18px rgba(22, 48, 51, 0.06);
+    transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.conversation-page .message-item:hover {
+    box-shadow: 0 11px 24px rgba(22, 48, 51, 0.10);
+    transform: translateY(-2px);
+}
+
+.conversation-page .message-item.sent {
+    border-color: var(--ht-teal);
+    background: linear-gradient(135deg, var(--ht-teal), #168b88);
+    color: #ffffff;
+}
+
+.conversation-page .message-item.received {
+    background: #ffffff;
+    color: var(--ht-text);
+}
+
+.conversation-page .compose-form {
+    background: linear-gradient(180deg, #ffffff, #f8fcfc);
+}
+
+.conversation-page .compose-form textarea:focus {
+    border-color: var(--ht-teal);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(11, 107, 109, 0.12);
+}
+
+@media (max-width: 600px) {
+    .inbox-page .contact-row:hover {
+        padding-left: 20px;
+    }
+}
+
 @media (prefers-reduced-motion: reduce) {
     .healthtrack-app-layout *,
     .healthtrack-app-layout *::before,
