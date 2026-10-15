@@ -7,7 +7,7 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1">
 
-    <title>Health Record Change Requests</title>
+    <title>Change requests | HealthTrack</title>
 
     <link rel="stylesheet"
           href="/css/app.css"
@@ -129,7 +129,7 @@
     <link rel="stylesheet" href="/css/healthtrack-ui.css" data-th-href="@{/css/healthtrack-ui.css}">
 </head>
 
-<body class="healthtrack-ui healthtrack-app-layout">
+<body class="healthtrack-ui change-requests-ui healthtrack-app-layout">
 <div data-th-replace="~{fragments/navigation :: navigation('change-requests', 'Change requests')}"></div>
 <div class="healthtrack-page-shell">
 
@@ -137,7 +137,7 @@
 
     <a href="/patient/dashboard"
        data-th-href="@{/patient/dashboard}">
-        Back to Dashboard
+        Back to dashboard
     </a>
 
 </nav>
@@ -145,45 +145,41 @@
 
 <main>
 
-    <h1>
-        Health Record Change Requests
-    </h1>
-
-    <p>
-        Healthcare Providers can propose new Health Records or
-        corrections while they have access to your records.
-        Nothing becomes permanent until you approve the proposal.
-    </p>
+    <header class="change-requests-hero">
+        <span class="change-requests-eyebrow">Review before applying</span>
+        <h1>Change requests</h1>
+        <p>
+            Review provider-proposed updates before they become part of your
+            permanent health record. You stay in control of every change.
+        </p>
+    </header>
 
 
     <!-- SUCCESS / RESULT MESSAGES -->
 
     <p class="message message-success"
        data-th-if="${param.approved}">
-        The proposed Health Record change was approved and
-        successfully applied.
+        The proposed health record change was approved and applied successfully.
     </p>
 
 
     <p class="message message-info"
        data-th-if="${param.rejected}">
-        The Health Record change proposal was rejected.
-        Your permanent Health Records were not changed.
+        The change request was rejected. Your permanent health records were not changed.
     </p>
 
 
     <p class="message message-warning"
        data-th-if="${param.stale}">
-        This proposal could not be applied because the original
-        Health Record changed after the Provider submitted the proposal.
-        The newer permanent record was protected.
+        This proposal could not be applied because the original health record
+        changed after the provider submitted it. The newer record was protected.
     </p>
 
 
     <p class="message message-warning"
        data-th-if="${param.cancelled}">
-        This proposal could not be applied because the Provider
-        no longer has active access to your Health Records.
+        This proposal could not be applied because the provider no longer has
+        active access to your health records.
     </p>
 
 
@@ -192,7 +188,7 @@
     <section aria-labelledby="pending-heading">
 
         <h2 id="pending-heading">
-            Pending Requests
+            Pending requests
         </h2>
 
 
@@ -206,7 +202,7 @@
 
         <p class="empty-state"
            data-th-if="${#lists.isEmpty(pendingRequests)}">
-            You currently have no pending Health Record change requests.
+            You currently have no pending health record change requests.
         </p>
 
 
@@ -231,14 +227,14 @@
             <div class="request-meta">
 
                 <p>
-                    Provider:
+                    Provider
                     <strong data-th-text="${request.provider.fullName}">
                         Provider Name
                     </strong>
                 </p>
 
                 <p>
-                    Submitted:
+                    Submitted
                     <time
                         data-th-datetime="${request.requestedAt}"
                         data-th-text="${#temporals.format(request.requestedAt, 'dd MMM yyyy, HH:mm')}">
@@ -257,7 +253,7 @@
                 <section class="comparison-card">
 
                     <h4>
-                        Current / Original
+                        Current record
                     </h4>
 
 
@@ -268,7 +264,7 @@
                         </p>
 
                         <p>
-                            No permanent Health Record exists yet.
+                            No permanent health record exists yet.
                         </p>
 
                     </div>
@@ -298,7 +294,7 @@
 
 
                         <p>
-                            Observed:
+                                Observed
                             <time
                                 data-th-datetime="${request.originalObservedAt}"
                                 data-th-text="${#temporals.format(request.originalObservedAt, 'dd MMM yyyy, HH:mm')}">
@@ -309,7 +305,7 @@
 
                         <p class="notes"
                            data-th-text="${#strings.isEmpty(request.originalNotes) ? 'No notes.' : request.originalNotes}">
-                            Notes
+                                Notes
                         </p>
 
                     </div>
@@ -343,7 +339,7 @@
 
 
                         <p>
-                            Observed:
+                                Observed
                             <time
                                 data-th-datetime="${request.originalObservedAt}"
                                 data-th-text="${#temporals.format(request.originalObservedAt, 'dd MMM yyyy, HH:mm')}">
@@ -354,7 +350,7 @@
 
                         <p class="notes"
                            data-th-text="${#strings.isEmpty(request.originalNotes) ? 'No notes.' : request.originalNotes}">
-                            Notes
+                                Notes
                         </p>
 
                     </div>
@@ -367,7 +363,7 @@
                 <section class="comparison-card">
 
                     <h4>
-                        Proposed
+                        Proposed change
                     </h4>
 
 
@@ -428,7 +424,7 @@
 
 
                     <p>
-                        Observed:
+                        Observed
                         <time
                             data-th-datetime="${request.proposedObservedAt}"
                             data-th-text="${#temporals.format(request.proposedObservedAt, 'dd MMM yyyy, HH:mm')}">
@@ -449,13 +445,15 @@
 
             <!-- PATIENT DECISION -->
 
+            <h4 class="proposal-decision-heading">Choose an action</h4>
+
             <div class="proposal-actions">
 
                 <form data-th-action="@{/patient/health-record-change-requests/{requestId}/approve(requestId=${request.id})}"
                       method="post">
 
                     <button type="submit">
-                        Approve
+                        Approve change
                     </button>
 
                 </form>
@@ -466,7 +464,7 @@
 
                     <button type="submit"
                             class="reject-button">
-                        Reject
+                        Reject change
                     </button>
 
                 </form>
@@ -483,13 +481,13 @@
     <section aria-labelledby="history-heading">
 
         <h2 id="history-heading">
-            Request History
+            Request history
         </h2>
 
 
         <p class="empty-state"
            data-th-if="${#lists.isEmpty(requestHistory)}">
-            No Health Record change requests have been submitted yet.
+            No health record change requests have been submitted yet.
         </p>
 
 
@@ -511,7 +509,7 @@
                         </th>
 
                         <th scope="col">
-                            Record Type
+                            Record type
                         </th>
 
                         <th scope="col">

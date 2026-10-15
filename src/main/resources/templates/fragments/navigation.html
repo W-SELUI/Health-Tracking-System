@@ -165,8 +165,10 @@
            href="/profile"
            th:href="@{/profile}"
            th:classappend="${activeSection == 'profile'} ? ' is-active' : ''">
-            <img src="/provider-access/assets/profile-avatar.svg"
-                 th:src="@{/provider-access/assets/profile-avatar.svg}"
+            <img class="ht-app-account-avatar"
+                 src="/profile/cover-photo"
+                 th:src="@{/profile/cover-photo}"
+                 onerror="this.onerror=null; this.src='/provider-access/assets/profile-avatar.svg';"
                  alt="">
             <span class="ht-app-account-copy">
                 <span class="ht-app-account-name" sec:authentication="name">Account</span>
