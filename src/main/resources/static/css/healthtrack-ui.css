@@ -521,6 +521,59 @@
     }
 }
 
+/* Admin action links need an explicit colour because the shared link rule
+   otherwise replaces the white text declared by the older admin templates. */
+.healthtrack-ui a.verification-btn,
+.healthtrack-ui a.view-btn,
+.healthtrack-ui a.licence-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 0 16px;
+    border: 1px solid var(--ht-teal) !important;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(7, 84, 86, 0.14);
+    transition: background 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.healthtrack-ui a.verification-btn:hover,
+.healthtrack-ui a.view-btn:hover,
+.healthtrack-ui a.licence-btn:hover {
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 24px rgba(7, 84, 86, 0.22);
+    transform: translateY(-2px);
+}
+
+.healthtrack-ui a.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 0 16px;
+    border: 1px solid #b6cece !important;
+    border-radius: 9px;
+    background: #ffffff !important;
+    color: var(--ht-teal-dark) !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 5px 14px rgba(22, 48, 51, 0.06);
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.healthtrack-ui a.back-btn:hover {
+    border-color: var(--ht-teal) !important;
+    background: #e8f6f5 !important;
+    color: var(--ht-teal-dark) !important;
+    box-shadow: 0 9px 20px rgba(11, 107, 109, 0.12);
+    transform: translateY(-1px);
+}
+
 @media (prefers-reduced-motion: reduce) {
     .healthtrack-app-layout *,
     .healthtrack-app-layout *::before,
