@@ -30,7 +30,7 @@
     --ht-surface-soft: #edf6f5;
     --ht-text: #163033;
     --ht-secondary: #526a6d;
-    --ht-muted: #718588;
+    --ht-muted: #5e7375;
     --ht-border: #d5e3e3;
     --ht-teal: #0b6b6d;
     --ht-teal-dark: #075456;
@@ -572,6 +572,36 @@
     color: var(--ht-teal-dark) !important;
     box-shadow: 0 9px 20px rgba(11, 107, 109, 0.12);
     transform: translateY(-1px);
+}
+
+/* Keep administrative actions distinct while using the shared HealthTrack
+   control shape and contrast. */
+.healthtrack-app-layout button.enable-btn,
+.healthtrack-app-layout button.verify-btn {
+    border-color: #19734c !important;
+    background: linear-gradient(135deg, #19734c, #2f8d62) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.enable-btn:hover,
+.healthtrack-app-layout button.verify-btn:hover {
+    border-color: #145f3e !important;
+    background: linear-gradient(135deg, #145f3e, #24734f) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.disable-btn,
+.healthtrack-app-layout button.reject-btn {
+    border-color: var(--ht-danger) !important;
+    background: linear-gradient(135deg, #a33a32, #bd5148) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.disable-btn:hover,
+.healthtrack-app-layout button.reject-btn:hover {
+    border-color: #862d27 !important;
+    background: linear-gradient(135deg, #862d27, #a43d36) !important;
+    color: #ffffff !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
