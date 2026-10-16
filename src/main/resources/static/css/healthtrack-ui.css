@@ -2165,6 +2165,213 @@ body.healthtrack-ui::before {
     box-shadow: 0 4px 12px rgba(11, 107, 109, 0.06);
 }
 
+/* Provider pages
+   Keep provider-only screens on the same visual system as the shared
+   navigation and dashboard instead of falling back to their legacy blue UI. */
+.provider-ui .section-card,
+.provider-ui .status-card,
+.provider-ui .content-card {
+    border: 1px solid var(--ht-border);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 10px 30px rgba(22, 48, 51, 0.055);
+}
+
+.provider-ui .section-card,
+.provider-ui .status-card {
+    padding: clamp(20px, 3vw, 28px);
+}
+
+.provider-ui .section-card h2,
+.provider-ui .status-card h2,
+.provider-ui .content-card h2 {
+    color: var(--ht-text);
+}
+
+.provider-ui .section-card p,
+.provider-ui .status-card p,
+.provider-ui .content-card p {
+    color: var(--ht-secondary);
+}
+
+.provider-ui .status-card,
+.provider-ui .section-card,
+.provider-ui .content-card,
+.provider-ui .patient-summary {
+    transition:
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.provider-ui .status-card:hover,
+.provider-ui .section-card:hover,
+.provider-ui .content-card:hover,
+.provider-ui .patient-summary:hover {
+    border-color: #abd1cf;
+    box-shadow: 0 18px 42px rgba(22, 48, 51, 0.11);
+    transform: translateY(-2px);
+}
+
+.provider-ui .back-link,
+.provider-ui .dashboard-btn,
+.provider-ui .logout-btn {
+    border: 1px solid var(--ht-teal);
+    border-radius: 9px;
+    background: var(--ht-teal);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.provider-ui .back-link:hover,
+.provider-ui .dashboard-btn:hover,
+.provider-ui .logout-btn:hover {
+    border-color: var(--ht-teal-dark);
+    background: var(--ht-teal-dark);
+    color: #ffffff !important;
+}
+
+.provider-ui .logout-btn {
+    background: var(--ht-surface);
+    border-color: var(--ht-border);
+    color: var(--ht-teal-dark) !important;
+}
+
+.provider-ui .logout-btn:hover {
+    background: var(--ht-surface-soft);
+    color: var(--ht-teal-dark) !important;
+}
+
+.provider-ui .info-box,
+.provider-ui .admin-note,
+.provider-ui .message,
+.provider-ui .empty-message {
+    border-radius: 11px;
+    line-height: 1.55;
+}
+
+.provider-ui .pending-box,
+.provider-ui .requested {
+    border: 1px solid #ead39a;
+    background: var(--ht-warning-bg);
+    color: var(--ht-warning);
+}
+
+.provider-ui .verified-box,
+.provider-ui .confirmed,
+.provider-ui .completed {
+    border: 1px solid #b9dfcc;
+    background: var(--ht-success-bg);
+    color: var(--ht-success);
+}
+
+.provider-ui .rejected-box,
+.provider-ui .rejected,
+.provider-ui .missed {
+    border: 1px solid #e6b9b5;
+    background: var(--ht-danger-bg);
+    color: var(--ht-danger);
+}
+
+.provider-ui .cancelled {
+    background: var(--ht-surface-soft);
+    color: var(--ht-muted);
+}
+
+.provider-ui .accept,
+.provider-ui .complete {
+    border-color: #19734c;
+    background: linear-gradient(135deg, #19734c, #2f8d62);
+    color: #ffffff;
+}
+
+.provider-ui .accept:hover,
+.provider-ui .complete:hover {
+    background: #145f3e;
+    color: #ffffff;
+}
+
+.provider-ui .reject,
+.provider-ui .missed-btn {
+    border-color: var(--ht-danger);
+    background: linear-gradient(135deg, #a33a32, #bd5148);
+    color: #ffffff;
+}
+
+.provider-ui .reject:hover,
+.provider-ui .missed-btn:hover {
+    background: #862d27;
+    color: #ffffff;
+}
+
+.provider-ui.records-ui > .healthtrack-page-shell > main {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.provider-ui.records-ui .record-navigation {
+    margin-bottom: 20px;
+}
+
+.provider-ui.records-ui .record-navigation a,
+.provider-ui.records-ui .proposal-action a {
+    border: 1px solid var(--ht-teal);
+    border-radius: 9px;
+    background: var(--ht-teal);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.provider-ui.records-ui .record-navigation a:hover,
+.provider-ui.records-ui .proposal-action a:hover {
+    background: var(--ht-teal-dark);
+    color: #ffffff !important;
+}
+
+.provider-ui.records-ui .proposal-action {
+    border: 1px solid var(--ht-border);
+    border-radius: 14px;
+    background: var(--ht-surface-soft);
+}
+
+.provider-ui.records-ui .proposal-explanation,
+.provider-ui.records-ui .muted {
+    color: var(--ht-secondary);
+}
+
+.provider-ui.records-ui .records-table th,
+.provider-ui .access-table th {
+    background: var(--ht-surface-soft);
+    color: var(--ht-muted);
+}
+
+.provider-ui.records-ui .records-table tbody tr:hover,
+.provider-ui .access-table tbody tr:hover {
+    background: #f7fbfa;
+}
+
+@media (max-width: 700px) {
+    .provider-ui .section-card,
+    .provider-ui .status-card,
+    .provider-ui .content-card {
+        padding: 18px;
+    }
+
+    .provider-ui .actions,
+    .provider-ui .record-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .provider-ui .actions .btn,
+    .provider-ui .record-actions a,
+    .provider-ui .back-link {
+        width: 100%;
+    }
+}
+
 .healthtrack-ui .empty,
 .healthtrack-ui .empty-state,
 .healthtrack-ui .empty-row,
