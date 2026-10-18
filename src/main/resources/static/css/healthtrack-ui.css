@@ -2352,6 +2352,82 @@ body.healthtrack-ui::before {
     background: #f7fbfa;
 }
 
+/* Provider-access actions
+   The legacy access templates wrap action buttons in forms. Reset those
+   forms so the shared form-card styling cannot create a second card around
+   a button or push it outside the action column. */
+.access-page .provider-row > form,
+.access-page .request-actions form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.access-page .provider-row > form .access-button,
+.access-page .request-actions .access-button {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    color: #ffffff !important;
+    text-align: center;
+}
+
+.access-page .access-button {
+    border: 1px solid var(--ht-teal) !important;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.access-page .access-button:hover {
+    border-color: var(--ht-teal-dark) !important;
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+}
+
+.access-page .approve-button {
+    border-color: #19734c !important;
+    background: linear-gradient(135deg, #19734c, #2f8d62) !important;
+}
+
+.access-page .reject-button {
+    border-color: var(--ht-danger) !important;
+    background: linear-gradient(135deg, #a33a32, #bd5148) !important;
+}
+
+.access-page .approve-button:hover {
+    background: #145f3e !important;
+}
+
+.access-page .reject-button:hover {
+    background: #862d27 !important;
+}
+
+/* The provider patient table uses anchor actions. The generic link colour
+   must not override their white text on teal buttons. */
+.provider-ui .record-actions .record-link,
+.provider-ui .action-button:not(.secondary) {
+    color: #ffffff !important;
+}
+
+.provider-ui .record-actions .record-link {
+    min-width: 132px;
+    text-align: center;
+}
+
+.provider-ui .action-button.secondary {
+    color: var(--ht-teal-dark) !important;
+}
+
 @media (max-width: 700px) {
     .provider-ui .section-card,
     .provider-ui .status-card,

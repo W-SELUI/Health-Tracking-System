@@ -779,7 +779,8 @@
                     <div class="request-actions">
 
 
-                        <form method="post"
+                        <form class="compact-form access-action-form"
+                              method="post"
                               data-th-action="@{/patient/consents/access-requests/{requestId}/approve(
                                   requestId=${request.id}
                               )}">
@@ -801,7 +802,8 @@
                         </form>
 
 
-                        <form method="post"
+                        <form class="compact-form access-action-form"
+                              method="post"
                               data-th-action="@{/patient/consents/access-requests/{requestId}/reject(
                                   requestId=${request.id}
                               )}">
@@ -954,7 +956,8 @@
                     </span>
 
 
-                    <form method="post"
+                    <form class="compact-form access-action-form"
+                          method="post"
                           data-th-action="@{/patient/consents/{providerId}/revoke(
                               providerId=${consent.provider.id}
                           )}">
