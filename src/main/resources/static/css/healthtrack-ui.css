@@ -30,7 +30,7 @@
     --ht-surface-soft: #edf6f5;
     --ht-text: #163033;
     --ht-secondary: #526a6d;
-    --ht-muted: #718588;
+    --ht-muted: #5e7375;
     --ht-border: #d5e3e3;
     --ht-teal: #0b6b6d;
     --ht-teal-dark: #075456;
@@ -398,6 +398,210 @@
         background: var(--ht-teal-light);
         color: var(--ht-teal-dark) !important;
     }
+}
+
+/* Messaging colour system
+   The messaging templates have their own legacy styles, so keep their
+   actions and conversation bubbles aligned with the shared HealthTrack palette. */
+.inbox-page .primary-link,
+.inbox-page .primary-link:visited,
+.conversation-page .send-button,
+.inbox-page .send-button,
+.inbox-page .ht-primary-action,
+.conversation-page .ht-primary-action {
+    border: 1px solid var(--ht-teal) !important;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 18px rgba(7, 84, 86, 0.14);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.08);
+    transition: background 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.inbox-page .primary-link:hover,
+.conversation-page .send-button:hover,
+.inbox-page .send-button:hover,
+.inbox-page .ht-primary-action:hover,
+.conversation-page .ht-primary-action:hover {
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 24px rgba(7, 84, 86, 0.22);
+    transform: translateY(-2px);
+}
+
+.inbox-page .access-button,
+.conversation-page .access-button,
+.inbox-page .contact-link,
+.conversation-page .refresh-link {
+    border: 1px solid #b6cece !important;
+    background: #ffffff !important;
+    color: var(--ht-teal-dark) !important;
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.inbox-page .access-button:hover,
+.conversation-page .access-button:hover,
+.inbox-page .contact-link:hover,
+.conversation-page .refresh-link:hover {
+    border-color: var(--ht-teal) !important;
+    background: #e8f6f5 !important;
+    color: var(--ht-teal-dark) !important;
+    box-shadow: 0 7px 16px rgba(11, 107, 109, 0.11);
+    transform: translateY(-1px);
+}
+
+.inbox-page .inbox-panel,
+.conversation-page .conversation-panel {
+    border-color: #cddfdf;
+    box-shadow: 0 12px 30px rgba(22, 48, 51, 0.07);
+}
+
+.inbox-page .inbox-panel-header,
+.conversation-page .history-heading {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9f8 100%);
+}
+
+.inbox-page .contact-row {
+    transition: background-color 180ms ease, padding-left 180ms ease;
+}
+
+.inbox-page .contact-row:hover {
+    background: #f4fbfa;
+    padding-left: 28px;
+}
+
+.inbox-page .count-badge,
+.conversation-page .history-order {
+    border: 1px solid rgba(11, 107, 109, 0.11);
+    background: #e3f3f1;
+    color: var(--ht-teal-dark);
+}
+
+.conversation-page .message-list,
+.conversation-page .conversation-empty {
+    background:
+        radial-gradient(circle at 12% 15%, rgba(93, 181, 175, 0.09), transparent 18rem),
+        #f4faf9;
+}
+
+.conversation-page .message-item {
+    border-color: #cfe0e0;
+    box-shadow: 0 7px 18px rgba(22, 48, 51, 0.06);
+    transition: box-shadow 200ms ease, transform 200ms ease;
+}
+
+.conversation-page .message-item:hover {
+    box-shadow: 0 11px 24px rgba(22, 48, 51, 0.10);
+    transform: translateY(-2px);
+}
+
+.conversation-page .message-item.sent {
+    border-color: var(--ht-teal);
+    background: linear-gradient(135deg, var(--ht-teal), #168b88);
+    color: #ffffff;
+}
+
+.conversation-page .message-item.received {
+    background: #ffffff;
+    color: var(--ht-text);
+}
+
+.conversation-page .compose-form {
+    background: linear-gradient(180deg, #ffffff, #f8fcfc);
+}
+
+.conversation-page .compose-form textarea:focus {
+    border-color: var(--ht-teal);
+    outline: none;
+    box-shadow: 0 0 0 4px rgba(11, 107, 109, 0.12);
+}
+
+@media (max-width: 600px) {
+    .inbox-page .contact-row:hover {
+        padding-left: 20px;
+    }
+}
+
+/* Admin action links need an explicit colour because the shared link rule
+   otherwise replaces the white text declared by the older admin templates. */
+.healthtrack-ui a.verification-btn,
+.healthtrack-ui a.view-btn,
+.healthtrack-ui a.licence-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 0 16px;
+    border: 1px solid var(--ht-teal) !important;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 8px 18px rgba(7, 84, 86, 0.14);
+    transition: background 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.healthtrack-ui a.verification-btn:hover,
+.healthtrack-ui a.view-btn:hover,
+.healthtrack-ui a.licence-btn:hover {
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+    box-shadow: 0 12px 24px rgba(7, 84, 86, 0.22);
+    transform: translateY(-2px);
+}
+
+.healthtrack-ui a.back-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 43px;
+    padding: 0 16px;
+    border: 1px solid #b6cece !important;
+    border-radius: 9px;
+    background: #ffffff !important;
+    color: var(--ht-teal-dark) !important;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 5px 14px rgba(22, 48, 51, 0.06);
+    transition: background-color 200ms ease, border-color 200ms ease, box-shadow 220ms ease, transform 200ms ease;
+}
+
+.healthtrack-ui a.back-btn:hover {
+    border-color: var(--ht-teal) !important;
+    background: #e8f6f5 !important;
+    color: var(--ht-teal-dark) !important;
+    box-shadow: 0 9px 20px rgba(11, 107, 109, 0.12);
+    transform: translateY(-1px);
+}
+
+/* Keep administrative actions distinct while using the shared HealthTrack
+   control shape and contrast. */
+.healthtrack-app-layout button.enable-btn,
+.healthtrack-app-layout button.verify-btn {
+    border-color: #19734c !important;
+    background: linear-gradient(135deg, #19734c, #2f8d62) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.enable-btn:hover,
+.healthtrack-app-layout button.verify-btn:hover {
+    border-color: #145f3e !important;
+    background: linear-gradient(135deg, #145f3e, #24734f) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.disable-btn,
+.healthtrack-app-layout button.reject-btn {
+    border-color: var(--ht-danger) !important;
+    background: linear-gradient(135deg, #a33a32, #bd5148) !important;
+    color: #ffffff !important;
+}
+
+.healthtrack-app-layout button.disable-btn:hover,
+.healthtrack-app-layout button.reject-btn:hover {
+    border-color: #862d27 !important;
+    background: linear-gradient(135deg, #862d27, #a43d36) !important;
+    color: #ffffff !important;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1959,6 +2163,289 @@ body.healthtrack-ui::before {
 .healthtrack-ui .rate {
     border: 1px solid rgba(11, 107, 109, 0.09);
     box-shadow: 0 4px 12px rgba(11, 107, 109, 0.06);
+}
+
+/* Provider pages
+   Keep provider-only screens on the same visual system as the shared
+   navigation and dashboard instead of falling back to their legacy blue UI. */
+.provider-ui .section-card,
+.provider-ui .status-card,
+.provider-ui .content-card {
+    border: 1px solid var(--ht-border);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.97);
+    box-shadow: 0 10px 30px rgba(22, 48, 51, 0.055);
+}
+
+.provider-ui .section-card,
+.provider-ui .status-card {
+    padding: clamp(20px, 3vw, 28px);
+}
+
+.provider-ui .section-card h2,
+.provider-ui .status-card h2,
+.provider-ui .content-card h2 {
+    color: var(--ht-text);
+}
+
+.provider-ui .section-card p,
+.provider-ui .status-card p,
+.provider-ui .content-card p {
+    color: var(--ht-secondary);
+}
+
+.provider-ui .status-card,
+.provider-ui .section-card,
+.provider-ui .content-card,
+.provider-ui .patient-summary {
+    transition:
+        border-color 220ms ease,
+        box-shadow 220ms ease,
+        transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.provider-ui .status-card:hover,
+.provider-ui .section-card:hover,
+.provider-ui .content-card:hover,
+.provider-ui .patient-summary:hover {
+    border-color: #abd1cf;
+    box-shadow: 0 18px 42px rgba(22, 48, 51, 0.11);
+    transform: translateY(-2px);
+}
+
+.provider-ui .back-link,
+.provider-ui .dashboard-btn,
+.provider-ui .logout-btn {
+    border: 1px solid var(--ht-teal);
+    border-radius: 9px;
+    background: var(--ht-teal);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.provider-ui .back-link:hover,
+.provider-ui .dashboard-btn:hover,
+.provider-ui .logout-btn:hover {
+    border-color: var(--ht-teal-dark);
+    background: var(--ht-teal-dark);
+    color: #ffffff !important;
+}
+
+.provider-ui .logout-btn {
+    background: var(--ht-surface);
+    border-color: var(--ht-border);
+    color: var(--ht-teal-dark) !important;
+}
+
+.provider-ui .logout-btn:hover {
+    background: var(--ht-surface-soft);
+    color: var(--ht-teal-dark) !important;
+}
+
+.provider-ui .info-box,
+.provider-ui .admin-note,
+.provider-ui .message,
+.provider-ui .empty-message {
+    border-radius: 11px;
+    line-height: 1.55;
+}
+
+.provider-ui .pending-box,
+.provider-ui .requested {
+    border: 1px solid #ead39a;
+    background: var(--ht-warning-bg);
+    color: var(--ht-warning);
+}
+
+.provider-ui .verified-box,
+.provider-ui .confirmed,
+.provider-ui .completed {
+    border: 1px solid #b9dfcc;
+    background: var(--ht-success-bg);
+    color: var(--ht-success);
+}
+
+.provider-ui .rejected-box,
+.provider-ui .rejected,
+.provider-ui .missed {
+    border: 1px solid #e6b9b5;
+    background: var(--ht-danger-bg);
+    color: var(--ht-danger);
+}
+
+.provider-ui .cancelled {
+    background: var(--ht-surface-soft);
+    color: var(--ht-muted);
+}
+
+.provider-ui .accept,
+.provider-ui .complete {
+    border-color: #19734c;
+    background: linear-gradient(135deg, #19734c, #2f8d62);
+    color: #ffffff;
+}
+
+.provider-ui .accept:hover,
+.provider-ui .complete:hover {
+    background: #145f3e;
+    color: #ffffff;
+}
+
+.provider-ui .reject,
+.provider-ui .missed-btn {
+    border-color: var(--ht-danger);
+    background: linear-gradient(135deg, #a33a32, #bd5148);
+    color: #ffffff;
+}
+
+.provider-ui .reject:hover,
+.provider-ui .missed-btn:hover {
+    background: #862d27;
+    color: #ffffff;
+}
+
+.provider-ui.records-ui > .healthtrack-page-shell > main {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.provider-ui.records-ui .record-navigation {
+    margin-bottom: 20px;
+}
+
+.provider-ui.records-ui .record-navigation a,
+.provider-ui.records-ui .proposal-action a {
+    border: 1px solid var(--ht-teal);
+    border-radius: 9px;
+    background: var(--ht-teal);
+    color: #ffffff !important;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.provider-ui.records-ui .record-navigation a:hover,
+.provider-ui.records-ui .proposal-action a:hover {
+    background: var(--ht-teal-dark);
+    color: #ffffff !important;
+}
+
+.provider-ui.records-ui .proposal-action {
+    border: 1px solid var(--ht-border);
+    border-radius: 14px;
+    background: var(--ht-surface-soft);
+}
+
+.provider-ui.records-ui .proposal-explanation,
+.provider-ui.records-ui .muted {
+    color: var(--ht-secondary);
+}
+
+.provider-ui.records-ui .records-table th,
+.provider-ui .access-table th {
+    background: var(--ht-surface-soft);
+    color: var(--ht-muted);
+}
+
+.provider-ui.records-ui .records-table tbody tr:hover,
+.provider-ui .access-table tbody tr:hover {
+    background: #f7fbfa;
+}
+
+/* Provider-access actions
+   The legacy access templates wrap action buttons in forms. Reset those
+   forms so the shared form-card styling cannot create a second card around
+   a button or push it outside the action column. */
+.access-page .provider-row > form,
+.access-page .request-actions form {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+}
+
+.access-page .provider-row > form .access-button,
+.access-page .request-actions .access-button {
+    width: 100%;
+    min-width: 0;
+    margin: 0;
+    color: #ffffff !important;
+    text-align: center;
+}
+
+.access-page .access-button {
+    border: 1px solid var(--ht-teal) !important;
+    border-radius: 9px;
+    background: linear-gradient(135deg, var(--ht-teal), #168b88) !important;
+    color: #ffffff !important;
+    font-weight: 700;
+}
+
+.access-page .access-button:hover {
+    border-color: var(--ht-teal-dark) !important;
+    background: linear-gradient(135deg, var(--ht-teal-dark), #0b7777) !important;
+    color: #ffffff !important;
+}
+
+.access-page .approve-button {
+    border-color: #19734c !important;
+    background: linear-gradient(135deg, #19734c, #2f8d62) !important;
+}
+
+.access-page .reject-button {
+    border-color: var(--ht-danger) !important;
+    background: linear-gradient(135deg, #a33a32, #bd5148) !important;
+}
+
+.access-page .approve-button:hover {
+    background: #145f3e !important;
+}
+
+.access-page .reject-button:hover {
+    background: #862d27 !important;
+}
+
+/* The provider patient table uses anchor actions. The generic link colour
+   must not override their white text on teal buttons. */
+.provider-ui .record-actions .record-link,
+.provider-ui .action-button:not(.secondary) {
+    color: #ffffff !important;
+}
+
+.provider-ui .record-actions .record-link {
+    min-width: 132px;
+    text-align: center;
+}
+
+.provider-ui .action-button.secondary {
+    color: var(--ht-teal-dark) !important;
+}
+
+@media (max-width: 700px) {
+    .provider-ui .section-card,
+    .provider-ui .status-card,
+    .provider-ui .content-card {
+        padding: 18px;
+    }
+
+    .provider-ui .actions,
+    .provider-ui .record-actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .provider-ui .actions .btn,
+    .provider-ui .record-actions a,
+    .provider-ui .back-link {
+        width: 100%;
+    }
 }
 
 .healthtrack-ui .empty,
