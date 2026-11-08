@@ -1,5 +1,6 @@
 package com.group15.health_tracking_system.health.controller;
 
+import com.group15.health_tracking_system.health.validation.HealthMeasurementRules;
 import com.group15.health_tracking_system.consent.service.ProviderHealthRecordService;
 import com.group15.health_tracking_system.health.dto.BloodPressureRecordRequest;
 import com.group15.health_tracking_system.health.dto.HealthRecordCreateRequest;
@@ -257,6 +258,13 @@ public class ProviderHealthRecordProposalController {
             BindingResult bindingResult,
             Model model) {
 
+        HealthMeasurementRules.checkScalarValue(
+                request.getMetricType(),
+                request.getMetricValue(),
+                bindingResult,
+                "metricValue"
+        );
+
         if (bindingResult.hasErrors()) {
 
             populateScalarEditModel(
@@ -366,6 +374,12 @@ public class ProviderHealthRecordProposalController {
 
             BindingResult bindingResult,
             Model model) {
+
+        HealthMeasurementRules.checkBloodPressure(
+                request.getSystolic(),
+                request.getDiastolic(),
+                bindingResult
+        );
 
         if (bindingResult.hasErrors()) {
 
@@ -539,6 +553,12 @@ public class ProviderHealthRecordProposalController {
                 );
             }
 
+            HealthMeasurementRules.checkBloodPressure(
+                    request.getSystolic(),
+                    request.getDiastolic(),
+                    bindingResult
+            );
+
             return;
         }
 
@@ -550,5 +570,12 @@ public class ProviderHealthRecordProposalController {
                     "Measurement value is required"
             );
         }
+
+        HealthMeasurementRules.checkScalarValue(
+                request.getMetricType().getScalarMetricType(),
+                request.getMetricValue(),
+                bindingResult,
+                "metricValue"
+        );
     }
 }

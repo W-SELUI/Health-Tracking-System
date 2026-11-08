@@ -3,7 +3,7 @@
           data-th-href="@{/css/healthtrack-ui.css}">
 </head><body class="healthtrack-ui activity-ui healthtrack-app-layout">
 <div data-th-replace="~{fragments/navigation :: navigation('activity', 'Activity')}"></div>
-<div class="healthtrack-page-shell"><header><h1>Health Tracking System</h1><p>My activity records</p></header><main><h2>Add or edit activity</h2><form method="post" th:action="${action}" th:object="${form}">
+<div class="healthtrack-page-shell"><header><h1>Activity</h1><p>Log your exercise and see your recent activity.</p></header><main><h2>Add or edit activity</h2><form method="post" th:action="${action}" th:object="${form}">
 <div class="errors" th:if="${#fields.hasAnyErrors()}"><p>Please correct these fields:</p><ul><li th:each="error : ${#fields.allErrors()}" th:text="${error}"></li></ul></div>
 <label>Date<input type="date" th:field="*{activityDate}" required></label>
 <label>Daily steps<input type="number" th:field="*{steps}" min="0" required></label>

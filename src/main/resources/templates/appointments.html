@@ -314,9 +314,11 @@
 <div class="healthtrack-page-shell">
 
 <header class="header">
-    <h1>Health Tracking System</h1>
-    <p>Appointment Management</p>
+    <h1>Appointment Management</h1>
+    <p>Book and manage your appointments with healthcare providers.</p>
 </header>
+
+<div class="error-message ht-flash-error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
 <main class="container">
 

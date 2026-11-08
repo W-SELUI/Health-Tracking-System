@@ -126,7 +126,7 @@
 
     <tr th:each="record : ${records}">
 
-        <td th:text="${record.observedAt}">
+        <td th:text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
             2026-10-10T09:30
         </td>
 

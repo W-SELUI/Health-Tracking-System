@@ -41,6 +41,17 @@ public class ProviderVerification extends BaseEntity {
     )
     private String filePath;
 
+    /*
+     * The licence file itself. Stored in the database so it survives
+     * restarts on hosts with temporary disks (for example Render).
+     */
+    @Lob
+    @Column(
+            name = "file_data",
+            columnDefinition = "LONGBLOB"
+    )
+    private byte[] fileData;
+
     @Enumerated(EnumType.STRING)
     @Column(
             nullable = false,
@@ -102,6 +113,16 @@ public class ProviderVerification extends BaseEntity {
             String filePath) {
 
         this.filePath = filePath;
+    }
+
+    public byte[] getFileData() {
+        return fileData;
+    }
+
+    public void setFileData(
+            byte[] fileData) {
+
+        this.fileData = fileData;
     }
 
     public VerificationStatus getStatus() {

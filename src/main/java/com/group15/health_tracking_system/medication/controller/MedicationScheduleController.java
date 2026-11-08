@@ -14,6 +14,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Controller
 @RequestMapping("/schedules")
@@ -314,5 +316,48 @@ public class MedicationScheduleController {
                 user.getId());
 
         return "redirect:/schedules";
+    }
+
+    /**
+     * Validation problems (for example an end date before the start date)
+     * are thrown as IllegalArgumentException. Show the message on the page
+     * the user came from instead of an error page.
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String handleValidationError(
+            IllegalArgumentException exception,
+            HttpServletRequest request,
+            RedirectAttributes redirectAttributes) {
+
+        redirectAttributes.addFlashAttribute(
+                "errorMessage",
+                exception.getMessage());
+
+        return "redirect:" + safeReturnPath(
+                request.getHeader("Referer"),
+                "/schedules");
+    }
+
+    private String safeReturnPath(String referer, String fallback) {
+
+        if (referer == null) {
+            return fallback;
+        }
+
+        try {
+            java.net.URI uri = java.net.URI.create(referer);
+            String path = uri.getRawPath();
+
+            if (path == null || !path.startsWith("/schedules")) {
+                return fallback;
+            }
+
+            return uri.getRawQuery() == null
+                    ? path
+                    : path + "?" + uri.getRawQuery();
+
+        } catch (IllegalArgumentException invalidReferer) {
+            return fallback;
+        }
     }
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Size;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * Form data used when a patient creates or edits a health record.
@@ -23,6 +24,7 @@ public class HealthRecordRequest {
 
     @NotNull(message = "Observation date and time are required")
     @PastOrPresent(message = "Observation time cannot be in the future")
+    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm")
     private LocalDateTime observedAt;
 
     @Size(max = 1000, message = "Notes must not exceed 1000 characters")

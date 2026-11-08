@@ -1,0 +1,11 @@
+target/
+uploads/
+images/
+*.tgz
+*.zip
+.git/
+.idea/
+.vscode/
+nbproject/
+nbactions*.xml
+Claude outputs/

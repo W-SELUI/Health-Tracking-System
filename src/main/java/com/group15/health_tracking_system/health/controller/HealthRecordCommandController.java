@@ -1,5 +1,6 @@
 package com.group15.health_tracking_system.health.controller;
 
+import com.group15.health_tracking_system.health.validation.HealthMeasurementRules;
 import com.group15.health_tracking_system.health.dto.BloodPressureRecordRequest;
 import com.group15.health_tracking_system.health.dto.HealthRecordCreateRequest;
 import com.group15.health_tracking_system.health.dto.HealthRecordFilterOption;
@@ -146,6 +147,13 @@ public class HealthRecordCommandController {
             BindingResult bindingResult,
             Model model) {
 
+        HealthMeasurementRules.checkScalarValue(
+                request.getMetricType(),
+                request.getMetricValue(),
+                bindingResult,
+                "metricValue"
+        );
+
         if (bindingResult.hasErrors()) {
 
             model.addAttribute(
@@ -209,6 +217,12 @@ public class HealthRecordCommandController {
                 );
             }
 
+            HealthMeasurementRules.checkBloodPressure(
+                    request.getSystolic(),
+                    request.getDiastolic(),
+                    bindingResult
+            );
+
             return;
         }
 
@@ -219,6 +233,13 @@ public class HealthRecordCommandController {
                     "Measurement value is required"
             );
         }
+
+        HealthMeasurementRules.checkScalarValue(
+                request.getMetricType().getScalarMetricType(),
+                request.getMetricValue(),
+                bindingResult,
+                "metricValue"
+        );
     }
 
     private void addCreateMetricOptions(Model model) {

@@ -198,9 +198,11 @@
 <div class="healthtrack-page-shell">
 
 <header>
-    <h1>Health Tracking System</h1>
-    <p>Medication Schedule Management</p>
+    <h1>Medication Schedule Management</h1>
+    <p>Set up reminders for when to take each medication.</p>
 </header>
+
+<div class="error-message ht-flash-error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
 
 <main>
 

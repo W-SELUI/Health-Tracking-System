@@ -41,7 +41,7 @@
     <p>
         <strong>Observed At:</strong>
 
-        <span th:text="${record.observedAt}">
+        <span th:text="${#temporals.format(record.observedAt, 'dd MMM yyyy, HH:mm')}">
             2026-10-10T09:30
         </span>
     </p>

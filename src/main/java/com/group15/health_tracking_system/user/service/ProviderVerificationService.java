@@ -9,7 +9,6 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,9 +24,6 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProviderVerificationService {
 
     private final ProviderVerificationRepository repository;
-
-    private static final String UPLOAD_DIRECTORY =
-            "uploads/provider-licenses";
 
     public ProviderVerificationService(
             ProviderVerificationRepository repository) {
@@ -61,13 +57,6 @@ public class ProviderVerificationService {
 
         try {
 
-            Path uploadPath =
-                    Paths.get(
-                            UPLOAD_DIRECTORY);
-
-            Files.createDirectories(
-                    uploadPath);
-
             String originalFileName =
                     file.getOriginalFilename();
 
@@ -82,14 +71,8 @@ public class ProviderVerificationService {
                             + UUID.randomUUID()
                             + extension;
 
-            Path destination =
-                    uploadPath.resolve(
-                            safeFileName);
-
-            Files.copy(
-                    file.getInputStream(),
-                    destination,
-                    StandardCopyOption.REPLACE_EXISTING);
+            byte[] fileBytes =
+                    file.getBytes();
 
             ProviderVerification verification =
                     repository
@@ -104,7 +87,8 @@ public class ProviderVerificationService {
              */
             if (verification.getId() != null
                     && verification.getFilePath() != null
-                    && !verification.getFilePath().isBlank()) {
+                    && !verification.getFilePath().isBlank()
+                && !verification.getFilePath().startsWith("database:")) {
 
                 deleteOldFile(
                         verification.getFilePath());
@@ -129,10 +113,15 @@ public class ProviderVerificationService {
             verification.setFileType(
                     contentType);
 
+            /*
+             * The file is kept in the database. file_path now only
+             * records a reference name for older records and audits.
+             */
             verification.setFilePath(
-                    destination
-                            .toAbsolutePath()
-                            .toString());
+                    "database:" + safeFileName);
+
+            verification.setFileData(
+                    fileBytes);
 
             /*
              * Every new or replacement licence
@@ -212,6 +201,12 @@ public class ProviderVerificationService {
                 getById(
                         verificationId);
 
+        if (verification.getFileData() != null) {
+            return new org.springframework.core.io.ByteArrayResource(
+                    verification.getFileData());
+        }
+
+        // Older records saved before licences moved into the database.
         try {
 
             Path filePath =
@@ -324,13 +319,14 @@ public class ProviderVerificationService {
                     "Only PDF, JPG, JPEG and PNG licence files are allowed.");
         }
 
+        // 5 MB keeps each stored file within hosted database row limits.
         long maximumSize =
-                10L * 1024L * 1024L;
+                5L * 1024L * 1024L;
 
         if (file.getSize() > maximumSize) {
 
             throw new IllegalArgumentException(
-                    "Licence file must not exceed 10 MB.");
+                    "Licence file must not exceed 5 MB.");
         }
     }
 

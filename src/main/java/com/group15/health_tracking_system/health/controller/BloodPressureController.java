@@ -1,5 +1,6 @@
 package com.group15.health_tracking_system.health.controller;
 
+import com.group15.health_tracking_system.health.validation.HealthMeasurementRules;
 import com.group15.health_tracking_system.health.dto.BloodPressureRecordRequest;
 import com.group15.health_tracking_system.health.entity.BloodPressureRecord;
 import com.group15.health_tracking_system.health.service.BloodPressureCommandService;
@@ -110,6 +111,12 @@ public class BloodPressureController {
 
             BindingResult bindingResult,
             Model model) {
+
+        HealthMeasurementRules.checkBloodPressure(
+                request.getSystolic(),
+                request.getDiastolic(),
+                bindingResult
+        );
 
         if (bindingResult.hasErrors()) {
 

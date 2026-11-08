@@ -130,7 +130,11 @@ public class ProfileController {
         User currentUser = currentUserService.getCurrentUser();
 
         if (!currentUser.isCoverPhotoPresent()) {
-            return ResponseEntity.notFound().build();
+            // No photo yet: send the browser to the default avatar instead
+            // of a 404, so the sidebar does not log an error on every page.
+            return ResponseEntity.status(org.springframework.http.HttpStatus.FOUND)
+                    .location(java.net.URI.create("/provider-access/assets/profile-avatar.svg"))
+                    .build();
         }
 
         return ResponseEntity.ok()
