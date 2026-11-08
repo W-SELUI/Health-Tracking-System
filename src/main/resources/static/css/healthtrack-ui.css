@@ -3471,3 +3471,222 @@ body.healthtrack-ui .ht-flash-error {
     font-size: 14px;
     font-weight: 600;
 }
+
+/* =====================================================================
+   Phone & tablet layout
+   ---------------------------------------------------------------------
+   Up to 860px wide the sidebar is hidden and a bottom bar is shown.
+   The "Menu" button in that bar slides the full sidebar in as a drawer,
+   so every page is reachable on a phone (not only the 4 bottom links).
+   ===================================================================== */
+
+/* Sent chat bubbles: keep all text white on the teal bubble */
+body.conversation-page .message-item.sent,
+body.conversation-page .message-item.sent p,
+body.conversation-page .message-item.sent strong,
+body.conversation-page .message-item.sent time,
+body.conversation-page .message-item.sent .message-content {
+    color: #ffffff !important;
+}
+
+body.conversation-page .message-item.sent time {
+    opacity: 0.8;
+}
+
+body.healthtrack-ui .ht-app-menu-toggle,
+.ht-app-nav-backdrop {
+    display: none;
+}
+
+@media (max-width: 860px) {
+
+    /* ----- Drawer ----- */
+    body.healthtrack-ui .ht-app-sidebar {
+        display: flex;
+        z-index: 90;
+        width: min(300px, 84vw);
+        overflow-y: auto;
+        transform: translateX(-105%);
+        transition: transform 240ms cubic-bezier(0.22, 1, 0.36, 1);
+        box-shadow: none;
+    }
+
+    body.ht-nav-open .ht-app-sidebar {
+        transform: translateX(0);
+        box-shadow: 12px 0 40px rgba(12, 34, 38, 0.35);
+    }
+
+    body.ht-nav-open {
+        overflow: hidden;
+    }
+
+    .ht-app-nav-backdrop:not([hidden]) {
+        position: fixed;
+        inset: 0;
+        z-index: 85;
+        display: block;
+        background: rgba(12, 34, 38, 0.45);
+        backdrop-filter: blur(2px);
+    }
+
+    body.healthtrack-ui .ht-app-nav a {
+        min-height: 46px;
+    }
+
+    /* ----- Bottom bar ----- */
+    body.healthtrack-ui .ht-app-mobile-nav {
+        z-index: 80;
+        gap: 2px;
+        padding-top: 6px;
+    }
+
+    body.healthtrack-ui .ht-app-mobile-nav a,
+    body.healthtrack-ui .ht-app-menu-toggle {
+        display: flex;
+        flex: 1;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 4px;
+        min-width: 0;
+        min-height: 52px;
+        padding: 6px 4px;
+        border: 0;
+        border-radius: 12px;
+        background: transparent;
+        box-shadow: none;
+        color: rgba(255, 255, 255, 0.62) !important;
+        font: inherit;
+        font-size: 11px;
+        font-weight: 600;
+        line-height: 1;
+        cursor: pointer;
+        transform: none !important;
+    }
+
+    body.healthtrack-ui .ht-app-mobile-nav img {
+        width: 20px;
+        height: 20px;
+        filter: brightness(0) invert(1);
+        opacity: 0.62;
+    }
+
+    body.healthtrack-ui .ht-app-mobile-nav a.is-active,
+    body.healthtrack-ui .ht-app-menu-toggle[aria-expanded="true"] {
+        background: rgba(94, 209, 193, 0.16);
+        color: #ffffff !important;
+    }
+
+    body.healthtrack-ui .ht-app-mobile-nav a.is-active img,
+    body.healthtrack-ui .ht-app-menu-toggle[aria-expanded="true"] img {
+        opacity: 1;
+    }
+
+    body.healthtrack-ui .ht-app-menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.06);
+        box-shadow: none;
+    }
+
+    /* ----- Top bar ----- */
+    body.healthtrack-ui .ht-app-page-title {
+        overflow: hidden;
+        min-width: 0;
+        margin-right: 12px;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    /* ----- Tables: scroll sideways inside their own box ----- */
+    body.healthtrack-ui table:not(.access-table) {
+        display: block;
+        max-width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    body.healthtrack-ui th,
+    body.healthtrack-ui td {
+        white-space: nowrap;
+    }
+
+    body.healthtrack-ui .table-wrapper,
+    body.healthtrack-ui .table-container,
+    body.healthtrack-ui .table-wrap {
+        max-width: 100%;
+        overflow-x: auto;
+    }
+
+    /* Nothing may push the page wider than the screen */
+    body.healthtrack-ui .healthtrack-page-shell,
+    body.healthtrack-ui .healthtrack-page-shell > *,
+    body.healthtrack-ui .application,
+    body.healthtrack-ui .page-content {
+        min-width: 0;
+        max-width: 100%;
+    }
+
+    body.healthtrack-ui img {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+/* Phones */
+@media (max-width: 560px) {
+    body.healthtrack-ui h1 {
+        font-size: 1.6rem;
+    }
+
+    body.healthtrack-ui h2 {
+        font-size: 1.15rem;
+    }
+
+    body.healthtrack-ui .healthtrack-page-shell > header:not(.healthtrack-global-header),
+    body.healthtrack-ui .healthtrack-page-shell > .header,
+    body.healthtrack-ui .healthtrack-page-shell > .page-header,
+    body.healthtrack-ui .records-hero,
+    body.healthtrack-ui .analytics-header,
+    body.healthtrack-ui .change-requests-hero,
+    body.healthtrack-ui .dashboard-hero {
+        margin-bottom: 16px;
+        padding: 20px;
+        border-radius: 16px;
+    }
+
+    body.healthtrack-ui form:not(.delete-form):not(.compact-form):not(.action-buttons form):not(td form):not(.ht-app-logout) {
+        padding: 18px;
+    }
+
+    /* Two number tiles per row instead of one huge column */
+    body.admin-ui .ht-admin-stats {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Buttons in a form row can stack full width */
+    body.healthtrack-ui .filter-actions > *,
+    body.healthtrack-ui .footer-buttons > * {
+        flex: 1 1 auto;
+    }
+
+    body.healthtrack-ui .ht-app-logout button {
+        min-height: 34px !important;
+        padding: 0 12px !important;
+    }
+}
+
+/* Small tablets (sidebar visible but narrow screen) */
+@media (min-width: 861px) and (max-width: 1100px) {
+    :root {
+        --ht-nav-width: 220px;
+    }
+
+    body.healthtrack-app-layout > .healthtrack-page-shell {
+        width: calc(100% - var(--ht-nav-width) - 48px);
+        margin: 0 24px 0 calc(var(--ht-nav-width) + 24px);
+    }
+
+    body.healthtrack-ui table:not(.access-table) {
+        display: block;
+        overflow-x: auto;
+    }
+}
